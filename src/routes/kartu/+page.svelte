@@ -162,7 +162,7 @@
 	<title>Kartu Siaga RT — Titik Henti</title>
 </svelte:head>
 
-<div class="bg-concrete-shade/50 flex-1 px-4 py-6 print:bg-white print:p-0">
+<div class="bg-concrete flex-1 px-4 py-6 print:bg-white print:p-0">
 	<div class="mx-auto mb-4 flex max-w-[210mm] items-start gap-4 print:hidden">
 		<p class="text-graphite max-w-lg text-[11.5px] leading-[1.55]">
 			Lembar ini dirancang untuk dicetak A4 potret hitam putih dan ditempel di pos RT. Kelas gang
@@ -174,29 +174,29 @@
 	</div>
 
 	<article
-		class="bg-concrete-tint mx-auto w-full max-w-[210mm] px-[11mm] py-[9mm] print:max-w-none print:bg-white print:px-0 print:py-0"
+		class="bg-paper mx-auto w-full max-w-[210mm] px-[11mm] py-[9mm] print:max-w-none print:bg-white print:px-0 print:py-0"
 	>
 		{#if dataset.meta}
 			<header class="border-ink flex items-stretch gap-3 border-b-2 pb-2">
 				<div class="flex-1">
-					<p class="stencil-sm text-graphite">Pra-rencana kebakaran permukiman padat</p>
-					<h1 class="font-display text-ink mt-1 text-[29px] leading-none font-bold uppercase">
-						Kartu Siaga RT
+					<p class="field-label-sm text-graphite">Pra-rencana kebakaran permukiman padat</p>
+					<h1 class="font-display text-ink mt-1 text-[29px] leading-none font-semibold">
+						Kartu siaga RT
 					</h1>
-					<p class="font-display text-ink mt-1.5 text-[14px] leading-none font-semibold uppercase">
-						Kel. {dataset.meta.villageName} · Kec. {dataset.meta.districtName} · {dataset.meta
+					<p class="font-display text-ink mt-1.5 text-[14px] leading-none font-semibold">
+						Kelurahan {dataset.meta.villageName}, Kecamatan {dataset.meta.districtName}, {dataset.meta
 							.cityName}
 					</p>
 				</div>
 				<div class="border-ink/25 flex w-[38mm] flex-col justify-between border-l pl-3 text-right">
 					<div>
-						<p class="stencil-sm text-graphite">Tanggal olah</p>
+						<p class="field-label-sm text-graphite">Tanggal olah</p>
 						<p class="readout text-ink mt-1 text-[11px]">
 							{formatDate(dataset.meta.processedAt)}
 						</p>
 					</div>
 					<div>
-						<p class="stencil-sm text-graphite">Versi pipeline</p>
+						<p class="field-label-sm text-graphite">Versi pipeline</p>
 						<p class="readout text-ink mt-1 text-[11px]">v{dataset.meta.pipelineVersion}</p>
 					</div>
 				</div>
@@ -204,11 +204,11 @@
 
 			<section class="border-ink/25 grid grid-cols-4 gap-x-3 border-b py-2">
 				<div>
-					<p class="stencil-sm text-graphite">Bangunan</p>
+					<p class="field-label-sm text-graphite">Bangunan</p>
 					<p class="readout-lg text-ink mt-1">{formatCount(dataset.meta.buildingCount)}</p>
 				</div>
 				<div>
-					<p class="stencil-sm text-graphite">Panjang gang</p>
+					<p class="field-label-sm text-graphite">Panjang gang</p>
 					<p class="readout-lg text-ink mt-1">
 						{formatKilometers(
 							dataset.meta.alleyLengthMetersByClass.largeUnit +
@@ -218,13 +218,13 @@
 					</p>
 				</div>
 				<div>
-					<p class="stencil-sm text-graphite">Tak terlalui unit</p>
+					<p class="field-label-sm text-graphite">Tak terlalui unit</p>
 					<p class="readout-lg text-ink mt-1">
 						{formatShare(dataset.meta.inaccessibleLengthShare)}
 					</p>
 				</div>
 				<div>
-					<p class="stencil-sm text-graphite">Tak terjangkau air</p>
+					<p class="field-label-sm text-graphite">Tak terjangkau air</p>
 					<p class="readout-lg text-ink mt-1">
 						{reach ? formatCount(reach.unreachedBuildingCount) : '—'}
 					</p>
@@ -233,7 +233,7 @@
 
 			<section class="border-ink/25 border-b py-2.5">
 				<div class="mb-1.5 flex items-baseline justify-between">
-					<h2 class="stencil text-ink">01 · Peta klasifikasi gang</h2>
+					<h2 class="field-label text-ink">01 Peta klasifikasi gang</h2>
 					<p class="readout text-graphite text-[10px]">
 						Selang maksimum {formatMeters(DEFAULT_MAX_HOSE_LENGTH_METERS)}
 					</p>
@@ -292,13 +292,13 @@
 
 			<div class="border-ink/25 grid grid-cols-2 gap-x-6 border-b py-2.5">
 				<section>
-					<h2 class="stencil text-ink mb-1.5">02 · Titik henti dan selang terjauh</h2>
+					<h2 class="field-label text-ink mb-1.5">02 Titik henti dan selang terjauh</h2>
 					<table class="w-full">
 						<thead>
 							<tr class="border-ink/30 border-b">
-								<th class="stencil-sm text-graphite py-1 text-left">Koordinat</th>
-								<th class="stencil-sm text-graphite py-1 text-right">Selang</th>
-								<th class="stencil-sm text-graphite py-1 text-right">Gulung</th>
+								<th class="field-label-sm text-graphite py-1 text-left">Koordinat</th>
+								<th class="field-label-sm text-graphite py-1 text-right">Selang</th>
+								<th class="field-label-sm text-graphite py-1 text-right">Gulung</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -320,7 +320,7 @@
 				</section>
 
 				<section>
-					<h2 class="stencil text-ink mb-1.5">03 · Sumber air</h2>
+					<h2 class="field-label text-ink mb-1.5">03 Sumber air</h2>
 					{#if namedWaterSources.length === 0}
 						<p class="text-ink text-[10.5px] leading-[1.5]">
 							Tidak ada hidran atau sumur terdata di OpenStreetMap untuk wilayah ini. Pasokan air
@@ -330,8 +330,8 @@
 						<table class="w-full">
 							<thead>
 								<tr class="border-ink/30 border-b">
-									<th class="stencil-sm text-graphite py-1 text-left">Jenis</th>
-									<th class="stencil-sm text-graphite py-1 text-left">Koordinat</th>
+									<th class="field-label-sm text-graphite py-1 text-left">Jenis</th>
+									<th class="field-label-sm text-graphite py-1 text-left">Koordinat</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -349,14 +349,14 @@
 						</table>
 					{/if}
 
-					<h2 class="stencil text-ink mt-2.5 mb-1.5">04 · Kantong tak terjangkau</h2>
+					<h2 class="field-label text-ink mt-2.5 mb-1.5">04 Kantong tak terjangkau</h2>
 					{#if reach && reach.pockets.length > 0}
 						<table class="w-full">
 							<thead>
 								<tr class="border-ink/30 border-b">
-									<th class="stencil-sm text-graphite py-1 text-left">No</th>
-									<th class="stencil-sm text-graphite py-1 text-left">Titik tengah</th>
-									<th class="stencil-sm text-graphite py-1 text-right">Bangunan</th>
+									<th class="field-label-sm text-graphite py-1 text-left">No</th>
+									<th class="field-label-sm text-graphite py-1 text-left">Titik tengah</th>
+									<th class="field-label-sm text-graphite py-1 text-right">Bangunan</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -383,19 +383,19 @@
 
 			<section class="border-ink/25 grid grid-cols-3 gap-x-5 border-b py-2.5">
 				<div>
-					<h2 class="stencil text-ink mb-1.5">05 · Kontak RT</h2>
+					<h2 class="field-label text-ink mb-1.5">05 Kontak RT</h2>
 					{#each writeLines as line (line)}
 						<div class="write-line"></div>
 					{/each}
 				</div>
 				<div>
-					<h2 class="stencil text-ink mb-1.5">06 · Posisi APAR</h2>
+					<h2 class="field-label text-ink mb-1.5">06 Posisi APAR</h2>
 					{#each writeLines as line (line)}
 						<div class="write-line"></div>
 					{/each}
 				</div>
 				<div>
-					<h2 class="stencil text-ink mb-1.5">07 · Perlu bantuan evakuasi</h2>
+					<h2 class="field-label text-ink mb-1.5">07 Perlu bantuan evakuasi</h2>
 					{#each writeLines as line (line)}
 						<div class="write-line"></div>
 					{/each}

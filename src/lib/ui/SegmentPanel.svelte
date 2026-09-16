@@ -18,9 +18,9 @@
 	let { segment }: Props = $props();
 </script>
 
-<PanelSection index="A4" title="Segmen gang terpilih">
+<PanelSection title="Segmen gang terpilih">
 	<div class="mb-2 flex items-baseline gap-2">
-		<span class="stencil text-graphite">Segmen</span>
+		<span class="field-label text-graphite">Segmen</span>
 		<span class="readout-lg text-ink">{segment.segmentId.toString().padStart(4, '0')}</span>
 	</div>
 

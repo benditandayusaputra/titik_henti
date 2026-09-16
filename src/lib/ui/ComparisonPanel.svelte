@@ -25,7 +25,6 @@
 </script>
 
 <PanelSection
-	index="E1"
 	title="Naikkan semua gang satu kelas"
 	note="Menaikkan kelas akses seluruh segmen satu tingkat, menghitung ulang titik henti, panjang selang, waktu air sampai, lalu menjalankan simulasi dengan seed yang sama persis."
 >
@@ -47,10 +46,10 @@
 			{#each rows as row, index (row.label)}
 				<div
 					class="hairline-box px-3 py-3"
-					class:bg-concrete-tint={index === 0}
+					class:bg-paper={index === 0}
 					class:bg-ink={index === 1}
 				>
-					<p class="stencil-sm" class:text-graphite={index === 0} class:text-concrete={index === 1}>
+					<p class="field-label-sm" class:text-graphite={index === 0} class:text-concrete={index === 1}>
 						{row.label}
 					</p>
 					<p
@@ -61,7 +60,7 @@
 						{formatCount(row.burntCount)}
 					</p>
 					<p
-						class="stencil-sm mt-1"
+						class="field-label-sm mt-1"
 						class:text-graphite={index === 0}
 						class:text-graphite-pale={index === 1}
 					>
@@ -137,8 +136,8 @@
 			{/each}
 		</div>
 
-		<div class="hairline-box bg-concrete-tint mt-3 px-3 py-3">
-			<p class="stencil-sm text-graphite">Selisih akibat pelebaran gang</p>
+		<div class="hairline-box bg-paper mt-3 px-3 py-3">
+			<p class="field-label-sm text-graphite">Selisih akibat pelebaran gang</p>
 			<p class="readout-xl mt-2" class:text-water={burntDelta > 0} class:text-ink={burntDelta <= 0}>
 				{burntDelta > 0 ? '−' : burntDelta < 0 ? '+' : ''}{formatCount(Math.abs(burntDelta))}
 			</p>

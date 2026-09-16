@@ -33,15 +33,14 @@
 </svelte:head>
 
 <section class="sheet-grid hairline-b px-5 pt-14 pb-16 sm:px-10">
-	<div class="mx-auto w-full max-w-5xl">
-		<p class="stencil text-graphite mb-6">Lembar 01 · Ringkasan pra-rencana</p>
+	<div class="measure-rail mx-auto w-full max-w-5xl">
 		<div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:gap-14">
 			<h1
-				class="font-display text-ink shrink-0 text-[clamp(3.2rem,11vw,8rem)] leading-[0.84] font-bold tracking-[-0.015em] uppercase"
+				class="font-display text-ink shrink-0 text-[clamp(3.2rem,11vw,8rem)] leading-[0.84] font-semibold tracking-[-0.015em]"
 			>
-				Titik<br />Henti
+				Titik<br />henti
 			</h1>
-			<p class="text-ink max-w-md pb-2 text-[15.5px] leading-[1.62]">
+			<p class="text-ink prose-measure max-w-md pb-2 text-[15.5px] leading-[1.62]">
 				Di permukiman padat, mobil pemadam berhenti jauh sebelum sampai ke titik api. Dari situ
 				selang digelar dengan tangan. Setiap meter selang adalah tambahan detik sebelum air
 				sampai, dan setiap detik itu adalah rumah berikutnya yang ikut terbakar.
@@ -52,23 +51,24 @@
 
 		{#if dataset.meta}
 			<dl class="mt-8 grid grid-cols-2 gap-px md:grid-cols-4">
-				<div class="hairline-box bg-concrete-tint crop-mark relative px-4 py-4">
-					<dt class="stencil-sm text-graphite">Wilayah uji</dt>
-					<dd class="font-display text-ink mt-2 text-[22px] leading-none font-bold uppercase">
+				<div class="hairline-box bg-paper crop-mark relative px-4 py-4">
+					<dt class="field-label-sm text-graphite">Wilayah uji</dt>
+					<dd class="font-display text-ink mt-2 text-[22px] leading-none font-semibold">
 						{dataset.meta.villageName}
 					</dd>
-					<dd class="stencil-sm text-graphite mt-2">
-						{formatDecimal(dataset.meta.areaSquareKilometres, 2)} km² · {formatCount(
-							dataset.meta.populationCount
-						)} jiwa
+					<dd class="field-label-sm text-graphite mt-2">
+						Luas {formatDecimal(dataset.meta.areaSquareKilometres, 2)} km persegi
+					</dd>
+					<dd class="field-label-sm text-graphite mt-1">
+						Penduduk {formatCount(dataset.meta.populationCount)} jiwa
 					</dd>
 				</div>
-				<div class="hairline-box bg-concrete-tint px-4 py-4">
-					<dt class="stencil-sm text-graphite">Bangunan terpetakan</dt>
+				<div class="hairline-box bg-paper px-4 py-4">
+					<dt class="field-label-sm text-graphite">Bangunan terpetakan</dt>
 					<dd class="readout-xl text-ink mt-2">{formatCount(dataset.meta.buildingCount)}</dd>
 				</div>
-				<div class="hairline-box bg-concrete-tint px-4 py-4">
-					<dt class="stencil-sm text-graphite">Jaringan gang</dt>
+				<div class="hairline-box bg-paper px-4 py-4">
+					<dt class="field-label-sm text-graphite">Jaringan gang</dt>
 					<dd class="readout-xl text-ink mt-2">
 						{formatKilometers(
 							dataset.meta.alleyLengthMetersByClass.largeUnit +
@@ -77,8 +77,8 @@
 						)}
 					</dd>
 				</div>
-				<div class="hairline-box bg-concrete-tint px-4 py-4">
-					<dt class="stencil-sm text-graphite">Tak terlalui kendaraan</dt>
+				<div class="hairline-box bg-paper px-4 py-4">
+					<dt class="field-label-sm text-graphite">Tak terlalui kendaraan</dt>
 					<dd class="readout-xl text-alarm mt-2">
 						{formatShare(dataset.meta.inaccessibleLengthShare)}
 					</dd>
@@ -96,27 +96,29 @@
 
 <section class="hairline-b px-5 py-14 sm:px-10">
 	<div class="mx-auto w-full max-w-5xl">
-		<h2 class="stencil text-graphite mb-6">02 · Ambang yang menentukan segalanya</h2>
+		<h2 class="font-display text-ink mb-6 text-[clamp(1.4rem,3vw,2rem)] leading-tight font-semibold">
+			Ambang yang menentukan segalanya
+		</h2>
 		<div class="grid gap-px md:grid-cols-3">
 			{#each classes as accessClass (accessClass)}
-				<div class="hairline-box bg-concrete-tint px-5 py-5">
+				<div class="hairline-box bg-paper px-5 py-5">
 					<span
 						class="border-ink/25 mb-4 block h-[5px] w-full border-y"
 						style:background-color={ACCESS_CLASS_COLOR[accessClass]}
 					></span>
-					<p class="font-display text-ink text-[17px] leading-none font-semibold uppercase">
+					<p class="font-display text-ink text-[17px] leading-none font-semibold">
 						{ACCESS_CLASS_LABEL[accessClass]}
 					</p>
 					<p class="readout-lg text-ink mt-3">{ACCESS_CLASS_WIDTH_NOTE[accessClass]}</p>
 					{#if dataset.meta}
-						<p class="stencil-sm text-graphite mt-3">
+						<p class="field-label-sm text-graphite mt-3">
 							{formatKilometers(dataset.meta.alleyLengthMetersByClass[accessClass])} di kelurahan uji
 						</p>
 					{/if}
 				</div>
 			{/each}
 		</div>
-		<p class="text-graphite mt-5 max-w-2xl text-[12.5px] leading-[1.6]">
+		<p class="text-graphite prose-measure mt-5 text-[12.5px] leading-[1.6]">
 			Ambang {formatDecimal(LARGE_UNIT_MIN_WIDTH_METERS, 1)} meter dipakai karena di bawah itu unit
 			pemadam berukuran penuh tidak dapat lewat. Satu gulung selang panjangnya {HOSE_ROLL_LENGTH_METERS}
 			meter, dan jumlah gulung yang harus digelar adalah ukuran paling jujur dari seberapa jauh
@@ -127,7 +129,9 @@
 
 <section class="bg-ink px-5 py-14 sm:px-10">
 	<div class="mx-auto w-full max-w-5xl">
-		<h2 class="stencil text-graphite-pale mb-7">03 · Rantai sebab akibat di dalam kode</h2>
+		<h2 class="font-display text-concrete mb-7 text-[clamp(1.4rem,3vw,2rem)] leading-tight font-semibold">
+			Rantai sebab akibat di dalam kode
+		</h2>
 		<ol class="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
 			{#each chain as step, index (step)}
 				<li class="border-concrete/20 bg-ink-deep border px-4 py-4">
@@ -138,7 +142,7 @@
 				</li>
 			{/each}
 		</ol>
-		<p class="text-graphite-pale mt-6 max-w-2xl text-[12.5px] leading-[1.6]">
+		<p class="text-graphite-pale prose-measure mt-6 text-[12.5px] leading-[1.6]">
 			Setiap tautan pada rantai ini dihitung, bukan dinarasikan. Kontrol
 			<span class="text-concrete">naikkan semua gang satu kelas</span> di lembar kerja menjalankan ulang
 			seluruh rantai dengan seed acak yang identik, sehingga selisih jumlah bangunan terbakar benar

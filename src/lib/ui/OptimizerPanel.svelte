@@ -48,13 +48,12 @@
 </script>
 
 <PanelSection
-	index="G1"
 	title="Optimizer intervensi"
 	note="Maksimalisasi submodular serakah. Tiap putaran memilih kandidat dengan kenaikan ekspektasi bangunan selamat per rupiah tertinggi, sampai anggaran habis."
 >
 	<label class="block">
 		<span class="flex items-baseline justify-between gap-2">
-			<span class="stencil-sm text-graphite">Anggaran</span>
+			<span class="field-label-sm text-graphite">Anggaran</span>
 			<span class="readout text-ink">{formatRupiah(budgetRupiah)}</span>
 		</span>
 		<input
@@ -92,26 +91,26 @@
 			<div class="hairline-box h-[10px] w-full">
 				<div class="bg-ink h-full" style:width={`${Math.round(progressShare * 100)}%`}></div>
 			</div>
-			<p class="stencil-sm text-graphite mt-1.5">{workspace.optimizerProgress.note}</p>
+			<p class="field-label-sm text-graphite mt-1.5">{workspace.optimizerProgress.note}</p>
 		</div>
 	{/if}
 
 	{#if applied > 0}
-		<p class="stencil-sm text-water mt-3">{applied} intervensi terpasang di simulasi</p>
+		<p class="field-label-sm text-water mt-3">{applied} intervensi terpasang di simulasi</p>
 	{/if}
 </PanelSection>
 
 {#if outcome}
-	<PanelSection index="G2" title="Hasil peringkat">
+	<PanelSection title="Hasil peringkat">
 		<div class="mb-3 grid grid-cols-2 gap-px">
-			<div class="hairline-box bg-concrete-tint px-3 py-2.5">
-				<p class="stencil-sm text-graphite">Terbakar tanpa intervensi</p>
+			<div class="hairline-box bg-paper px-3 py-2.5">
+				<p class="field-label-sm text-graphite">Terbakar tanpa intervensi</p>
 				<p class="readout-lg text-alarm mt-1.5">
 					{formatDecimal(outcome.baselineExpectedBurnt, 1)}
 				</p>
 			</div>
-			<div class="hairline-box bg-concrete-tint px-3 py-2.5">
-				<p class="stencil-sm text-graphite">Terbakar setelah</p>
+			<div class="hairline-box bg-paper px-3 py-2.5">
+				<p class="field-label-sm text-graphite">Terbakar setelah</p>
 				<p class="readout-lg text-water mt-1.5">
 					{formatDecimal(outcome.improvedExpectedBurnt, 1)}
 				</p>
@@ -136,11 +135,11 @@
 			<ol class="flex flex-col">
 				{#each outcome.selected as item (item.id)}
 					<li class="hairline-b flex items-baseline gap-2 py-2 last:border-b-0">
-						<span class="readout text-graphite-pale w-6 shrink-0 text-[11px]">
+						<span class="readout text-graphite w-6 shrink-0 text-[11px]">
 							{item.rank.toString().padStart(2, '0')}
 						</span>
 						<span class="min-w-0 flex-1">
-							<span class="stencil-sm text-ink block">{kindLabel[item.kind]}</span>
+							<span class="field-label-sm text-ink block">{kindLabel[item.kind]}</span>
 							<span class="text-graphite block text-[10.5px] leading-tight">{item.label}</span>
 						</span>
 						<span class="shrink-0 text-right">
@@ -157,7 +156,6 @@
 {/if}
 
 <PanelSection
-	index="G3"
 	title="Uji cepat sebaran risiko"
 	note="Mode batch pada worker menjalankan banyak lari simulasi dengan titik api dan arah angin acak, lalu mengembalikan statistik agregat saja."
 >
@@ -185,7 +183,7 @@
 	{/if}
 </PanelSection>
 
-<PanelSection index="G4" title="Catatan biaya">
+<PanelSection title="Catatan biaya">
 	<p class="text-graphite text-[11px] leading-[1.55]">
 		Biaya satuan disimpan di constants.ts dan bersifat perkiraan kasar untuk membandingkan
 		alternatif, bukan rencana anggaran biaya. Ekspektasi bangunan terbakar dihitung dari rata-rata

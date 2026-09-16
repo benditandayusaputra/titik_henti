@@ -48,12 +48,12 @@
 	import WaterPanel from '$lib/ui/WaterPanel.svelte';
 	import { workspace, type WorkspaceTab } from '$lib/workspace.svelte';
 
-	const tabs: { id: WorkspaceTab; label: string; index: string }[] = [
-		{ id: 'akses', label: 'Akses', index: 'A' },
-		{ id: 'titikHenti', label: 'Titik henti', index: 'C' },
-		{ id: 'api', label: 'Api', index: 'D' },
-		{ id: 'air', label: 'Air', index: 'F' },
-		{ id: 'intervensi', label: 'Intervensi', index: 'G' }
+	const tabs: { id: WorkspaceTab; label: string }[] = [
+		{ id: 'akses', label: 'Akses' },
+		{ id: 'titikHenti', label: 'Titik henti' },
+		{ id: 'api', label: 'Api' },
+		{ id: 'air', label: 'Air' },
+		{ id: 'intervensi', label: 'Intervensi' }
 	];
 
 	let mapInstance = $state<MapLibreMap | null>(null);
@@ -431,37 +431,39 @@
 			</div>
 			{#if workspace.settingIgnition || workspace.placingHydrant}
 				<div
-					class="bg-alarm text-concrete stencil absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
+					class="bg-ink text-concrete map-label absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
 				>
 					{workspace.settingIgnition ? 'Klik bangunan untuk titik api' : 'Klik peta untuk hidran'}
 				</div>
 			{/if}
 		{:else}
-			<div class="flex h-full items-center justify-center px-6">
-				<div class="text-center">
-					<p class="stencil text-graphite-pale">
-						{dataset.status === 'error' ? 'Gagal memuat' : 'Memuat berkas data'}
+			<div class="flex h-full items-center px-6">
+				<div>
+					<p class="font-display text-concrete text-[18px] leading-tight font-semibold">
+						{dataset.status === 'error' ? 'Berkas data gagal dimuat' : 'Memuat berkas data'}
 					</p>
-					<p class="readout-lg text-concrete mt-3">
-						{dataset.status === 'error' ? dataset.errorMessage : '···'}
+					<p class="text-graphite-pale prose-measure mt-2 text-[12.5px] leading-[1.55]">
+						{dataset.status === 'error'
+							? dataset.errorMessage
+							: 'Peta, jaringan gang, dan tabel bangunan sedang diambil dari aset statis.'}
 					</p>
 				</div>
 			</div>
 		{/if}
 	</div>
 
-	<aside class="hairline-l bg-concrete flex w-full shrink-0 flex-col lg:w-[382px]">
-		<nav class="hairline-b bg-concrete-shade/60 flex overflow-x-auto" aria-label="Panel kerja">
+	<aside class="hairline-l bg-paper flex w-full shrink-0 flex-col lg:w-[382px]">
+		<nav class="hairline-b bg-paper flex overflow-x-auto" aria-label="Panel kerja">
 			{#each tabs as tab (tab.id)}
 				<button
 					type="button"
 					class="field-tab hairline-r shrink-0"
-					class:bg-concrete={workspace.activeTab === tab.id}
+					class:bg-paper={workspace.activeTab === tab.id}
 					class:text-ink={workspace.activeTab === tab.id}
 					aria-pressed={workspace.activeTab === tab.id}
 					onclick={() => (workspace.activeTab = tab.id)}
 				>
-					<span class="text-graphite-pale mr-1.5">{tab.index}</span>{tab.label}
+					{tab.label}
 				</button>
 			{/each}
 		</nav>

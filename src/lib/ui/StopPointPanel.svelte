@@ -22,7 +22,6 @@
 </script>
 
 <PanelSection
-	index="C1"
 	title="Titik henti kendaraan"
 	note="Simpul terdekat pada segmen yang masih bisa dilalui unit besar."
 >
@@ -39,8 +38,8 @@
 	{:else}
 		<div class="mb-3">
 			<div class="flex items-end justify-between gap-3">
-				<span class="stencil text-graphite">Panjang selang</span>
-				<span class="stencil text-graphite">Gulung</span>
+				<span class="field-label text-graphite">Panjang selang</span>
+				<span class="field-label text-graphite">Gulung</span>
 			</div>
 			<div class="mt-1 flex items-end justify-between gap-3">
 				<span class="readout-xl text-water">

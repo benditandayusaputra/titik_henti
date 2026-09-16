@@ -25,13 +25,13 @@
 	const density = $derived(meta.buildingCount / Math.max(meta.areaSquareKilometres, 0.001));
 </script>
 
-<PanelSection index="A1" title="Wilayah kerja">
+<PanelSection title="Wilayah kerja">
 	<div class="mb-3">
-		<p class="font-display text-ink text-[27px] leading-[0.95] font-bold uppercase">
+		<p class="font-display text-ink text-[27px] leading-[0.95] font-semibold">
 			{meta.villageName}
 		</p>
-		<p class="stencil text-graphite mt-1.5">
-			Kec. {meta.districtName} · {meta.cityName}
+		<p class="field-label text-graphite mt-1.5">
+			Kecamatan {meta.districtName}, {meta.cityName}
 		</p>
 	</div>
 	<ValueRow label="Luas kelurahan" value={`${formatDecimal(meta.areaSquareKilometres, 2)} km²`} />
@@ -41,7 +41,6 @@
 </PanelSection>
 
 <PanelSection
-	index="A2"
 	title="Klasifikasi gang"
 	note="Panjang jaringan gang menurut lebar minimum sepanjang segmen."
 >
@@ -57,7 +56,7 @@
 				{#if share > STACKED_BAR_LABEL_MIN_SHARE}
 					<span
 						class="readout text-[10px]"
-						style:color={accessClass === 'largeUnit' ? '#1A1A1C' : '#F2F0EC'}
+						style:color={accessClass === 'hoseOnly' ? '#F2F0EC' : '#1A1A1C'}
 					>
 						{Math.round(share * 100)}%
 					</span>
@@ -83,7 +82,6 @@
 </PanelSection>
 
 <PanelSection
-	index="A3"
 	title="Bahan bangunan"
 	note="Kelas material diperkirakan dari luas tapak dan tinggi, bukan survei lapangan."
 >

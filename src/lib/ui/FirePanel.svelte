@@ -45,7 +45,6 @@
 </script>
 
 <PanelSection
-	index="D1"
 	title="Titik api awal"
 	note="Klik bangunan di peta saat mode titik api aktif untuk menyalakan atau membatalkan."
 >
@@ -75,7 +74,7 @@
 	</div>
 </PanelSection>
 
-<PanelSection index="D2" title="Angin">
+<PanelSection title="Angin">
 	<div class="flex items-center gap-4">
 		<WindDial
 			directionDegrees={workspace.wind.directionDegrees}
@@ -83,7 +82,7 @@
 		/>
 		<div class="flex-1">
 			<label class="block">
-				<span class="stencil-sm text-graphite">Arah tiup</span>
+				<span class="field-label-sm text-graphite">Arah tiup</span>
 				<input
 					class="mt-1.5 w-full"
 					type="range"
@@ -99,7 +98,7 @@
 				/>
 			</label>
 			<label class="mt-2 block">
-				<span class="stencil-sm text-graphite">Kecepatan</span>
+				<span class="field-label-sm text-graphite">Kecepatan</span>
 				<input
 					class="mt-1.5 w-full"
 					type="range"
@@ -125,7 +124,7 @@
 	</div>
 </PanelSection>
 
-<PanelSection index="D3" title="Kendali simulasi">
+<PanelSection title="Kendali simulasi">
 	<div class="flex flex-wrap gap-2">
 		<button
 			type="button"
@@ -147,8 +146,8 @@
 	</div>
 
 	<label class="mt-3 block">
-		<span class="stencil-sm text-graphite">
-			Waktu simulasi · {summary ? formatSeconds(summary.elapsedSeconds) : '—'}
+		<span class="field-label-sm text-graphite">
+			Waktu simulasi {summary ? formatSeconds(summary.elapsedSeconds) : '—'}
 		</span>
 		<input
 			class="mt-1.5 w-full"
@@ -172,23 +171,23 @@
 	</label>
 </PanelSection>
 
-<PanelSection index="D4" title="Hasil simulasi">
+<PanelSection title="Hasil simulasi">
 	{#if !summary}
 		<p class="text-graphite text-[11.5px] leading-[1.55]">
 			Belum ada lari simulasi. Tetapkan titik api lalu tekan jalankan.
 		</p>
 	{:else}
 		<div class="mb-3 grid grid-cols-3 gap-px">
-			<div class="hairline-box bg-concrete-tint px-2 py-2">
-				<p class="stencil-sm text-graphite">Terbakar</p>
+			<div class="hairline-box bg-paper px-2 py-2">
+				<p class="field-label-sm text-graphite">Terbakar</p>
 				<p class="readout-lg text-alarm mt-1.5">{formatCount(summary.burntCount)}</p>
 			</div>
-			<div class="hairline-box bg-concrete-tint px-2 py-2">
-				<p class="stencil-sm text-graphite">Terselamatkan</p>
+			<div class="hairline-box bg-paper px-2 py-2">
+				<p class="field-label-sm text-graphite">Terselamatkan</p>
 				<p class="readout-lg text-water mt-1.5">{formatCount(summary.savedCount)}</p>
 			</div>
-			<div class="hairline-box bg-concrete-tint px-2 py-2">
-				<p class="stencil-sm text-graphite">Menyala</p>
+			<div class="hairline-box bg-paper px-2 py-2">
+				<p class="field-label-sm text-graphite">Menyala</p>
 				<p class="readout-lg text-ink mt-1.5">{formatCount(summary.burningCount)}</p>
 			</div>
 		</div>

@@ -24,13 +24,12 @@
 <section class="hairline-b">
 	<button
 		type="button"
-		class="hover:bg-concrete-tint flex w-full items-center gap-2 px-4 py-3 text-left"
+		class="hover:bg-paper flex w-full items-center gap-2 px-4 py-3 text-left"
 		onclick={() => (workspace.calibrationOpen = !workspace.calibrationOpen)}
 		aria-expanded={workspace.calibrationOpen}
 	>
-		<span class="readout text-graphite-pale text-[11px]">D5</span>
 		<span class="bg-ink/25 h-px flex-1"></span>
-		<span class="stencil text-ink">Kalibrasi koefisien</span>
+		<span class="field-label text-ink">Kalibrasi koefisien</span>
 		<span class="readout text-graphite text-[13px]">{workspace.calibrationOpen ? '−' : '+'}</span>
 	</button>
 

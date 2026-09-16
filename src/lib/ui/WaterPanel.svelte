@@ -30,13 +30,12 @@
 </script>
 
 <PanelSection
-	index="F1"
 	title="Jangkauan selang"
 	note="Pencarian pada graf gang dengan batas jarak kumulatif dari tiap sumber air."
 >
 	<label class="block">
 		<span class="flex items-baseline justify-between gap-2">
-			<span class="stencil-sm text-graphite">Panjang selang maksimum</span>
+			<span class="field-label-sm text-graphite">Panjang selang maksimum</span>
 			<span class="readout text-ink">{formatMeters(workspace.maximumHoseLengthMeters)}</span>
 		</span>
 		<input
@@ -53,12 +52,12 @@
 
 	{#if reach}
 		<div class="mt-3 grid grid-cols-2 gap-px">
-			<div class="hairline-box bg-concrete-tint px-3 py-2.5">
-				<p class="stencil-sm text-graphite">Terjangkau</p>
+			<div class="hairline-box bg-paper px-3 py-2.5">
+				<p class="field-label-sm text-graphite">Terjangkau</p>
 				<p class="readout-lg text-water mt-1.5">{formatCount(reach.reachedBuildingCount)}</p>
 			</div>
-			<div class="hairline-box bg-concrete-tint px-3 py-2.5">
-				<p class="stencil-sm text-graphite">Tak terjangkau</p>
+			<div class="hairline-box bg-paper px-3 py-2.5">
+				<p class="field-label-sm text-graphite">Tak terjangkau</p>
 				<p class="readout-lg text-alarm mt-1.5">{formatCount(reach.unreachedBuildingCount)}</p>
 			</div>
 		</div>
@@ -78,7 +77,6 @@
 </PanelSection>
 
 <PanelSection
-	index="F2"
 	title="Sumber air"
 	note="Posisi unit pemadam adalah titik henti kandidat pada segmen kelas unit besar, bukan hidran terpasang."
 >
@@ -108,7 +106,7 @@
 	</div>
 </PanelSection>
 
-<PanelSection index="F3" title="Kantong tak terjangkau">
+<PanelSection title="Kantong tak terjangkau">
 	{#if !reach || reach.pockets.length === 0}
 		<p class="text-graphite text-[11.5px] leading-[1.55]">
 			Seluruh bangunan terjangkau pada panjang selang saat ini.
@@ -126,7 +124,7 @@
 			{/each}
 		</ol>
 		{#if reach.pockets.length > 8}
-			<p class="stencil-sm text-graphite mt-2">
+			<p class="field-label-sm text-graphite mt-2">
 				dan {reach.pockets.length - 8} kantong lain
 			</p>
 		{/if}

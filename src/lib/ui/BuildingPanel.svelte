@@ -49,9 +49,9 @@
 	const material = $derived(MATERIAL_CLASS_BY_CODE[buildings.materialClass[buildingIndex]]);
 </script>
 
-<PanelSection index="B1" title="Detail bangunan">
+<PanelSection title="Detail bangunan">
 	<div class="mb-2 flex items-baseline gap-2">
-		<span class="stencil text-graphite">Indeks</span>
+		<span class="field-label text-graphite">Indeks</span>
 		<span class="readout-lg text-ink">{buildingIndex.toString().padStart(5, '0')}</span>
 	</div>
 	<ValueRow

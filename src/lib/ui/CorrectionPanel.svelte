@@ -39,7 +39,6 @@
 </script>
 
 <PanelSection
-	index="A5"
 	title="Koreksi dari lapangan"
 	note="Kalimat bebas dari lapangan diubah menjadi usulan terstruktur. Usulan tidak pernah langsung mengubah data, dan baru berlaku setelah Anda setujui."
 >
@@ -49,7 +48,7 @@
 		</p>
 	{:else}
 		<form onsubmit={submit}>
-			<label class="stencil-sm text-graphite mb-1.5 block" for="kalimat-koreksi">
+			<label class="field-label-sm text-graphite mb-1.5 block" for="kalimat-koreksi">
 				Apa yang Anda lihat di segmen {segment.segmentId.toString().padStart(4, '0')}
 			</label>
 			<textarea
@@ -62,7 +61,7 @@
 				disabled={submitting}
 			></textarea>
 			<div class="mt-2 flex items-center justify-between gap-3">
-				<span class="readout text-graphite-pale text-[10.5px]">
+				<span class="readout text-graphite text-[10.5px]">
 					{trimmed.length}/{CORRECTION_SENTENCE_MAX_LENGTH}
 				</span>
 				<button type="submit" class="field-button-solid" disabled={!canSubmit}>
@@ -78,9 +77,9 @@
 
 	{#if pending.length > 0}
 		<div class="bg-ink/15 my-3 h-px"></div>
-		<p class="stencil-sm text-graphite mb-2">Menunggu tinjauan Anda</p>
+		<p class="field-label-sm text-graphite mb-2">Menunggu tinjauan Anda</p>
 		{#each pending as record (record.id)}
-			<article class="hairline-box bg-concrete-tint mb-2 px-3 py-3">
+			<article class="hairline-box bg-paper mb-2 px-3 py-3">
 				<p class="quoted-line text-ink text-[12px] leading-[1.55]">{record.originalSentence}</p>
 				<div class="mt-2.5">
 					<ValueRow
@@ -115,7 +114,7 @@
 
 	{#if decided.length > 0}
 		<div class="bg-ink/15 my-3 h-px"></div>
-		<p class="stencil-sm text-graphite mb-2">Riwayat koreksi</p>
+		<p class="field-label-sm text-graphite mb-2">Riwayat koreksi</p>
 		{#each decided as record (record.id)}
 			<div class="ledger-row">
 				<span class="text-graphite shrink-0 text-[11.5px]">
@@ -127,7 +126,7 @@
 						? formatMeters(record.proposal.proposedWidthMeters, 2)
 						: formatMeters(record.previousMinWidthMeters, 2)}
 				</span>
-				<span class="stencil-sm text-graphite-pale shrink-0">
+				<span class="field-label-sm text-graphite shrink-0">
 					{CORRECTION_STATUS_LABEL[record.status]}
 				</span>
 			</div>

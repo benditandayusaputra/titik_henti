@@ -9,7 +9,7 @@
 	let { meta }: Props = $props();
 </script>
 
-<div class="bg-concrete-shade/70 hairline-t px-4 py-3">
+<div class="bg-paper hairline-t px-4 py-3">
 	<div class="flex items-start gap-2">
 		<span
 			class="border-ink text-ink mt-[1px] flex h-[15px] w-[15px] shrink-0 items-center justify-center border font-mono text-[10px] leading-none font-bold"
@@ -25,14 +25,14 @@
 	<dl class="mt-2.5 flex flex-wrap gap-x-4 gap-y-1">
 		{#each meta.provenance as source (source.label)}
 			<div class="flex items-baseline gap-1.5">
-				<dt class="stencil-sm text-graphite">{source.label}</dt>
+				<dt class="field-label-sm text-graphite">{source.label}</dt>
 				<dd class="readout text-graphite text-[10px]">{source.licence}</dd>
 			</div>
 		{/each}
 		<div class="flex items-baseline gap-1.5">
-			<dt class="stencil-sm text-graphite">Olah</dt>
+			<dt class="field-label-sm text-graphite">Olah</dt>
 			<dd class="readout text-graphite text-[10px]">
-				{formatDate(meta.processedAt)} · v{meta.pipelineVersion}
+				Diolah {formatDate(meta.processedAt)}, pipeline versi {meta.pipelineVersion}
 			</dd>
 		</div>
 	</dl>

@@ -60,7 +60,7 @@
 					<span class="readout-lg text-ink block tabular-nums">
 						{Math.round(meters)}<span class="text-graphite text-[13px]"> m</span>
 					</span>
-					<span class="stencil-sm text-graphite mt-1 block">
+					<span class="field-label-sm text-graphite mt-1 block">
 						Gulung {rolls}/{totalRolls}
 					</span>
 				</div>

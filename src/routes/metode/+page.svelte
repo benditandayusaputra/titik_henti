@@ -67,23 +67,22 @@
 </svelte:head>
 
 <div class="flex-1 px-5 py-12 sm:px-10">
-	<div class="mx-auto w-full max-w-4xl">
-		<p class="stencil text-graphite mb-5">Lembar 04 · Metode, sumber data, dan batasan</p>
-		<h1 class="font-display text-ink text-[clamp(2rem,6vw,3.4rem)] leading-[0.92] font-bold uppercase">
+	<div class="measure-rail mx-auto w-full max-w-4xl">
+		<h1 class="font-display text-ink text-[clamp(2rem,6vw,3.4rem)] leading-[0.92] font-semibold">
 			Bagaimana angka<br />di lembar ini dibuat
 		</h1>
 		<div class="bg-ink mt-6 mb-10 h-[2px] w-full"></div>
 
 		<section class="mb-12">
-			<h2 class="stencil text-graphite mb-4">A · Pipeline data</h2>
+			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Pipeline data</h2>
 			<ol class="flex flex-col">
 				{#each pipelineStages as stage (stage.index)}
 					<li class="hairline-b flex gap-4 py-4 last:border-b-0">
-						<span class="readout text-graphite-pale w-8 shrink-0 pt-[2px] text-[12px]">
+						<span class="readout text-graphite w-8 shrink-0 pt-[2px] text-[12px]">
 							{stage.index}
 						</span>
 						<div class="min-w-0">
-							<h3 class="font-display text-ink text-[15px] leading-none font-semibold uppercase">
+							<h3 class="font-display text-ink text-[15px] leading-none font-semibold">
 								{stage.title}
 							</h3>
 							<p class="text-ink mt-2 text-[13px] leading-[1.6]">{stage.body}</p>
@@ -94,8 +93,8 @@
 		</section>
 
 		<section class="mb-12">
-			<h2 class="stencil text-graphite mb-4">B · Model waktu air sampai</h2>
-			<div class="hairline-box bg-concrete-tint px-5 py-5">
+			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Model waktu air sampai</h2>
+			<div class="hairline-box bg-paper px-5 py-5">
 				<p class="text-ink text-[13px] leading-[1.65]">
 					Waktu air sampai di sebuah bangunan dihitung dari titik henti terdekat lewat jalur
 					terpendek pada graf jaringan gang, dengan bobot panjang segmen. Panjang jalur itu diubah
@@ -103,29 +102,29 @@
 				</p>
 				<dl class="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
 					<div>
-						<dt class="stencil-sm text-graphite">Satu gulung</dt>
+						<dt class="field-label-sm text-graphite">Satu gulung</dt>
 						<dd class="readout text-ink mt-1.5">{HOSE_ROLL_LENGTH_METERS} m</dd>
 					</div>
 					<div>
-						<dt class="stencil-sm text-graphite">Penyiapan unit</dt>
+						<dt class="field-label-sm text-graphite">Penyiapan unit</dt>
 						<dd class="readout text-ink mt-1.5">{APPLIANCE_TURNOUT_SECONDS} s</dd>
 					</div>
 					<div>
-						<dt class="stencil-sm text-graphite">Gelar per gulung</dt>
+						<dt class="field-label-sm text-graphite">Gelar per gulung</dt>
 						<dd class="readout text-ink mt-1.5">{HOSE_DEPLOY_SECONDS_PER_ROLL} s</dd>
 					</div>
 					<div>
-						<dt class="stencil-sm text-graphite">Sambung per kopling</dt>
+						<dt class="field-label-sm text-graphite">Sambung per kopling</dt>
 						<dd class="readout text-ink mt-1.5">{HOSE_COUPLING_SECONDS_PER_JOINT} s</dd>
 					</div>
 					<div>
-						<dt class="stencil-sm text-graphite">Laju regu</dt>
+						<dt class="field-label-sm text-graphite">Laju regu</dt>
 						<dd class="readout text-ink mt-1.5">
 							{formatDecimal(CREW_APPROACH_SPEED_METERS_PER_SECOND, 2)} m/s
 						</dd>
 					</div>
 					<div>
-						<dt class="stencil-sm text-graphite">Langkah simulasi</dt>
+						<dt class="field-label-sm text-graphite">Langkah simulasi</dt>
 						<dd class="readout text-ink mt-1.5">{FIRE_STEP_SECONDS} s</dd>
 					</div>
 				</dl>
@@ -133,14 +132,14 @@
 		</section>
 
 		<section class="mb-12">
-			<h2 class="stencil text-graphite mb-4">C · Model penjalaran api</h2>
-			<div class="hairline-box bg-concrete-tint px-5 py-5">
+			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Model penjalaran api</h2>
+			<div class="hairline-box bg-paper px-5 py-5">
 				<p class="text-ink text-[13px] leading-[1.65]">
 					Cellular automata heterogen di atas graf ketetanggaan bangunan. Mekanismenya mengacu pada
 					model berbasis fisika Himoto dan Tanaka untuk kebakaran perkotaan padat, disederhanakan
 					menjadi tiga suku ditambah percikan bara.
 				</p>
-				<div class="hairline-box bg-concrete mt-4 overflow-x-auto px-4 py-3">
+				<div class="hairline-box bg-paper mt-4 overflow-x-auto px-4 py-3">
 					<p class="readout text-ink whitespace-nowrap">
 						P(j) = 1 − Π<sub>i∈menyala</sub> (1 − p<sub>ij</sub>)
 					</p>
@@ -175,14 +174,14 @@
 		</section>
 
 		<section class="mb-12">
-			<h2 class="stencil text-graphite mb-4">D · Sumber data dan lisensi</h2>
+			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Sumber data dan lisensi</h2>
 			{#if dataset.meta}
 				<table class="w-full">
 					<thead>
 						<tr class="border-ink/30 border-b">
-							<th class="stencil-sm text-graphite py-2 text-left">Lapisan</th>
-							<th class="stencil-sm text-graphite py-2 text-left">Sumber</th>
-							<th class="stencil-sm text-graphite py-2 text-right">Lisensi</th>
+							<th class="field-label-sm text-graphite py-2 text-left">Lapisan</th>
+							<th class="field-label-sm text-graphite py-2 text-left">Sumber</th>
+							<th class="field-label-sm text-graphite py-2 text-right">Lisensi</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -197,15 +196,15 @@
 						{/each}
 					</tbody>
 				</table>
-				<p class="stencil-sm text-graphite mt-3">
-					Tanggal olah {formatDate(dataset.meta.processedAt)} · pipeline v{dataset.meta
+				<p class="field-label-sm text-graphite mt-3">
+					Tanggal olah {formatDate(dataset.meta.processedAt)}, pipeline versi {dataset.meta
 						.pipelineVersion}
 				</p>
 			{/if}
 		</section>
 
 		<section class="mb-4">
-			<h2 class="stencil text-graphite mb-4">E · Batasan yang harus dibaca lebih dulu</h2>
+			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Batasan yang harus dibaca lebih dulu</h2>
 			<ul class="flex flex-col">
 				{#each limitations as limitation, index (limitation)}
 					<li class="hairline-b flex gap-3 py-3 last:border-b-0">

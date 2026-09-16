@@ -16,7 +16,7 @@
 </script>
 
 <div class="bg-concrete/95 hairline-box crop-mark pointer-events-none w-[196px] px-3 py-2.5">
-	<p class="stencil-sm text-graphite mb-2">Kelas akses gang</p>
+	<p class="map-label text-graphite mb-2">Kelas akses gang</p>
 	<ul class="flex flex-col gap-[7px]">
 		{#each rows as accessClass (accessClass)}
 			<li class="flex items-center gap-2">
@@ -34,6 +34,6 @@
 		{/each}
 	</ul>
 	{#if upgraded}
-		<p class="stencil-sm text-alarm mt-2.5 leading-[1.4]">Skenario pelebaran aktif</p>
+		<p class="field-label-sm text-alarm mt-2.5 leading-[1.4]">Skenario pelebaran aktif</p>
 	{/if}
 </div>

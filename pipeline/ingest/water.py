@@ -5,7 +5,7 @@ from typing import Any
 
 from shapely.geometry import LineString, Polygon
 
-from common import BoundingBox, Configuration, announce
+from common import build_study_area_signature, BoundingBox, Configuration, announce
 from ingest.overpass import fetch_overpass
 
 DEFAULT_WATERWAY_WIDTH_METERS = 9.0
@@ -65,7 +65,10 @@ def ingest_water_obstacles(configuration: Configuration) -> list[LineString | Po
         configuration.analysis_buffer_meters
     )
     payload: dict[str, Any] = fetch_overpass(
-        "water", build_water_query(analysis_box), configuration.overpass_endpoints
+        "water",
+        build_water_query(analysis_box),
+        configuration.overpass_endpoints,
+        build_study_area_signature(configuration),
     )
     obstacles: list[LineString | Polygon] = []
     for element in payload.get("elements") or []:
@@ -101,7 +104,10 @@ def ingest_water_sources(configuration: Configuration) -> list[RawWaterSource]:
         configuration.analysis_buffer_meters
     )
     payload: dict[str, Any] = fetch_overpass(
-        "water", build_water_query(analysis_box), configuration.overpass_endpoints
+        "water",
+        build_water_query(analysis_box),
+        configuration.overpass_endpoints,
+        build_study_area_signature(configuration),
     )
     sources: list[RawWaterSource] = []
     for element in payload.get("elements") or []:

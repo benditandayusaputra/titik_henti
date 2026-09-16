@@ -5,7 +5,7 @@ from typing import Any
 from shapely.geometry import MultiPolygon, Polygon, box
 from shapely.ops import linemerge, polygonize, unary_union
 
-from common import Configuration, announce
+from common import build_study_area_signature, Configuration, announce
 from ingest.overpass import fetch_overpass
 
 
@@ -47,6 +47,7 @@ def ingest_village_boundary(configuration: Configuration) -> Polygon | MultiPoly
             "boundary",
             build_boundary_query(relation_id),
             configuration.overpass_endpoints,
+            build_study_area_signature(configuration),
         )
         polygon = assemble_relation_polygon(payload)
         if polygon is not None and not polygon.is_empty:

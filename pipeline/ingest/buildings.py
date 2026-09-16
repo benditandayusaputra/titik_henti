@@ -7,7 +7,15 @@ from pathlib import Path
 
 import requests
 
-from common import RAW_DIR, BoundingBox, Configuration, announce
+from common import (
+    RAW_DIR,
+    BoundingBox,
+    Configuration,
+    announce,
+    build_study_area_signature,
+    cache_matches_study_area,
+    record_cache_study_area,
+)
 
 OPEN_BUILDINGS_BASE_URL = (
     "https://storage.googleapis.com/open-buildings-data/v3/polygons_s2_level_6_gzip_no_header"
@@ -107,7 +115,12 @@ def extract_buildings_inside(
 
 def ingest_building_footprints(configuration: Configuration) -> Path:
     destination = subset_path()
-    if destination.exists() and destination.stat().st_size > 0:
+    signature = build_study_area_signature(configuration)
+    if (
+        destination.exists()
+        and destination.stat().st_size > 0
+        and cache_matches_study_area(destination, signature)
+    ):
         announce("ingest", "memakai cache subset footprint bangunan")
         return destination
 
@@ -121,5 +134,6 @@ def ingest_building_footprints(configuration: Configuration) -> Path:
         configuration.open_buildings_confidence_minimum,
         destination,
     )
+    record_cache_study_area(destination, signature)
     announce("ingest", f"footprint bangunan terpilih {kept}")
     return destination

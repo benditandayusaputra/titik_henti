@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from common import BoundingBox, Configuration, announce
+from common import build_study_area_signature, BoundingBox, Configuration, announce
 from ingest.overpass import fetch_overpass
 
 METERS_PER_BUILDING_LEVEL = 3.2
@@ -60,6 +60,7 @@ def ingest_tagged_building_heights(configuration: Configuration) -> list[TaggedB
         "building_tags",
         build_tagged_building_query(analysis_box),
         configuration.overpass_endpoints,
+        build_study_area_signature(configuration),
     )
     samples: list[TaggedBuildingHeight] = []
     for element in payload.get("elements") or []:

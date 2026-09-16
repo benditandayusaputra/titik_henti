@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from common import BoundingBox, Configuration, announce
+from common import build_study_area_signature, BoundingBox, Configuration, announce
 from ingest.overpass import fetch_overpass
 
 VEHICLE_HIGHWAY_VALUES = {
@@ -46,7 +46,10 @@ def ingest_road_network(configuration: Configuration) -> list[RoadLine]:
         configuration.analysis_buffer_meters
     )
     payload: dict[str, Any] = fetch_overpass(
-        "roads", build_road_query(analysis_box), configuration.overpass_endpoints
+        "roads",
+        build_road_query(analysis_box),
+        configuration.overpass_endpoints,
+        build_study_area_signature(configuration),
     )
     roads: list[RoadLine] = []
     for element in payload.get("elements") or []:

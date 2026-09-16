@@ -18,6 +18,7 @@ OUTPUT_DIR = PROJECT_ROOT / "static" / "data"
 CONFIG_PATH = PIPELINE_ROOT / "config.json"
 
 METERS_PER_DEGREE_LATITUDE = 110574.0
+STUDY_AREA_SIGNATURE_SUFFIX = ".area"
 
 
 @dataclass(frozen=True)
@@ -127,3 +128,29 @@ def read_json(path: Path) -> Any:
 
 def format_thousands(value: int) -> str:
     return f"{value:,}".replace(",", ".")
+
+
+def build_study_area_signature(configuration: "Configuration") -> str:
+    box = configuration.bounding_box
+    return "|".join(
+        [
+            f"{box.west:.6f}",
+            f"{box.south:.6f}",
+            f"{box.east:.6f}",
+            f"{box.north:.6f}",
+            str(configuration.boundary_relation_id),
+        ]
+    )
+
+
+def signature_path(cache_path: Path) -> Path:
+    return cache_path.with_suffix(cache_path.suffix + STUDY_AREA_SIGNATURE_SUFFIX)
+
+
+def cache_matches_study_area(cache_path: Path, signature: str) -> bool:
+    marker = signature_path(cache_path)
+    return marker.exists() and marker.read_text().strip() == signature
+
+
+def record_cache_study_area(cache_path: Path, signature: str) -> None:
+    signature_path(cache_path).write_text(signature)

@@ -172,6 +172,38 @@ Hasil uji dengan model sungguhan:
 
 Pemeriksaan kebocoran kunci: pada alur penuh di browser hanya ada satu permintaan keluar dari klien, yaitu ke `/api/koreksi` tanpa header otorisasi. Tidak ada permintaan ke domain penyedia dari sisi klien, dan penelusuran bundel klien hasil build tidak menemukan kunci, basis URL, maupun nama penyedia.
 
+### Tahap 11, perbaikan bug dan pengerasan di luar jalur AI
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Mengerjakan sisa temuan yang tidak bergantung pada model bahasa |
+| Dihasilkan AI | Perbaikan pemakaian ulang layer deck, pemisahan muatan awal, harness dan spec end to end |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Koreksi terhadap kesimpulan yang salah di tahap sebelumnya:
+
+Error deck.gl di konsol sempat dilaporkan sebagai artefak perender perangkat lunak di browser headless. Kesimpulan itu keliru. Pemeriksaan `WEBGL_debug_renderer_info` menunjukkan browser uji memakai ANGLE Metal Renderer pada GPU Apple M4, bukan perender perangkat lunak. Setelah ditelusuri ke sumber deck.gl, pemicunya adalah `assert(!this.internalState)` di `Layer._initialize`, yaitu penolakan terhadap instance layer yang sudah final lalu dipakai ulang. Penyebabnya `MapboxOverlay` menerima larik layer lewat konstruktor, lalu larik yang sama diserahkan sekali lagi lewat `setProps` ketika gaya peta siap. Perbaikannya membuat overlay dibangun tanpa layer, dan seluruh penyerahan layer lewat satu jalur saja. Setelah itu konsol bersih, nol error dan nol peringatan, di seluruh alur termasuk klik segmen, pergantian tab, dan panel air.
+
+Kinerja muatan awal:
+
+`adjacency.bin` berukuran 2,8 MB ikut memblokir gambar peta pertama, padahal berkas itu hanya dipakai simulasi api dan jangkauan air. Berkas itu dipindahkan ke pemuatan latar setelah peta siap, dan panel air menampilkan keadaan menunggu selama berkas itu belum tiba. Berkas font juga diganti ke subset latin sesuai Bagian B3, dari enam berkas menjadi tiga.
+
+| Ukuran | Sebelum | Sesudah |
+| --- | --- | --- |
+| Muatan pemblokir gambar peta pertama | 3,6 MB | 819 KB |
+| Berkas font | 120 KB | 66 KB |
+| Peta tergambar, tanpa throttle | 137 ms | 194 ms |
+| Peta tergambar, 4G umum 10 Mbps | belum diukur | 1.626 ms |
+| Peta tergambar, 4G lambat 1,5 Mbps | 8.252 ms | 8.051 ms |
+
+Target PRD bagian 4.2, yaitu peta pertama tergambar di bawah 3 detik, terpenuhi pada jaringan 4G umum. Pada preset 4G lambat bawaan Chrome, target itu belum terpenuhi, dan sisa penghambat terbesarnya adalah satu bundel JavaScript 503 KB berisi pustaka peta.
+
+Uji end to end:
+
+Harness Playwright dipasang beserta 24 spec di `tests/e2e/`, mencakup pemilihan segmen, alur usulan sampai persetujuan dan penolakan, penolakan keluaran yang tidak sesuai skema, pemeriksaan bahwa tidak ada permintaan keluar dari klien, pemindaian axe pada empat halaman di tiga lebar layar, dan keberadaan tabel validasi beserta penyebutan sumber data. Spec koreksi memakai jawaban tiruan pada tingkat jaringan, sehingga suite dapat berjalan tanpa kunci API.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

@@ -117,7 +117,7 @@
 		);
 
 		created.on('load', () => {
-			overlay = new MapboxOverlay({ interleaved: false, layers });
+			overlay = new MapboxOverlay({ interleaved: false });
 			created.addControl(overlay);
 			created.resize();
 			created.fitBounds(

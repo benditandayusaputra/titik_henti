@@ -39,6 +39,7 @@
     "@fontsource/ibm-plex-sans": "^5.2.6",
     "@fontsource/ibm-plex-sans-condensed": "^5.2.6",
     "maplibre-gl": "^5.24.0",
+    "marked": "^18.0.13",
     "pmtiles": "^4.4.1",
     "zod": "^4.6.5"
   }

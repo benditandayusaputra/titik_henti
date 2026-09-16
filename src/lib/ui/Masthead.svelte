@@ -10,6 +10,7 @@
 		{ href: '/', label: 'Ringkasan' },
 		{ href: '/peta/', label: 'Lembar kerja' },
 		{ href: '/kartu/', label: 'Kartu siaga' },
+		{ href: '/artikel/', label: 'Artikel' },
 		{ href: '/metode/', label: 'Metode' }
 	];
 

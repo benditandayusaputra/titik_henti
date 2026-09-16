@@ -28,6 +28,7 @@ Dari seluruh panjang jaringan gang itu, 57,2 persen tidak dapat dilalui kendaraa
 | F5 | Kartu Siaga RT | Satu halaman A4 potret siap cetak hitam putih |
 | F6 | Koreksi lapangan berbantuan AI | Kalimat bebas dari lapangan diubah jadi usulan koreksi terstruktur yang wajib disetujui manusia |
 | F7 | Optimizer intervensi | Pemilihan intervensi berbasis anggaran terhadap dampak simulasi |
+| F8 | Artikel siaga | Panduan singkat bersumber lembaga resmi, tersaring lewat URL, punya mode cetak A4, dan tersambung ke kondisi yang ditunjukkan peta |
 
 ## Batasan yang wajib dibaca
 

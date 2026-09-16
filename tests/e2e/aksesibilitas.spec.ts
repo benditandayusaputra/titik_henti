@@ -5,6 +5,8 @@ const HALAMAN = [
 	{ nama: 'beranda', jalur: '/' },
 	{ nama: 'lembar kerja', jalur: '/peta/' },
 	{ nama: 'kartu siaga', jalur: '/kartu/' },
+	{ nama: 'daftar artikel', jalur: '/artikel/' },
+	{ nama: 'satu artikel', jalur: '/artikel/cara-memakai-apar/' },
 	{ nama: 'metode', jalur: '/metode/' }
 ];
 

@@ -9,6 +9,7 @@
 	import { formatDecimal, formatMeters } from '$lib/format';
 	import type { SegmentSummary } from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
+	import RelatedArticles from '$lib/ui/RelatedArticles.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
 
 	interface Props {
@@ -55,4 +56,16 @@
 	<p class="text-graphite mt-1.5 text-[11.5px] leading-[1.5]">
 		{WIDTH_SOURCE_NOTE[segment.widthSource]}
 	</p>
+
+	{#if segment.accessClass === 'hoseOnly'}
+		<RelatedArticles
+			condition="gang_selang_saja"
+			lead="Gang ini hanya bisa dilalui selang, jadi menit sebelum air datang lebih panjang. Panduan berikut ditulis untuk keadaan itu."
+		/>
+	{:else if segment.accessClass === 'smallUnit'}
+		<RelatedArticles
+			condition="gang_unit_kecil"
+			lead="Gang ini hanya bisa dilalui unit kecil. Panduan berikut relevan untuk warga di sepanjang gang ini."
+		/>
+	{/if}
 </PanelSection>

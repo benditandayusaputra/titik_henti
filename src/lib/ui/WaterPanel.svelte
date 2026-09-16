@@ -8,6 +8,7 @@
 	import { formatCount, formatMeters } from '$lib/format';
 	import type { HoseReachResult, WaterSource } from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
+	import RelatedArticles from '$lib/ui/RelatedArticles.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
 	import { workspace } from '$lib/workspace.svelte';
 
@@ -80,6 +81,12 @@
 				tone="alarm"
 			/>
 		</div>
+	{/if}
+	{#if reach && reach.pockets.length > 0}
+		<RelatedArticles
+			condition="kantong_tak_terjangkau"
+			lead="Ada bangunan yang tidak terjangkau air dari sumber mana pun. Panduan berikut ditulis untuk wilayah dengan kondisi itu."
+		/>
 	{/if}
 </PanelSection>
 

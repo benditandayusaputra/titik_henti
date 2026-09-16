@@ -273,6 +273,7 @@ export const CORRECTION_STATUS_LABEL: Record<CorrectionStatus, string> = {
 };
 export const SEGMENT_PICK_TOLERANCE_PIXELS = 6;
 export const CATALOGUE_ROW_LIMIT = 25;
+export const ARTICLE_WRITE_LINE_COUNT = 6;
 export const MAP_CANVAS_LABEL =
 	'Peta klasifikasi gang. Gunakan tombol panah untuk menggeser dan tombol tambah atau kurang untuk memperbesar. Seluruh isi peta juga tersedia sebagai tabel di panel Daftar.';
 export const CATALOGUE_FLY_ZOOM = 17.5;

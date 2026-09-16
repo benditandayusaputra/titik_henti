@@ -226,6 +226,35 @@ Kesalahan yang dibuat dan cara memperbaikinya:
 
 Hasil akhir: seluruh alur utama dapat dijalankan dengan Tab dan Enter saja, setiap elemen yang mendapat fokus punya garis fokus yang kontras terhadap latarnya, dan pemindaian axe tetap nol pelanggaran pada empat halaman di tiga lebar layar.
 
+### Tahap 13, artikel siaga sebagai bagian produk
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Membangun artikel sebagai bagian produk, bukan blog tempelan, dengan seluruh langkah keselamatan bersumber lembaga resmi |
+| Dihasilkan AI | Model konten, halaman daftar dan halaman baca, mode cetak, sambungan peta ke artikel, naskah empat artikel |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Aturan isi yang mengikat pada tahap ini: seluruh prosedur keselamatan wajib bersumber dari lembaga resmi, dan bila sumber untuk suatu langkah tidak tersedia, langkah itu dihapus, bukan dikira-kira.
+
+Aturan itu menentukan hasil akhirnya. Dari delapan artikel yang direncanakan, hanya empat yang diterbitkan, yaitu empat yang sumber resminya berhasil ditemukan dan dapat dikutip langsung:
+
+| Artikel | Sumber |
+| --- | --- |
+| Cara memakai APAR dan di mana menaruhnya | BPBD Daerah Istimewa Yogyakarta |
+| Tabung gas bocor, urutan tindakannya | Dinas Damkar dan Penyelamatan Kabupaten Bandung |
+| Korsleting listrik dan cara memeriksanya lebih awal | Dinas Gulkarmat DKI Jakarta lewat Berita Jakarta |
+| Relawan pemadam kelurahan dan hidran mandiri | Kota Administrasi Jakarta Barat |
+
+Empat sisanya, yaitu tiga menit pertama saat api muncul, estafet selang, jalur keluar di gang buntu, dan langkah pertama setelah api padam, belum ditulis karena sumber resminya belum ditemukan. Halaman daftar menyatakan kekosongan ini secara terbuka, bukan menyembunyikannya.
+
+Satu temuan yang perlu dicatat: sumber untuk artikel relawan ternyata membahas Palmerah secara langsung, termasuk posko di SDN Palmerah 13 Pagi dan tiga belas hidran mandiri di RW 08. Angka itu masuk ke artikel apa adanya, dan menghubungkan isi artikel dengan panel Air di lembar kerja.
+
+Keputusan teknis: frontmatter ditulis sebagai JSON, bukan YAML, supaya tidak perlu menambah pustaka pengurai dan supaya skemanya dapat divalidasi dengan zod yang sudah dipakai di tempat lain. Validasi itu menolak artikel tanpa sumber pada waktu build, jadi artikel tanpa sumber tidak mungkin ikut terbit.
+
+Kesalahan yang dibuat dan cara memperbaikinya: halaman daftar semula membaca parameter URL langsung saat render, dan build gagal karena parameter kueri tidak dapat diakses pada halaman yang di-prerender. Pembacaan parameter dibatasi ke sisi klien, sehingga HTML statisnya tetap memuat seluruh artikel dan saringan bekerja setelah halaman hidup di browser.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

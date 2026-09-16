@@ -106,6 +106,42 @@ Token `graphite` diubah dari `#6E6E73` menjadi `#656569`. Nilai lama menghasilka
 
 Hasil pemindaian setelah tahap ini: nol pelanggaran axe-core di keempat halaman, turun dari 46 sampai 58 node per halaman sebelum redesain.
 
+### Tahap 9, tabel validasi dan pemindahan wilayah uji ke Palmerah
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Menampilkan tabel validasi lebar gang di dalam produk, lalu mengembalikan wilayah uji ke Palmerah sesuai PRD |
+| Dihasilkan AI | Modul validasi beserta unit test, seksi validasi di halaman metode, penandaan area studi pada cache pipeline |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Tentang tabel validasi:
+
+Angka uji sintetis tidak disalin dari PRD, melainkan dihasilkan ulang dengan menjalankan `test/spike_gang.py` pada permukiman buatan yang sama. Hasilnya cocok: 54 bangunan, 27 segmen, total 417,2 meter, dan selisih 0,00 meter pada kelima lebar uji 1,5 sampai 6,0 meter.
+
+Tabel verifikasi lapangan sengaja ditampilkan kosong. Sepuluh gang yang dijanjikan PRD bagian 9.4 belum diukur dengan meteran, dan mengisinya dengan angka karangan akan merusak justru bagian yang seharusnya jadi bukti kejujuran. Halaman metode menyatakan kekosongan itu secara terbuka, beserta akibatnya: selama tabel itu kosong, lebar gang di produk belum pernah dibandingkan dengan ukuran sebenarnya. Struktur tabelnya sudah siap, tinggal mengisi larik `FIELD_MEASUREMENTS` di `src/lib/domain/validation.ts`.
+
+Tentang pemindahan wilayah uji:
+
+PRD, rencana eksekusi, dan paket desain seluruhnya menyebut Palmerah, tetapi keluaran pipeline yang terpasang adalah Kelurahan Jelambar Baru. Pemeriksaan bukti tahap F0 menunjukkan alasannya: pengujian awal memakai footprint bangunan OpenStreetMap, dan di Palmerah data itu terlalu jarang sehingga ruang kosong yang luas ikut terbaca sebagai gang. Risiko ini sudah diramalkan PRD bagian 12 beserta mitigasinya, yaitu berpindah ke Google Open Buildings.
+
+Mitigasi itu kemudian benar-benar dipakai, sehingga alasan menghindari Palmerah sudah tidak berlaku. Pemeriksaan arsip Google Open Buildings sel S2 `2e69` yang sudah terunduh menunjukkan cakupannya membentang sampai lintang -6,116, jadi Palmerah termasuk di dalamnya dan tidak perlu unduhan baru. Pipeline dijalankan ulang memakai relasi OpenStreetMap 5802216, yaitu batas administratif tingkat kelurahan.
+
+Kesalahan yang ditemukan saat pemindahan: seluruh cache ingest, baik subset footprint maupun balasan Overpass, hanya dikunci berdasarkan nama berkas tanpa memperhatikan area studi. Akibatnya menjalankan pipeline dengan bounding box baru diam-diam memakai data lama dan menghasilkan nol segmen gang tanpa pesan galat apa pun. Kegagalan seperti ini berbahaya karena terlihat seperti berhasil. Perbaikannya menulis penanda area studi di samping tiap berkas cache, dan cache hanya dipakai bila penandanya cocok.
+
+Perbandingan hasil kedua kelurahan:
+
+| Ukuran | Jelambar Baru | Palmerah |
+| --- | --- | --- |
+| Luas | 1,41 km persegi | 2,29 km persegi |
+| Bangunan terpetakan | 5.968 | 12.764 |
+| Panjang jaringan gang | 70,5 km | 136,2 km |
+| Tak terlalui kendaraan | 46,3 persen | 57,2 persen |
+| Sumber air terdata | 271 | 433 |
+
+Angka penduduk Palmerah diisi 71.466 jiwa tahun 2016 dari BPS, Kecamatan Palmerah dalam Angka 2017, dan sumbernya kini ikut disebut di daftar provenance dalam produk. Angka itu diuji silang lewat kepadatan: 71.466 jiwa pada 2,29 km persegi berarti 31.227 jiwa per km persegi, sejalan dengan kepadatan kecamatan 30.659 jiwa per km persegi pada 2024.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

@@ -15,11 +15,12 @@
 		SMALL_UNIT_MIN_WIDTH_METERS
 	} from '$lib/domain/constants';
 	import { dataset } from '$lib/data/dataset.svelte';
-	import { formatDate, formatDecimal, formatMeters } from '$lib/format';
+	import { formatCount, formatDate, formatDecimal, formatMeters } from '$lib/format';
 	import type { FireCoefficients } from '$lib/domain/types';
 	import {
 		FIELD_MEASUREMENTS,
 		FIELD_MEASUREMENT_TARGET_COUNT,
+		OSM_WIDTH_CHECK,
 		FIELD_MEASUREMENT_TOLERANCE_METERS,
 		SYNTHETIC_BUILDING_COUNT,
 		SYNTHETIC_RASTER_RESOLUTION_METERS,
@@ -29,7 +30,8 @@
 		countFieldMeasurementsWithinTolerance,
 		findLargestSyntheticError,
 		measureAbsoluteError,
-		measureFieldError
+		measureFieldError,
+		roundShareToTenths
 	} from '$lib/domain/validation';
 
 	onMount(() => {
@@ -71,7 +73,7 @@
 		countFieldMeasurementsWithinTolerance(FIELD_MEASUREMENTS);
 
 	const limitations = [
-		'Lebar gang adalah estimasi dari citra satelit pada grid 0,5 meter. Kanopi, tenda, gerobak, dan parkir liar tidak terlihat, sehingga lebar efektif di lapangan hampir selalu lebih sempit dari angka di sini.',
+		'Lebar gang adalah estimasi dari citra satelit pada grid 0,5 meter, dan mengukur ruang bebas di antara tapak bangunan, bukan lebar badan jalan. Kanopi, tenda, gerobak, dan parkir liar tidak terlihat, sehingga lebar efektif di lapangan hampir selalu lebih sempit dari angka di sini. Uji ketiga di atas memberi besarannya: sekitar dua meter lebih lebar dari lebar badan jalan yang tercatat di OpenStreetMap.',
 		'Tinggi bangunan hanya terukur untuk bangunan yang punya tag tinggi atau jumlah lantai di OpenStreetMap. Sisanya diperkirakan dari luas tapak memakai rata-rata bucket yang dihitung dari subset terukur di wilayah yang sama.',
 		'Kelas material diperkirakan dari luas tapak dan tinggi, bukan hasil survei. Tag building:material dipakai bila tersedia.',
 		'Titik henti adalah simpul jaringan pada komponen kelas unit besar yang terhubung ke jalan bernama. Ini bukan pos parkir resmi dan tidak memperhitungkan radius putar kendaraan.',
@@ -215,6 +217,66 @@
 					toleransi {formatDecimal(FIELD_MEASUREMENT_TOLERANCE_METERS, 1)} meter.
 				</p>
 			{/if}
+
+			<h3 class="font-display text-ink mt-8 mb-1.5 text-[14px] leading-none font-semibold">
+				Uji ketiga, pembanding silang dengan OpenStreetMap
+			</h3>
+			<p class="text-graphite prose-measure mb-3 text-[12.5px] leading-[1.6]">
+				Sebagian jalan di {OSM_WIDTH_CHECK.villageName} sudah ditandai lebarnya oleh kontributor
+				OpenStreetMap. Tanda itu dibuat orang, bukan diturunkan dari citra, jadi berasal dari jalur
+				yang berbeda dengan angka kami. Dari {formatCount(OSM_WIDTH_CHECK.taggedWayCount)} ruas
+				bertanda lebar, {formatCount(OSM_WIDTH_CHECK.primary.matchedWayCount)} ruas dapat dicocokkan
+				dengan yakin ke segmen kami, karena garisnya benar-benar berimpit sepanjang ruas.
+			</p>
+			<dl class="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
+				<div>
+					<dt class="field-label-sm text-graphite">Ruas tercocokkan</dt>
+					<dd class="readout text-ink mt-1.5">{formatCount(OSM_WIDTH_CHECK.primary.matchedWayCount)}</dd>
+				</div>
+				<div>
+					<dt class="field-label-sm text-graphite">Median selisih</dt>
+					<dd class="readout text-ink mt-1.5">
+						+{formatMeters(OSM_WIDTH_CHECK.primary.medianDifferenceMeters, 2)}
+					</dd>
+				</div>
+				<div>
+					<dt class="field-label-sm text-graphite">Angka kami lebih lebar</dt>
+					<dd class="readout text-ink mt-1.5">
+						{roundShareToTenths(OSM_WIDTH_CHECK.primary.pipelineWiderShare)} dari 10 ruas
+					</dd>
+				</div>
+				<div>
+					<dt class="field-label-sm text-graphite">Selisih dalam 0,5 m</dt>
+					<dd class="readout text-ink mt-1.5">
+						{formatCount(OSM_WIDTH_CHECK.primary.withinHalfMeterCount)} ruas
+					</dd>
+				</div>
+			</dl>
+			<div class="hairline-box bg-paper mt-4 px-4 py-4">
+				<p class="text-ink prose-measure text-[12.5px] leading-[1.6]">
+					Hasil ini tidak membuktikan angka kami benar. Yang dibuktikannya lebih penting: kedua
+					angka mengukur hal yang berbeda. OpenStreetMap mencatat lebar badan jalan. Kami
+					mengukur ruang bebas di antara tapak bangunan, yang ikut menghitung teras, halaman,
+					parkir, dan saluran air.
+				</p>
+				<p class="text-ink prose-measure mt-2.5 text-[12.5px] leading-[1.6]">
+					Karena itu lebar gang di produk ini sebaiknya dibaca sebagai batas atas. Lebar yang
+					benar-benar bisa dilewati kendaraan hampir pasti lebih sempit, dan pangsa gang yang tidak
+					terlalui kendaraan kemungkinan besar lebih tinggi dari angka yang kami tampilkan, bukan
+					lebih rendah.
+				</p>
+			</div>
+			<p class="text-graphite prose-measure mt-3 text-[12px] leading-[1.6]">
+				Temuan ini diuji ulang pada {OSM_WIDTH_CHECK.sensitivityConfigurationCount} kombinasi aturan
+				pencocokan, dari yang longgar sampai yang ketat. Median selisihnya selalu berada di antara
+				+{formatDecimal(OSM_WIDTH_CHECK.sensitivityMedianRangeMeters[0], 2)} dan
+				+{formatDecimal(OSM_WIDTH_CHECK.sensitivityMedianRangeMeters[1], 2)} meter, dan angka kami
+				selalu lebih lebar pada {roundShareToTenths(OSM_WIDTH_CHECK.sensitivityWiderShareRange[0])}
+				sampai {roundShareToTenths(OSM_WIDTH_CHECK.sensitivityWiderShareRange[1])} dari 10 ruas. Jadi
+				arah temuannya tidak bergantung pada aturan pencocokan yang dipilih. Sampelnya cenderung
+				jalan permukiman yang bernama, bukan gang tersempit, karena ruas itulah yang paling sering
+				ditandai lebarnya. Dicek {formatDate(OSM_WIDTH_CHECK.checkedAt)}.
+			</p>
 		</section>
 
 		<section class="mb-12">

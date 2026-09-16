@@ -255,6 +255,28 @@ Keputusan teknis: frontmatter ditulis sebagai JSON, bukan YAML, supaya tidak per
 
 Kesalahan yang dibuat dan cara memperbaikinya: halaman daftar semula membaca parameter URL langsung saat render, dan build gagal karena parameter kueri tidak dapat diakses pada halaman yang di-prerender. Pembacaan parameter dibatasi ke sisi klien, sehingga HTML statisnya tetap memuat seluruh artikel dan saringan bekerja setelah halaman hidup di browser.
 
+### Tahap 14, pembanding silang dengan OpenStreetMap
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Mencari pembanding lebar gang dari sumber daring karena ukur meteran belum dilakukan |
+| Dihasilkan AI | Skrip pencocokan `pipeline/cek_lebar_osm.py`, uji sensitivitas, seksi uji ketiga di halaman metode |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Latar belakang: pemilik repo bertanya apakah ukur meteran bisa digantikan data daring. Jawabannya tidak, karena penyempit gang yang paling menentukan, yaitu warung, gerobak, tenda, kanopi, dan jemuran, tidak terlihat dari atas dan tidak tercatat di sumber daring mana pun. Yang dapat dikerjakan adalah pembanding silang dengan sumber yang jalur asalnya berbeda, yaitu tanda lebar jalan yang dibuat kontributor OpenStreetMap.
+
+Kesalahan pada percobaan pertama: pencocokan dilakukan dari titik tengah ruas OpenStreetMap ke titik tengah segmen kami dalam radius 12 meter. Hasilnya tampak meyakinkan, 310 pasangan, tetapi contoh pasangannya menunjukkan banyak ruas gang sempit yang tersambung ke jalan lebar di sebelahnya. Angka dari cara itu tidak layak dipakai. Cara itu diganti dengan pengambilan sampel titik setiap 4.0 meter di sepanjang ruas OpenStreetMap, lalu ruas hanya diterima bila sebagian besar sampelnya jatuh dekat satu segmen yang sama. Jumlah pasangan turun drastis, tetapi jarak pasangannya kini di bawah dua meter, artinya garisnya memang berimpit.
+
+Hasil konfigurasi utama: dari 523 ruas bertanda lebar, 69 ruas tercocokkan dengan yakin. Median selisih lebar minimum kami terhadap lebar OpenStreetMap adalah +2.0 meter, dan angka kami lebih lebar pada 90 persen ruas.
+
+Supaya temuan ini tidak bergantung pada aturan pencocokan yang kebetulan dipilih, pencocokan diulang pada 16 kombinasi batas jarak dan batas konsistensi. Median selisihnya selalu berada di antara +1.62 dan +3.29 meter, dan angka kami selalu lebih lebar pada 84 sampai 91 persen ruas. Arah temuannya stabil.
+
+Cara membacanya: hasil ini tidak membuktikan angka kami benar. Yang dibuktikannya adalah kedua angka mengukur hal yang berbeda. OpenStreetMap mencatat lebar badan jalan, sedangkan kami mengukur ruang bebas di antara tapak bangunan, yang ikut menghitung teras, halaman, parkir, dan saluran air. Konsekuensinya penting bagi klaim utama produk: lebar gang kami adalah batas atas, sehingga pangsa gang yang tidak terlalui kendaraan kemungkinan besar lebih tinggi dari yang ditampilkan, bukan lebih rendah. Halaman metode menyatakan hal ini dengan kalimat yang sama.
+
+Keputusan teknis: hasil skrip ditulis ke berkas JSON yang diimpor halaman metode saat build dan divalidasi dengan zod. Tidak ada angka yang disalin tangan dari keluaran skrip ke kode, sehingga angka di halaman tidak bisa melenceng dari hasil skripnya.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

@@ -31,6 +31,19 @@ test.describe('tabel validasi dan penandaan sumber data', () => {
 		}
 	});
 
+	test('uji ketiga menyatakan angka kami sebagai batas atas, bukan bukti kebenaran', async ({
+		page
+	}) => {
+		await page.goto('/metode/');
+		await page.waitForTimeout(1000);
+
+		const seksi = page.locator('section').filter({ hasText: 'Seberapa akurat lebar gang di sini' });
+		await expect(seksi).toContainText('Uji ketiga, pembanding silang dengan OpenStreetMap');
+		await expect(seksi).toContainText('Hasil ini tidak membuktikan angka kami benar');
+		await expect(seksi).toContainText('batas atas');
+		await expect(seksi).toContainText('kombinasi aturan');
+	});
+
 	test('sumber data beserta lisensinya disebut di antarmuka', async ({ page }) => {
 		await page.goto('/metode/');
 		await page.waitForTimeout(1200);

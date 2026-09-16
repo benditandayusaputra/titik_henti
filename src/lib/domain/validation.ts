@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import rawOsmWidthCheck from './osm-width-check.json';
+
 export interface SyntheticWidthCheck {
 	trueWidthMeters: number;
 	measuredWidthMeters: number;
@@ -47,4 +50,35 @@ export function countFieldMeasurementsWithinTolerance(
 
 export function findLargestSyntheticError(checks: SyntheticWidthCheck[]): number {
 	return checks.reduce((largest, check) => Math.max(largest, measureAbsoluteError(check)), 0);
+}
+
+const osmWidthSummarySchema = z.object({
+	maxDistanceMeters: z.number(),
+	minConsistency: z.number(),
+	matchedWayCount: z.number().int().min(1),
+	medianDifferenceMeters: z.number(),
+	lowerQuartileDifferenceMeters: z.number(),
+	upperQuartileDifferenceMeters: z.number(),
+	pipelineWiderShare: z.number().min(0).max(1),
+	withinHalfMeterCount: z.number().int().min(0),
+	withinOneMeterCount: z.number().int().min(0)
+});
+
+const osmWidthCheckSchema = z.object({
+	villageName: z.string(),
+	checkedAt: z.string(),
+	taggedWayCount: z.number().int().min(0),
+	sampleSpacingMeters: z.number(),
+	primary: osmWidthSummarySchema,
+	sensitivityConfigurationCount: z.number().int().min(1),
+	sensitivityMedianRangeMeters: z.tuple([z.number(), z.number()]),
+	sensitivityWiderShareRange: z.tuple([z.number(), z.number()])
+});
+
+export type OsmWidthCheck = z.infer<typeof osmWidthCheckSchema>;
+
+export const OSM_WIDTH_CHECK: OsmWidthCheck = osmWidthCheckSchema.parse(rawOsmWidthCheck);
+
+export function roundShareToTenths(share: number): number {
+	return Math.round(share * 10);
 }

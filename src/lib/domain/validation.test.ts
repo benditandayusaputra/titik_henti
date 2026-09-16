@@ -6,6 +6,8 @@ import {
 	findLargestSyntheticError,
 	measureAbsoluteError,
 	measureFieldError,
+	OSM_WIDTH_CHECK,
+	roundShareToTenths,
 	type FieldMeasurement
 } from '$lib/domain/validation';
 
@@ -63,5 +65,34 @@ describe('verifikasi lapangan', () => {
 
 	it('mengembalikan nol saat belum ada pengukuran', () => {
 		expect(countFieldMeasurementsWithinTolerance([])).toBe(0);
+	});
+});
+
+describe('pembanding silang OpenStreetMap', () => {
+	it('memuat hasil cek yang lolos skema saat build', () => {
+		expect(OSM_WIDTH_CHECK.primary.matchedWayCount).toBeGreaterThan(0);
+		expect(OSM_WIDTH_CHECK.taggedWayCount).toBeGreaterThanOrEqual(
+			OSM_WIDTH_CHECK.primary.matchedWayCount
+		);
+	});
+
+	it('menyimpan rentang sensitivitas dengan batas bawah tidak melebihi batas atas', () => {
+		const [bawah, atas] = OSM_WIDTH_CHECK.sensitivityMedianRangeMeters;
+		expect(bawah).toBeLessThanOrEqual(atas);
+		const [pangsaBawah, pangsaAtas] = OSM_WIDTH_CHECK.sensitivityWiderShareRange;
+		expect(pangsaBawah).toBeLessThanOrEqual(pangsaAtas);
+	});
+
+	it('menempatkan median konfigurasi utama di dalam rentang sensitivitas', () => {
+		const [bawah, atas] = OSM_WIDTH_CHECK.sensitivityMedianRangeMeters;
+		expect(OSM_WIDTH_CHECK.primary.medianDifferenceMeters).toBeGreaterThanOrEqual(bawah);
+		expect(OSM_WIDTH_CHECK.primary.medianDifferenceMeters).toBeLessThanOrEqual(atas);
+	});
+
+	it('membulatkan pangsa menjadi jumlah per sepuluh', () => {
+		expect(roundShareToTenths(0.899)).toBe(9);
+		expect(roundShareToTenths(0.835)).toBe(8);
+		expect(roundShareToTenths(0)).toBe(0);
+		expect(roundShareToTenths(1)).toBe(10);
 	});
 });

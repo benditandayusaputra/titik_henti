@@ -283,11 +283,11 @@
 					model berbasis fisika Himoto dan Tanaka untuk kebakaran perkotaan padat, disederhanakan
 					menjadi tiga suku ditambah percikan bara.
 				</p>
-				<div class="hairline-box bg-paper mt-4 overflow-x-auto px-4 py-3">
-					<p class="readout text-ink whitespace-nowrap">
+				<div class="hairline-box bg-paper mt-4 px-4 py-3">
+					<p class="readout text-ink">
 						P(j) = 1 − Π<sub>i∈menyala</sub> (1 − p<sub>ij</sub>)
 					</p>
-					<p class="readout text-ink mt-2 whitespace-nowrap">
+					<p class="readout text-ink mt-2">
 						p<sub>ij</sub> = radiasi(d, luas<sub>i</sub>, tinggi<sub>i</sub>) × angin(θ<sub
 							>ij</sub
 						>, arah, laju) × material<sub>j</sub> + bara(d, θ<sub>ij</sub>, arah)
@@ -352,7 +352,7 @@
 			<ul class="flex flex-col">
 				{#each limitations as limitation, index (limitation)}
 					<li class="hairline-b flex gap-3 py-3 last:border-b-0">
-						<span class="readout text-alarm w-6 shrink-0 pt-[2px] text-[12px]">
+						<span class="readout text-graphite w-6 shrink-0 pt-[2px] text-[12px]">
 							{(index + 1).toString().padStart(2, '0')}
 						</span>
 						<p class="text-ink text-[12.5px] leading-[1.6]">{limitation}</p>

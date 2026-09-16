@@ -12,7 +12,7 @@
 		ink: 'text-ink',
 		alarm: 'text-alarm',
 		water: 'text-water',
-		caution: 'text-caution',
+		caution: 'text-caution-ink',
 		graphite: 'text-graphite'
 	};
 </script>

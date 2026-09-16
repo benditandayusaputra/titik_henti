@@ -15,11 +15,13 @@
 	--color-concrete-shade: #d6d3cb;
 	--color-concrete-edge: #c2beb4;
 
+	--color-paper: #f5f4f0;
+
 	--color-ink: #1a1a1c;
 	--color-ink-deep: #0d0d0f;
 	--color-ink-veil: #24242a;
 
-	--color-graphite: #6e6e73;
+	--color-graphite: #656569;
 	--color-graphite-pale: #9b9ba1;
 
 	--color-alarm: #d6202a;
@@ -113,22 +115,33 @@
 	border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
 }
 
-@utility stencil {
+@utility field-label {
+	font-family: var(--font-body);
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.25;
+	letter-spacing: 0;
+}
+
+@utility field-label-sm {
+	font-family: var(--font-body);
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1.25;
+	letter-spacing: 0;
+}
+
+@utility map-label {
 	font-family: var(--font-display);
 	font-size: 10px;
-	font-weight: 700;
+	font-weight: 600;
 	line-height: 1;
-	letter-spacing: 0.16em;
+	letter-spacing: 0.14em;
 	text-transform: uppercase;
 }
 
-@utility stencil-sm {
-	font-family: var(--font-display);
-	font-size: 9px;
-	font-weight: 700;
-	line-height: 1;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
+@utility prose-measure {
+	max-width: 72ch;
 }
 
 @utility readout {
@@ -164,15 +177,33 @@
 }
 
 @utility field-button {
-	@apply stencil border-ink/45 text-ink hover:bg-ink hover:text-concrete inline-flex cursor-pointer items-center justify-center gap-1.5 border px-3 py-2 transition-colors duration-100 disabled:cursor-not-allowed disabled:border-dashed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current;
+	@apply field-label border-ink/45 text-ink hover:bg-ink hover:text-concrete inline-flex cursor-pointer items-center justify-center gap-1.5 border px-3 py-2 transition-colors duration-100 disabled:cursor-not-allowed disabled:border-dashed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current;
 }
 
 @utility field-button-solid {
-	@apply stencil bg-ink text-concrete hover:bg-ink-veil inline-flex cursor-pointer items-center justify-center gap-1.5 border border-transparent px-3 py-2 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-40;
+	@apply field-label bg-ink text-concrete hover:bg-ink-veil inline-flex cursor-pointer items-center justify-center gap-1.5 border border-transparent px-3 py-2 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-40;
 }
 
 @utility field-tab {
-	@apply stencil text-graphite hover:text-ink cursor-pointer px-3 py-2.5 transition-colors duration-100;
+	@apply field-label text-graphite hover:text-ink cursor-pointer px-3 py-2.5 transition-colors duration-100;
+}
+
+@utility measure-rail {
+	border-top: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+
+	@media (width >= 1024px) {
+		border-top: 0;
+		border-left: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+		padding-left: 22px;
+		background-image: repeating-linear-gradient(
+			to bottom,
+			color-mix(in srgb, var(--color-ink) 30%, transparent) 0 1px,
+			transparent 1px 24px
+		);
+		background-repeat: no-repeat;
+		background-size: 7px 100%;
+		background-position: 0 0;
+	}
 }
 
 @utility field-input {

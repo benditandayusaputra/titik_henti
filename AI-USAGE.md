@@ -65,6 +65,12 @@ Status catatan: dicatat saat tahap berjalan.
 | Dihasilkan AI | Server route, skema validasi, komponen panel segmen dan panel koreksi, pemilihan segmen di peta, unit test |
 | Diubah manual | Diisi setelah tinjauan pemilik repo |
 
+Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
+
+1. Pada percobaan pertama, sumber petak gang diberi `promoteId` supaya `segmentId` dipakai sebagai id fitur. Ini justru mematikan pemilihan segmen: tippecanoe sudah memakai `--use-attribute-for-id segmentId` saat membangun PMTiles, sehingga atribut itu berpindah menjadi id fitur dan hilang dari properti. `promoteId` lalu menimpa id yang sudah benar dengan properti yang sudah tidak ada, dan seluruh klik pada gang berakhir tanpa hasil. Ditemukan lewat pemeriksaan Playwright, bukan lewat pembacaan kode, karena berkas tetap lolos typecheck dan build. Perbaikannya membuang `promoteId`.
+2. Setelah koreksi disetujui, panel menampilkan lebar minimum 2,00 meter berdampingan dengan lebar rata rata 15,16 meter tanpa penjelasan. Koreksi lapangan memang hanya menyentuh lebar minimum, jadi labelnya diubah menjadi lebar rata rata, masih satelit, supaya angka yang belum dikoreksi tidak terbaca seolah sudah diverifikasi.
+3. Pesan commit pertama untuk berkas pelaporan sempat memuat kata yang dilarang muncul di riwayat git menurut Bagian C2. Pesan diperbaiki sebelum didorong ke remote.
+
 Keputusan rancangan yang diambil pada tahap ini beserta alasannya:
 
 1. Usulan koreksi tidak pernah langsung mengubah data. Usulan masuk ke panel tinjau dan baru berlaku setelah disetujui manusia. Menolak usulan mengembalikan nilai semula.

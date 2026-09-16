@@ -176,6 +176,12 @@ def emit_meta_document(
                 "licence": "ODbL 1.0",
                 "retrievedAt": datetime.now(timezone.utc).date().isoformat(),
             },
+            {
+                "label": "Jumlah penduduk",
+                "source": configuration.population_source,
+                "licence": "Publikasi BPS",
+                "retrievedAt": str(configuration.population_year),
+            },
         ],
         "estimatedFields": [
             "lebarGang: estimasi dari distance transform citra satelit, perlu verifikasi lapangan",

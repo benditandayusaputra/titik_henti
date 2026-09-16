@@ -1,14 +1,14 @@
 {
 	"pipelineVersion": "1.0.0",
-	"villageName": "Jelambar Baru",
-	"districtName": "Grogol Petamburan",
+	"villageName": "Palmerah",
+	"districtName": "Palmerah",
 	"cityName": "Jakarta Barat",
-	"boundaryRelationId": 5802347,
+	"boundaryRelationId": 5802216,
 	"boundingBox": {
-		"west": 106.78071,
-		"south": -6.15543,
-		"east": 106.79458,
-		"north": -6.14329
+		"west": 106.7815,
+		"south": -6.2092,
+		"east": 106.8002,
+		"north": -6.1924
 	},
 	"analysisBufferMeters": 120,
 	"rasterResolutionMeters": 0.5,
@@ -31,8 +31,9 @@
 		"https://overpass.osm.ch/api/interpreter",
 		"https://overpass-api.de/api/interpreter"
 	],
-	"populationCount": 46675,
-	"populationYear": 2023,
+	"populationCount": 71466,
+	"populationYear": 2016,
 	"obstacleClosingMeters": 0.5,
-	"minimumSegmentLengthMeters": 2.5
+	"minimumSegmentLengthMeters": 2.5,
+	"populationSource": "BPS, Kecamatan Palmerah dalam Angka 2017"
 }

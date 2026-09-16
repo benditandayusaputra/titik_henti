@@ -50,7 +50,18 @@ npm ci
 npm run dev
 ```
 
-Fitur F6 memanggil model bahasa lewat satu server route. Salin `.env.example` menjadi `.env` lalu isi `ANTHROPIC_API_KEY`. Tanpa kunci itu, seluruh fitur lain tetap berjalan dan panel koreksi menampilkan pesan bahwa layanan tidak tersedia.
+Fitur F6 memanggil model bahasa lewat satu server route. Salin `.env.example` menjadi `.env` lalu isi `AI_LLM_API_KEY`. Tanpa kunci itu, seluruh fitur lain tetap berjalan dan panel koreksi menampilkan pesan bahwa layanan tidak tersedia.
+
+Server route memakai protokol chat completions yang kompatibel dengan OpenAI, sehingga penyedia mana pun yang berbicara protokol itu dapat dipakai tanpa mengubah kode. Cukup setel empat variabel lingkungan:
+
+| Variabel | Isi |
+| --- | --- |
+| `AI_LLM_PROVIDER` | `openai-compatible`, satu-satunya protokol yang didukung |
+| `AI_LLM_BASE_URL` | Akar endpoint, tanpa `/chat/completions` di belakangnya |
+| `AI_LLM_API_KEY` | Kunci penyedia, hanya hidup di sisi server |
+| `AI_LLM_MODEL` | Nama model di penyedia tersebut |
+
+Bawaan yang dipakai saat ini adalah Gemini lewat lapisan kompatibel OpenAI-nya, model `gemini-3.6-flash`.
 
 ```bash
 npm run check
@@ -71,7 +82,7 @@ python3 -m venv .venv
 
 ## Stack
 
-SvelteKit 2 dan Svelte 5 dengan runes, TypeScript strict, TailwindCSS, MapLibre GL JS dengan PMTiles, deck.gl lewat MapboxOverlay, Web Worker untuk seluruh simulasi, adapter Vercel dengan seluruh halaman prerender kecuali satu server route.
+SvelteKit 2 dan Svelte 5 dengan runes, TypeScript strict, TailwindCSS, MapLibre GL JS dengan PMTiles, deck.gl lewat MapboxOverlay, Web Worker untuk seluruh simulasi, adapter Vercel dengan seluruh halaman prerender kecuali satu server route. Panggilan model bahasa memakai `fetch` langsung ke endpoint kompatibel OpenAI, tanpa SDK penyedia.
 
 ## Pemanfaatan AI
 

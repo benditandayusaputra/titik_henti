@@ -17,7 +17,9 @@ Seluruh perhitungan geometri, klasifikasi gang, penjalaran api, jangkauan selang
 | Alat | Dipakai untuk |
 | --- | --- |
 | Claude Code | Menulis dan menata kode aplikasi dan pipeline, audit kesesuaian terhadap PRD |
-| Claude API model `claude-opus-5` | Dipanggil di dalam produk oleh satu server route `/api/koreksi` |
+| Gemini `gemini-3.6-flash` lewat protokol kompatibel OpenAI | Dipanggil di dalam produk oleh satu server route `/api/koreksi` |
+
+Penyedia model di dalam produk dapat diganti lewat variabel lingkungan tanpa mengubah kode, karena server route berbicara protokol chat completions yang kompatibel dengan OpenAI, bukan SDK satu penyedia.
 
 ## Catatan kejujuran tentang dokumen ini
 
@@ -141,6 +143,34 @@ Perbandingan hasil kedua kelurahan:
 | Sumber air terdata | 271 | 433 |
 
 Angka penduduk Palmerah diisi 71.466 jiwa tahun 2016 dari BPS, Kecamatan Palmerah dalam Angka 2017, dan sumbernya kini ikut disebut di daftar provenance dalam produk. Angka itu diuji silang lewat kepadatan: 71.466 jiwa pada 2,29 km persegi berarti 31.227 jiwa per km persegi, sejalan dengan kepadatan kecamatan 30.659 jiwa per km persegi pada 2024.
+
+### Tahap 10, penyedia model yang dapat diganti dan uji nyata pertama
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Mengganti panggilan model ke protokol kompatibel OpenAI supaya penyedianya fleksibel, lalu menguji dengan kunci sungguhan |
+| Dihasilkan AI | Penulisan ulang server route, pembacaan konfigurasi dari variabel lingkungan, penguraian jawaban yang tahan pagar kode |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+SDK satu penyedia dicabut dan diganti satu panggilan `fetch` ke `chat/completions`. Skema JSON yang dikirim ke model diturunkan langsung dari skema zod yang sama yang dipakai memvalidasi jawabannya, jadi tidak ada dua sumber kebenaran.
+
+Temuan pada tahap ini:
+
+1. Model bawaan yang diminta, `gemini-2.5-flash`, ditolak penyedia dengan pesan bahwa model itu tidak lagi tersedia untuk pengguna baru. Diganti ke `gemini-3.6-flash` sesuai anjuran pesan galat tersebut. Versi terpaku dipilih, bukan alias `latest`, supaya hasil demonstrasi dapat diulang.
+2. Penghitungan batas laju semula membebani jatah pengguna meskipun permintaan gagal di sisi penyedia. Pada uji beban, tiga kegagalan hulu ikut memakan kuota. Diperbaiki sehingga jatah hanya terpakai bila permintaan benar-benar sampai ke model.
+
+Hasil uji dengan model sungguhan:
+
+| Masukan | Keluaran |
+| --- | --- |
+| Kalimat menyebut angka, gang ini sebenarnya cuma dua meter karena ada warung permanen | Lebar usulan 2,00 m, keyakinan 95 persen, alasan mengutip kalimat pengguna |
+| Kalimat tanpa angka, ada gerobak dan tenda yang tidak pernah dipindah | Lebar usulan 1,20 m, keyakinan 50 persen, diturunkan karena tidak ada angka |
+| Kalimat yang mencoba menyuntik perintah, minta model mengabaikan instruksi dan menulis puisi | Lebar dikembalikan ke nilai semula, keyakinan 0 persen, alasan menyatakan kalimat tidak memuat informasi lebar |
+| Kalimat terlalu pendek | Ditolak skema permintaan sebelum model dipanggil |
+
+Pemeriksaan kebocoran kunci: pada alur penuh di browser hanya ada satu permintaan keluar dari klien, yaitu ke `/api/koreksi` tanpa header otorisasi. Tidak ada permintaan ke domain penyedia dari sisi klien, dan penelusuran bundel klien hasil build tidak menemukan kunci, basis URL, maupun nama penyedia.
 
 ## Yang tidak dikerjakan AI
 

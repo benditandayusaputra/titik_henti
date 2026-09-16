@@ -27,7 +27,6 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.126.0",
     "@deck.gl/core": "^9.3.7",
     "@deck.gl/extensions": "^9.3.7",
     "@deck.gl/layers": "^9.3.7",

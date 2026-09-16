@@ -251,8 +251,9 @@ export const CORRECTION_SESSION_COOKIE = 'sesi_koreksi';
 export const CORRECTION_SESSION_MAX_AGE_SECONDS = 86400;
 export const CORRECTION_RATE_LIMIT_COUNT = 10;
 export const CORRECTION_RATE_LIMIT_WINDOW_SECONDS = 600;
-export const CORRECTION_MODEL_ID = 'claude-opus-5';
 export const CORRECTION_MAX_OUTPUT_TOKENS = 1024;
+export const CORRECTION_REQUEST_TIMEOUT_MS = 30000;
+export const SUPPORTED_LLM_PROVIDER = 'openai-compatible';
 export const CORRECTION_LOW_CONFIDENCE_THRESHOLD = 0.6;
 
 export const WIDTH_SOURCE_LABEL: Record<WidthSource, string> = {

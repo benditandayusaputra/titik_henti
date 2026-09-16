@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import {
 		DATA_BASE_PATH,
+		MAP_CANVAS_LABEL,
 		MAP_MAX_ZOOM,
 		MAP_MIN_ZOOM,
 		SEGMENT_PICK_TOLERANCE_PIXELS
@@ -55,6 +56,7 @@
 	let container: HTMLDivElement;
 	let map: maplibregl.Map | null = $state(null);
 	let overlay: MapboxOverlay | null = null;
+	let overlayCanvasWatcher: MutationObserver | null = null;
 	let styleReady = $state(false);
 	let previousSelected: number | null = null;
 	let previousSelectedSegment: number | null = null;
@@ -79,6 +81,29 @@
 			{ source: ALLEY_SOURCE_ID, sourceLayer: ALLEY_SOURCE_LAYER, id: segmentId },
 			state
 		);
+	}
+
+	function keepOverlayCanvasOutOfTabOrder(root: HTMLDivElement): MutationObserver | null {
+		const overlayCanvas = root.querySelector('#deckgl-overlay');
+		if (!(overlayCanvas instanceof HTMLElement)) return null;
+
+		const apply = (): void => {
+			if (overlayCanvas.getAttribute('tabindex') !== '-1') {
+				overlayCanvas.setAttribute('tabindex', '-1');
+			}
+			if (overlayCanvas.getAttribute('aria-hidden') !== 'true') {
+				overlayCanvas.setAttribute('aria-hidden', 'true');
+			}
+		};
+
+		apply();
+		const watcher = new MutationObserver(apply);
+		watcher.observe(overlayCanvas, { attributes: true, attributeFilter: ['tabindex', 'aria-hidden'] });
+		return watcher;
+	}
+
+	function describeMapCanvas(map: maplibregl.Map): void {
+		map.getCanvas().setAttribute('aria-label', MAP_CANVAS_LABEL);
 	}
 
 	function readSegmentId(feature: MapGeoJSONFeature): number | null {
@@ -119,6 +144,7 @@
 		created.on('load', () => {
 			overlay = new MapboxOverlay({ interleaved: false });
 			created.addControl(overlay);
+			overlayCanvasWatcher = keepOverlayCanvasOutOfTabOrder(container);
 			created.resize();
 			created.fitBounds(
 				[
@@ -128,6 +154,7 @@
 				{ padding: 44, animate: false }
 			);
 			styleReady = true;
+			describeMapCanvas(created);
 			onready?.(created);
 		});
 
@@ -177,6 +204,8 @@
 
 		return () => {
 			observer.disconnect();
+			overlayCanvasWatcher?.disconnect();
+			overlayCanvasWatcher = null;
 			overlay = null;
 			created.remove();
 			maplibregl.removeProtocol('pmtiles');

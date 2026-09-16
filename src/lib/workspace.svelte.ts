@@ -1,5 +1,6 @@
 import {
 	ACCESS_CLASS_CODE,
+	CATALOGUE_ROW_LIMIT,
 	CORRECTION_ENDPOINT_PATH,
 	DEFAULT_FIRE_COEFFICIENTS,
 	DEFAULT_MAX_HOSE_LENGTH_METERS,
@@ -28,6 +29,12 @@ import type {
 	WidthSource,
 	WindField
 } from '$lib/domain/types';
+import {
+	collectBuildingRows,
+	collectSegmentRows,
+	type BuildingRow,
+	type SegmentRow
+} from '$lib/sim/catalogue';
 import { applyWidthCorrections, summariseSegment } from '$lib/sim/corrections';
 import { computeHoseReach } from '$lib/sim/hoseReach';
 import { findNearestNode } from '$lib/sim/network';
@@ -40,7 +47,7 @@ import {
 } from '$lib/sim/stopPoint';
 import { computeWaterArrival } from '$lib/sim/waterArrival';
 
-export type WorkspaceTab = 'akses' | 'titikHenti' | 'api' | 'air' | 'intervensi';
+export type WorkspaceTab = 'akses' | 'daftar' | 'titikHenti' | 'api' | 'air' | 'intervensi';
 
 export interface HypotheticalSource {
 	id: number;
@@ -203,6 +210,18 @@ class Workspace {
 	});
 
 	pendingCorrections = $derived(this.corrections.filter((record) => record.status === 'pending'));
+
+	segmentRows = $derived.by<SegmentRow[]>(() => {
+		const network = this.network;
+		if (!network) return [];
+		return collectSegmentRows(network, this.correctedSegmentIds);
+	});
+
+	buildingRows = $derived.by<BuildingRow[]>(() => {
+		const buildings = dataset.buildings;
+		if (!buildings) return [];
+		return collectBuildingRows(buildings, this.waterArrival, CATALOGUE_ROW_LIMIT);
+	});
 
 	selectBuilding(index: number): void {
 		this.selectedBuildingIndex = index;

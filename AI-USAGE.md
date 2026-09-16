@@ -204,6 +204,28 @@ Uji end to end:
 
 Harness Playwright dipasang beserta 24 spec di `tests/e2e/`, mencakup pemilihan segmen, alur usulan sampai persetujuan dan penolakan, penolakan keluaran yang tidak sesuai skema, pemeriksaan bahwa tidak ada permintaan keluar dari klien, pemindaian axe pada empat halaman di tiga lebar layar, dan keberadaan tabel validasi beserta penyebutan sumber data. Spec koreksi memakai jawaban tiruan pada tingkat jaringan, sehingga suite dapat berjalan tanpa kunci API.
 
+### Tahap 12, navigasi papan ketik dan padanan tabel
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Membuat alur utama dapat dijalankan tanpa tetikus, dan menyediakan padanan tabel dari isi peta |
+| Dihasilkan AI | Fungsi pengumpul baris, panel daftar, pengumuman pemilihan, perbaikan garis fokus |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Temuan awal: penelusuran Tab pada lembar kerja hanya menjangkau masthead, kanvas peta, tombol zoom, dan deretan tab, lalu berputar kembali. Isi panel tidak pernah tercapai karena tanpa pilihan tidak ada satu pun elemen fokusabel di dalamnya. Artinya alur utama produk, yaitu memilih bangunan atau segmen, sepenuhnya tertutup bagi pengguna papan ketik, padahal PRD bagian 14 nomor 3 mewajibkan navigasi papan ketik penuh.
+
+Yang dibangun: satu panel Daftar berisi dua tabel. Tabel segmen gang dapat disaring menurut kelas akses dan menampilkan dua puluh lima segmen terpanjang pada kelas terpilih. Tabel bangunan menampilkan dua puluh lima bangunan dengan waktu air sampai terburuk, dengan bangunan yang tidak terjangkau sama sekali diletakkan paling atas. Tiap baris adalah tombol, dan menekannya sama persis dengan mengklik objek itu di peta, ditambah peta ikut bergeser ke posisinya.
+
+Kesalahan yang dibuat dan cara memperbaikinya:
+
+1. Kanvas overlay deck.gl menjadi perhentian Tab yang tidak menyuarakan apa pun. Percobaan pertama menyetel `tabindex` menjadi minus satu sekali saat pemuatan, tetapi deck.gl menimpanya kembali menjadi nol setelah inisialisasi. Akibatnya elemen itu berstatus tersembunyi dari teknologi bantu sekaligus tetap dapat difokus, yang justru memunculkan pelanggaran `aria-hidden-focus` baru pada pemindaian axe. Perbaikannya memakai `MutationObserver` yang menjaga kedua atribut itu tetap pada nilai yang benar.
+2. Tombol zoom bawaan MapLibre kehilangan garis fokus. Aturan pengganti sempat ditulis di dalam `@layer base`, dan kalah karena berkas gaya MapLibre tidak berlapis, sedangkan CSS tanpa lapis selalu mengalahkan CSS berlapis berapa pun kekhususannya. Aturan dipindahkan keluar dari lapis, dengan warna garis yang dipilih terpisah untuk latar gelap peta dan latar terang tombol.
+3. Memilih baris dari tabel semula tidak memunculkan detail apa pun, karena panel detail hidup di tab lain. Panel detail kini ikut ditampilkan di tab Daftar, dan setiap pemilihan diumumkan lewat wilayah `aria-live` supaya pembaca layar ikut mendengar hasilnya, bukan hanya pengguna yang melihat.
+
+Hasil akhir: seluruh alur utama dapat dijalankan dengan Tab dan Enter saja, setiap elemen yang mendapat fokus punya garis fokus yang kontras terhadap latarnya, dan pemindaian axe tetap nol pelanggaran pada empat halaman di tiga lebar layar.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

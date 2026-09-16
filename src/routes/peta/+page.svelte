@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import {
 		BATCH_PROBE_RUN_COUNT,
+		CATALOGUE_FLY_ZOOM,
 		FIRE_PLAYBACK_FRAME_MILLISECONDS,
 		HOSE_RULER_MAX_DURATION_MS,
 		HOSE_RULER_METERS_PER_SECOND,
@@ -13,7 +14,9 @@
 		OPTIMIZER_SLOWEST_SAMPLE_COUNT,
 		OPTIMIZER_STEP_COUNT
 	} from '$lib/domain/constants';
+	import { ACCESS_CLASS_LABEL } from '$lib/domain/constants';
 	import { dataset } from '$lib/data/dataset.svelte';
+	import { formatMeters, formatSeconds } from '$lib/format';
 	import type { ComparisonSummary, FireBatchStatistics, LonLat } from '$lib/domain/types';
 	import MapCanvas from '$lib/map/MapCanvas.svelte';
 	import {
@@ -35,6 +38,7 @@
 	import { computeWaterArrival } from '$lib/sim/waterArrival';
 	import BuildingPanel from '$lib/ui/BuildingPanel.svelte';
 	import CalibrationPanel from '$lib/ui/CalibrationPanel.svelte';
+	import CataloguePanel from '$lib/ui/CataloguePanel.svelte';
 	import ComparisonPanel from '$lib/ui/ComparisonPanel.svelte';
 	import CorrectionPanel from '$lib/ui/CorrectionPanel.svelte';
 	import DataNotice from '$lib/ui/DataNotice.svelte';
@@ -50,6 +54,7 @@
 
 	const tabs: { id: WorkspaceTab; label: string }[] = [
 		{ id: 'akses', label: 'Akses' },
+		{ id: 'daftar', label: 'Daftar' },
 		{ id: 'titikHenti', label: 'Titik henti' },
 		{ id: 'api', label: 'Api' },
 		{ id: 'air', label: 'Air' },
@@ -61,6 +66,7 @@
 	let comparisonRunning = $state(false);
 	let budgetRupiah = $state(OPTIMIZER_DEFAULT_BUDGET_RUPIAH);
 	let prefersReducedMotion = $state(false);
+	let selectionAnnouncement = $state('');
 	let batchStatistics = $state.raw<FireBatchStatistics | null>(null);
 	let batchRunning = $state(false);
 	let animationHandle = 0;
@@ -188,6 +194,34 @@
 	function handleSegmentPick(segmentId: number): void {
 		workspace.selectSegment(segmentId);
 		workspace.activeTab = 'akses';
+	}
+
+	function focusMapOn(position: LonLat): void {
+		mapInstance?.flyTo({
+			center: [position.lon, position.lat],
+			zoom: Math.max(mapInstance.getZoom(), CATALOGUE_FLY_ZOOM),
+			duration: prefersReducedMotion ? 0 : 600
+		});
+	}
+
+	function handleSegmentPickFromTable(segmentId: number): void {
+		workspace.selectSegment(segmentId);
+		const row = workspace.segmentRows.find((candidate) => candidate.segmentId === segmentId);
+		if (!row) return;
+		focusMapOn(row.midpoint);
+		selectionAnnouncement = `Segmen ${row.segmentId} dipilih, kelas ${ACCESS_CLASS_LABEL[row.accessClass]}, lebar minimum ${formatMeters(row.minWidthMeters, 2)}, panjang ${formatMeters(row.lengthMeters, 1)}.`;
+	}
+
+	function handleBuildingPickFromTable(buildingIndex: number): void {
+		workspace.selectBuilding(buildingIndex);
+		const row = workspace.buildingRows.find(
+			(candidate) => candidate.buildingIndex === buildingIndex
+		);
+		if (!row) return;
+		focusMapOn(row.position);
+		selectionAnnouncement = row.reachable
+			? `Bangunan ${row.buildingIndex} dipilih, air sampai dalam ${formatSeconds(row.waterArrivalSeconds)}.`
+			: `Bangunan ${row.buildingIndex} dipilih, tidak terjangkau air dari sumber mana pun.`;
 	}
 
 	function handleMapPick(position: LonLat): void {
@@ -404,6 +438,8 @@
 
 <h1 class="sr-only">Lembar kerja pra-rencana kebakaran</h1>
 
+<p class="sr-only" role="status" aria-live="polite">{selectionAnnouncement}</p>
+
 <div class="flex min-h-0 flex-1 flex-col lg:flex-row">
 	<div class="bg-ink-deep relative min-h-[58vh] flex-1 lg:min-h-0">
 		{#if dataset.meta}
@@ -490,6 +526,25 @@
 						onsubmit={(sentence) => void workspace.requestCorrection(sentence)}
 						ondecide={(id, approved) =>
 							workspace.setCorrectionStatus(id, approved ? 'approved' : 'rejected')}
+					/>
+				{:else if workspace.activeTab === 'daftar'}
+					{#if workspace.selectedSegment}
+						<SegmentPanel segment={workspace.selectedSegment} />
+					{/if}
+					{#if workspace.selectedBuildingIndex !== null}
+						<BuildingPanel
+							buildings={dataset.buildings}
+							network={workspace.network}
+							buildingIndex={workspace.selectedBuildingIndex}
+						/>
+					{/if}
+					<CataloguePanel
+						segmentRows={workspace.segmentRows}
+						buildingRows={workspace.buildingRows}
+						selectedSegmentId={workspace.selectedSegmentId}
+						selectedBuildingIndex={workspace.selectedBuildingIndex}
+						onsegmentpick={handleSegmentPickFromTable}
+						onbuildingpick={handleBuildingPickFromTable}
 					/>
 				{:else if workspace.activeTab === 'titikHenti'}
 					{#if workspace.selectedBuildingIndex !== null}

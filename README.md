@@ -21,6 +21,7 @@ Dari seluruh panjang jaringan gang itu, 57,2 persen tidak dapat dilalui kendaraa
 | Kode | Fitur | Isi |
 | --- | --- | --- |
 | F1 | Peta klasifikasi gang | Jaringan gang diwarnai menurut kelas aksesibilitas, tiap segmen dapat diklik untuk melihat lebar dan panjangnya |
+| F1b | Padanan tabel peta | Seluruh isi peta tersedia sebagai tabel di panel Daftar, sehingga alur utama dapat dijalankan tanpa tetikus |
 | F2 | Titik henti dan panjang selang | Pilih bangunan, sistem menghitung titik terdekat yang masih dapat dicapai kendaraan dan panjang selang dari titik itu |
 | F3 | Simulasi penjalaran api | Cellular automata heterogen di Web Worker, dengan panel kalibrasi koefisien |
 | F4 | Jangkauan selang dan kantong tak terjangkau | Poligon jangkauan dari tiap sumber air, ditambah mode uji coba penempatan hidran |

@@ -12,7 +12,7 @@ const SKIPPED_DIRECTORIES = new Set([
 	'dist',
 	'__pycache__'
 ]);
-const SCANNED_ROOTS = ['src', 'pipeline', 'scripts'];
+const SCANNED_ROOTS = ['src', 'pipeline', 'scripts', 'tests'];
 
 function listSourceFiles(directory) {
 	const found = [];

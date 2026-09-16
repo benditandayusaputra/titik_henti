@@ -12,7 +12,9 @@ Ini alat perencanaan yang dipakai saat tidak sedang terjadi apa-apa. Bukan siste
 
 ## Wilayah uji
 
-Kelurahan Jelambar Baru, Kecamatan Grogol Petamburan, Jakarta Barat. Luas 1,41 km persegi, 46.675 jiwa, 5.968 bangunan terpetakan, 70,5 km jaringan gang.
+Kelurahan Palmerah, Kecamatan Palmerah, Jakarta Barat. Luas 2,29 km persegi, 71.466 jiwa menurut BPS 2016, 12.764 bangunan terpetakan, 136,2 km jaringan gang.
+
+Dari seluruh panjang jaringan gang itu, 57,2 persen tidak dapat dilalui kendaraan pemadam berukuran penuh. Kelurahan ini dipilih karena memiliki kelompok relawan pemadam kebakaran tingkat kelurahan yang menjadi pengguna uji pertama.
 
 ## Fitur
 

@@ -80,6 +80,32 @@ Keputusan rancangan yang diambil pada tahap ini beserta alasannya:
 5. Batas laju permintaan per sesi dipasang supaya endpoint tidak dapat disalahgunakan.
 6. Segmen yang nilainya berasal dari koreksi lapangan diberi penanda visual yang berbeda dari nilai asal satelit, di panel maupun di peta.
 
+### Tahap 8, redesain menurut arah desain kanonik
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Menyelaraskan seluruh lapis tampilan dengan Bagian B arah desain kanonik |
+| Dihasilkan AI | Penyetelan token warna dan tipografi, penulisan ulang label di seluruh panel dan halaman |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Pelanggaran terhadap arah desain yang ditemukan pada tampilan lama dan diperbaiki pada tahap ini:
+
+1. Label eyebrow huruf besar dengan tracking lebar dipasang di atas hampir setiap judul, persis yang dilarang Bagian B6 nomor 5. Seluruh kelas `stencil` diganti menjadi `field-label` berhuruf kalimat biasa tanpa tracking.
+2. Huruf besar semua dipakai di luar peta pada judul beranda, masthead, nama kelurahan, judul Kartu Siaga, dan judul tahap pipeline. Bagian B3 hanya mengizinkan huruf besar untuk label di atas peta. Huruf besar kini tersisa hanya di legenda peta dan pesan status di atas peta, lewat kelas `map-label`.
+3. Dua puluh empat rangkaian meta disambung titik tengah, dilarang Bagian B6 nomor 6. Seluruhnya ditulis ulang jadi kalimat atau baris terpisah.
+4. Penomoran hias dipasang pada konten yang bukan urutan: nomor lembar di beranda, indeks panel A1 sampai B1, huruf tab A sampai G, dan penanda D5 di panel kalibrasi. Semuanya dibuang sesuai Bagian B6 nomor 9. Penomoran yang memang urutan, yaitu tujuh seksi Kartu Siaga dan lima tahap metode, tetap dipertahankan karena dirujuk dari tempat lain.
+5. Token `paper` yang diminta Bagian B2 belum ada. Ditambahkan dan dipakai untuk seluruh permukaan naik: panel lembar kerja, tabel metode, lembar cetak, dan kotak di dalam panel.
+6. Rel ukur Bagian B4 belum ada. Ditambahkan sebagai garis tepi kiri bertanda centang pada lebar 1024 piksel ke atas, dan berubah jadi penanda mendatar tipis di bawah lebar itu.
+7. Warna `alarm` dipakai pada pesan instruksi di atas peta, padahal Bagian B2 mengunci merah hanya untuk status api dan bahaya. Diganti ke `ink`.
+
+Penyimpangan yang disengaja dari tabel palet Bagian B2, beserta alasannya:
+
+Token `graphite` diubah dari `#6E6E73` menjadi `#656569`. Nilai lama menghasilkan rasio kontras 4,07 banding 1 di atas `concrete` dan 4,46 banding 1 di atas permukaan naik, dua-duanya di bawah ambang 4,5 banding 1 untuk teks biasa. PRD bagian 4.2 menetapkan nol pelanggaran aksesibilitas otomatis sebagai ukuran keberhasilan, dan ukuran itu tidak dapat dipenuhi tanpa menggelapkan token ini. Nilai baru menghasilkan 4,65 dan 5,10 banding 1, dan perbedaan rupanya nyaris tidak terlihat. Token `graphite-pale` tetap `#9B9BA1` tetapi pemakaiannya dibatasi hanya di atas latar gelap, karena di atas permukaan terang rasionya hanya 2,51 banding 1.
+
+Hasil pemindaian setelah tahap ini: nol pelanggaran axe-core di keempat halaman, turun dari 46 sampai 58 node per halaman sebelum redesain.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

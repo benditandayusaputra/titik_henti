@@ -114,7 +114,7 @@
 			disabled={workspace.hypotheticalSources.length === 0}
 			onclick={() => workspace.clearHypotheticalSources()}
 		>
-			Hapus {workspace.hypotheticalSources.length} usulan
+			Hapus {workspace.hypotheticalSources.length} hidran uji coba
 		</button>
 	</div>
 </PanelSection>

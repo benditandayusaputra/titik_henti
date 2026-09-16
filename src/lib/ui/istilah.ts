@@ -38,7 +38,9 @@ export const VARIAN_TERLARANG: VarianTerlarang[] = [
 	{ pola: /Jalankan optimizer|Optimizer intervensi/, gantiDengan: 'Cari intervensi' },
 	{ pola: /constants\.ts/, gantiDengan: 'penjelasan tanpa nama berkas kode' },
 	{ pola: /benar benar/, gantiDengan: 'benar-benar' },
-	{ pola: /[Tt]entukan (?:minimal satu )?titik api/, gantiDengan: 'Tetapkan titik api, sama dengan label tombolnya' }
+	{ pola: /[Tt]entukan (?:minimal satu )?titik api/, gantiDengan: 'Tetapkan titik api, sama dengan label tombolnya' },
+	{ pola: /Hapus \{[^}]*hypotheticalSources[^}]*\} usulan/, gantiDengan: ISTILAH.hidranUjiCoba },
+	{ pola: /'Posisi unit'/, gantiDengan: 'Posisi mobil pemadam' }
 ];
 
 export const PESAN_GAGAL_SIMULASI: Record<SimulationFailureCause, string> = {

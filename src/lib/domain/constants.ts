@@ -192,7 +192,7 @@ export const WATER_SOURCE_LABEL: Record<WaterSourceKind, string> = {
 	well: 'Sumur',
 	openWater: 'Air permukaan',
 	reservoir: 'Tandon',
-	applianceStand: 'Posisi unit',
+	applianceStand: 'Posisi mobil pemadam',
 	hypothetical: 'Hidran uji coba'
 };
 

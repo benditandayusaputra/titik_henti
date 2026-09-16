@@ -1,0 +1,12 @@
+node_modules
+.svelte-kit
+build
+.vercel
+.DS_Store
+.env
+.env.*
+pipeline/.venv
+pipeline/data/raw
+pipeline/data/work
+__pycache__
+*.pyc

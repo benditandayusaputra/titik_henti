@@ -1,0 +1,239 @@
+@import 'tailwindcss';
+
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-sans-condensed/600.css';
+@import '@fontsource/ibm-plex-sans-condensed/700.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+
+@theme {
+	--color-concrete: #e8e6e1;
+	--color-concrete-tint: #f2f0ec;
+	--color-concrete-shade: #d6d3cb;
+	--color-concrete-edge: #c2beb4;
+
+	--color-ink: #1a1a1c;
+	--color-ink-deep: #0d0d0f;
+	--color-ink-veil: #24242a;
+
+	--color-graphite: #6e6e73;
+	--color-graphite-pale: #9b9ba1;
+
+	--color-alarm: #d6202a;
+	--color-alarm-deep: #8d1319;
+
+	--color-water: #0f7c8a;
+	--color-water-pale: #4aa5af;
+
+	--color-caution: #c98a14;
+
+	--font-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+	--font-body: 'IBM Plex Sans', system-ui, sans-serif;
+	--font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+	--radius-none: 0px;
+}
+
+@layer base {
+	*,
+	*::before,
+	*::after {
+		border-radius: 0;
+	}
+
+	html {
+		-webkit-text-size-adjust: 100%;
+	}
+
+	body {
+		@apply bg-concrete font-body text-ink antialiased;
+		font-feature-settings: 'ss02' on;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 2px;
+	}
+
+	button:focus-visible,
+	a:focus-visible,
+	input:focus-visible,
+	select:focus-visible,
+	summary:focus-visible {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 1px;
+		background-color: var(--color-concrete-tint);
+	}
+
+	::selection {
+		background-color: var(--color-ink);
+		color: var(--color-concrete);
+	}
+
+	input[type='range'] {
+		accent-color: var(--color-ink);
+	}
+}
+
+@utility sheet-grid {
+	background-image:
+		repeating-linear-gradient(
+			to right,
+			color-mix(in srgb, var(--color-ink) 7%, transparent) 0 1px,
+			transparent 1px 100%
+		),
+		repeating-linear-gradient(
+			to bottom,
+			color-mix(in srgb, var(--color-ink) 7%, transparent) 0 1px,
+			transparent 1px 100%
+		);
+	background-size: 24px 24px;
+}
+
+@utility hairline-b {
+	border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+@utility hairline-t {
+	border-top: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+@utility hairline-r {
+	border-right: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+@utility hairline-l {
+	border-left: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+@utility hairline-box {
+	border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+@utility stencil {
+	font-family: var(--font-display);
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+@utility stencil-sm {
+	font-family: var(--font-display);
+	font-size: 9px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+@utility readout {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+
+@utility readout-lg {
+	font-family: var(--font-mono);
+	font-size: 26px;
+	font-weight: 600;
+	line-height: 0.9;
+	letter-spacing: -0.02em;
+	font-variant-numeric: tabular-nums;
+}
+
+@utility readout-xl {
+	font-family: var(--font-mono);
+	font-size: 38px;
+	font-weight: 600;
+	line-height: 0.85;
+	letter-spacing: -0.03em;
+	font-variant-numeric: tabular-nums;
+}
+
+@utility sheet-panel {
+	position: relative;
+	background-color: var(--color-concrete);
+	border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+@utility field-button {
+	@apply stencil border-ink/45 text-ink hover:bg-ink hover:text-concrete inline-flex cursor-pointer items-center justify-center gap-1.5 border px-3 py-2 transition-colors duration-100 disabled:cursor-not-allowed disabled:border-dashed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-current;
+}
+
+@utility field-button-solid {
+	@apply stencil bg-ink text-concrete hover:bg-ink-veil inline-flex cursor-pointer items-center justify-center gap-1.5 border border-transparent px-3 py-2 transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-40;
+}
+
+@utility field-tab {
+	@apply stencil text-graphite hover:text-ink cursor-pointer px-3 py-2.5 transition-colors duration-100;
+}
+
+@utility field-input {
+	@apply border-ink/35 bg-concrete-tint text-ink placeholder:text-graphite-pale w-full border px-2.5 py-2 text-[12.5px] leading-[1.55];
+}
+
+@utility quoted-line {
+	border-left: 2px solid color-mix(in srgb, var(--color-ink) 45%, transparent);
+	padding-left: 0.625rem;
+}
+
+@utility ledger-row {
+	@apply flex items-baseline justify-between gap-3 py-[7px];
+}
+
+@utility crop-mark {
+	&::before,
+	&::after {
+		content: '';
+		position: absolute;
+		width: 7px;
+		height: 7px;
+		border-color: var(--color-ink);
+		opacity: 0.5;
+	}
+
+	&::before {
+		top: -1px;
+		left: -1px;
+		border-top-width: 2px;
+		border-left-width: 2px;
+	}
+
+	&::after {
+		right: -1px;
+		bottom: -1px;
+		border-right-width: 2px;
+		border-bottom-width: 2px;
+	}
+}
+
+@utility rule-dotted {
+	background-image: repeating-linear-gradient(
+		to right,
+		color-mix(in srgb, var(--color-ink) 40%, transparent) 0 2px,
+		transparent 2px 5px
+	);
+	height: 1px;
+}
+
+@utility write-line {
+	border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 32%, transparent);
+	height: 1.55rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+}

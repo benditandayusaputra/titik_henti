@@ -1,0 +1,38 @@
+{
+	"pipelineVersion": "1.0.0",
+	"villageName": "Jelambar Baru",
+	"districtName": "Grogol Petamburan",
+	"cityName": "Jakarta Barat",
+	"boundaryRelationId": 5802347,
+	"boundingBox": {
+		"west": 106.78071,
+		"south": -6.15543,
+		"east": 106.79458,
+		"north": -6.14329
+	},
+	"analysisBufferMeters": 120,
+	"rasterResolutionMeters": 0.5,
+	"skeletonBranchPruneMeters": 6.0,
+	"segmentSimplifyToleranceMeters": 0.75,
+	"graphNodeSpacingMeters": 8.0,
+	"largeUnitMinWidthMeters": 4.0,
+	"smallUnitMinWidthMeters": 2.5,
+	"widthProfileSmoothingMeters": 3.0,
+	"namedRoadMatchBufferMeters": 9.0,
+	"adjacencyRadiusMeters": 25.0,
+	"buildingConnectionMaxMeters": 60.0,
+	"applianceStandSpacingMeters": 60.0,
+	"minimumBuildingAreaSquareMeters": 9.0,
+	"openBuildingsCellToken": "2e69",
+	"openBuildingsConfidenceMinimum": 0.65,
+	"heightRasterPath": null,
+	"overpassEndpoints": [
+		"https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+		"https://overpass.osm.ch/api/interpreter",
+		"https://overpass-api.de/api/interpreter"
+	],
+	"populationCount": 46675,
+	"populationYear": 2023,
+	"obstacleClosingMeters": 0.5,
+	"minimumSegmentLengthMeters": 2.5
+}

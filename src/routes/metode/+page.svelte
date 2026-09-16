@@ -15,8 +15,22 @@
 		SMALL_UNIT_MIN_WIDTH_METERS
 	} from '$lib/domain/constants';
 	import { dataset } from '$lib/data/dataset.svelte';
-	import { formatDate, formatDecimal } from '$lib/format';
+	import { formatDate, formatDecimal, formatMeters } from '$lib/format';
 	import type { FireCoefficients } from '$lib/domain/types';
+	import {
+		FIELD_MEASUREMENTS,
+		FIELD_MEASUREMENT_TARGET_COUNT,
+		FIELD_MEASUREMENT_TOLERANCE_METERS,
+		SYNTHETIC_BUILDING_COUNT,
+		SYNTHETIC_RASTER_RESOLUTION_METERS,
+		SYNTHETIC_SEGMENT_COUNT,
+		SYNTHETIC_TOTAL_LENGTH_METERS,
+		SYNTHETIC_WIDTH_CHECKS,
+		countFieldMeasurementsWithinTolerance,
+		findLargestSyntheticError,
+		measureAbsoluteError,
+		measureFieldError
+	} from '$lib/domain/validation';
 
 	onMount(() => {
 		void dataset.load();
@@ -52,6 +66,10 @@
 		}
 	];
 
+	const largestSyntheticError = findLargestSyntheticError(SYNTHETIC_WIDTH_CHECKS);
+	const fieldMeasurementsWithinTolerance =
+		countFieldMeasurementsWithinTolerance(FIELD_MEASUREMENTS);
+
 	const limitations = [
 		'Lebar gang adalah estimasi dari citra satelit pada grid 0,5 meter. Kanopi, tenda, gerobak, dan parkir liar tidak terlihat, sehingga lebar efektif di lapangan hampir selalu lebih sempit dari angka di sini.',
 		'Tinggi bangunan hanya terukur untuk bangunan yang punya tag tinggi atau jumlah lantai di OpenStreetMap. Sisanya diperkirakan dari luas tapak memakai rata-rata bucket yang dihitung dari subset terukur di wilayah yang sama.',
@@ -72,6 +90,132 @@
 			Bagaimana angka<br />di lembar ini dibuat
 		</h1>
 		<div class="bg-ink mt-6 mb-10 h-[2px] w-full"></div>
+
+		<section class="mb-12">
+			<h2 class="font-display text-ink mb-2 text-[18px] leading-tight font-semibold">
+				Seberapa akurat lebar gang di sini
+			</h2>
+			<p class="text-ink prose-measure mb-5 text-[13px] leading-[1.6]">
+				Angka lebar gang adalah keluaran algoritma, bukan hasil ukur. Karena itu pertanyaan pertama
+				yang pantas diajukan adalah seberapa jauh algoritma ini boleh dipercaya. Dua pengujian di
+				bawah ini kami tampilkan lebih dulu, termasuk bagian yang belum selesai.
+			</p>
+
+			<h3 class="font-display text-ink mb-1.5 text-[14px] leading-none font-semibold">
+				Uji pertama, permukiman sintetis dengan lebar yang sudah diketahui
+			</h3>
+			<p class="text-graphite prose-measure mb-3 text-[12.5px] leading-[1.6]">
+				Permukiman buatan berisi {SYNTHETIC_BUILDING_COUNT} bangunan disusun dengan lebar gang yang
+				sudah ditetapkan sebelumnya, lalu dilewatkan algoritma yang sama dengan yang dipakai produk
+				ini. Karena lebar sebenarnya diketahui, selisihnya dapat dihitung persis.
+			</p>
+			<table class="w-full">
+				<thead>
+					<tr class="border-ink/30 border-b">
+						<th class="field-label-sm text-graphite py-2 text-left">Lebar sebenarnya</th>
+						<th class="field-label-sm text-graphite py-2 text-right">Lebar terukur</th>
+						<th class="field-label-sm text-graphite py-2 text-right">Selisih</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each SYNTHETIC_WIDTH_CHECKS as check (check.trueWidthMeters)}
+						<tr class="hairline-b">
+							<td class="readout text-ink py-2 text-[12px]">
+								{formatMeters(check.trueWidthMeters, 2)}
+							</td>
+							<td class="readout text-ink py-2 text-right text-[12px]">
+								{formatMeters(check.measuredWidthMeters, 2)}
+							</td>
+							<td class="readout text-ink py-2 text-right text-[12px]">
+								{formatMeters(measureAbsoluteError(check), 2)}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+			<dl class="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
+				<div>
+					<dt class="field-label-sm text-graphite">Segmen terdeteksi</dt>
+					<dd class="readout text-ink mt-1.5">{SYNTHETIC_SEGMENT_COUNT}</dd>
+				</div>
+				<div>
+					<dt class="field-label-sm text-graphite">Total panjang</dt>
+					<dd class="readout text-ink mt-1.5">
+						{formatMeters(SYNTHETIC_TOTAL_LENGTH_METERS, 1)}
+					</dd>
+				</div>
+				<div>
+					<dt class="field-label-sm text-graphite">Resolusi raster</dt>
+					<dd class="readout text-ink mt-1.5">
+						{formatMeters(SYNTHETIC_RASTER_RESOLUTION_METERS, 2)}
+					</dd>
+				</div>
+				<div>
+					<dt class="field-label-sm text-graphite">Selisih terbesar</dt>
+					<dd class="readout text-ink mt-1.5">{formatMeters(largestSyntheticError, 2)}</dd>
+				</div>
+			</dl>
+			<p class="text-graphite prose-measure mt-3 text-[12px] leading-[1.6]">
+				Uji ini memeriksa algoritmanya, bukan datanya. Hasil sempurna di sini berarti perhitungan
+				geometrinya benar bila bentuk bangunan yang masuk juga benar. Uji ini tidak membuktikan
+				bahwa footprint satelit sesuai dengan keadaan di lapangan.
+			</p>
+
+			<h3 class="font-display text-ink mt-8 mb-1.5 text-[14px] leading-none font-semibold">
+				Uji kedua, ukur meteran di lapangan
+			</h3>
+			{#if FIELD_MEASUREMENTS.length === 0}
+				<div class="hairline-box bg-paper px-4 py-4">
+					<p class="text-ink prose-measure text-[12.5px] leading-[1.6]">
+						Belum dilakukan. Rencananya {FIELD_MEASUREMENT_TARGET_COUNT} gang diukur dengan meteran,
+						lalu hasilnya disandingkan dengan keluaran pipeline di tabel ini, lolos bila selisihnya
+						paling banyak {formatDecimal(FIELD_MEASUREMENT_TOLERANCE_METERS, 1)} meter.
+					</p>
+					<p class="text-graphite prose-measure mt-2.5 text-[12px] leading-[1.6]">
+						Selama tabel ini kosong, seluruh lebar gang di produk ini belum pernah dibandingkan
+						dengan ukuran sebenarnya di lapangan. Kami menampilkan kekosongan ini, bukan
+						menyembunyikannya, karena inilah batas terpenting dari apa yang bisa dijanjikan produk
+						ini sekarang.
+					</p>
+				</div>
+			{:else}
+				<table class="w-full">
+					<thead>
+						<tr class="border-ink/30 border-b">
+							<th class="field-label-sm text-graphite py-2 text-left">Gang</th>
+							<th class="field-label-sm text-graphite py-2 text-right">Ukur meteran</th>
+							<th class="field-label-sm text-graphite py-2 text-right">Keluaran pipeline</th>
+							<th class="field-label-sm text-graphite py-2 text-right">Selisih</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each FIELD_MEASUREMENTS as measurement (measurement.label)}
+							{@const error = measureFieldError(measurement)}
+							<tr class="hairline-b">
+								<td class="text-ink py-2 pr-3 text-[12px]">{measurement.label}</td>
+								<td class="readout text-ink py-2 text-right text-[12px]">
+									{formatMeters(measurement.tapeWidthMeters, 2)}
+								</td>
+								<td class="readout text-ink py-2 text-right text-[12px]">
+									{formatMeters(measurement.pipelineWidthMeters, 2)}
+								</td>
+								<td
+									class="readout py-2 text-right text-[12px]"
+									class:text-ink={error <= FIELD_MEASUREMENT_TOLERANCE_METERS}
+									class:text-alarm={error > FIELD_MEASUREMENT_TOLERANCE_METERS}
+								>
+									{formatMeters(error, 2)}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<p class="text-graphite prose-measure mt-3 text-[12px] leading-[1.6]">
+					{fieldMeasurementsWithinTolerance} dari {FIELD_MEASUREMENTS.length} gang berada dalam
+					toleransi {formatDecimal(FIELD_MEASUREMENT_TOLERANCE_METERS, 1)} meter.
+				</p>
+			{/if}
+		</section>
 
 		<section class="mb-12">
 			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Pipeline data</h2>

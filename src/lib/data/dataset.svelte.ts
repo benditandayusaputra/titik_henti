@@ -34,6 +34,7 @@ class DatasetStore {
 	meta = $state.raw<PipelineMeta | null>(null);
 	buildings = $state.raw<BuildingTable | null>(null);
 	adjacency = $state.raw<AdjacencyTable | null>(null);
+	adjacencyStatus = $state<DatasetStatus>('idle');
 	network = $state.raw<AlleyNetwork | null>(null);
 	waterSources = $state.raw<WaterSource[]>([]);
 	loadedMilliseconds = $state(0);
@@ -47,23 +48,35 @@ class DatasetStore {
 		this.status = 'loading';
 		const startedAt = performance.now();
 		try {
-			const [meta, graphDocument, buildingBuffer, adjacencyBuffer] = await Promise.all([
+			const [meta, graphDocument, buildingBuffer] = await Promise.all([
 				fetchJson<PipelineMeta>('meta.json'),
 				fetchJson<GraphDocument>('graph.json'),
-				fetchBinary('buildings.bin'),
-				fetchBinary('adjacency.bin')
+				fetchBinary('buildings.bin')
 			]);
 
 			this.meta = meta;
 			this.network = buildAlleyNetwork(graphDocument);
 			this.waterSources = listWaterSources(graphDocument);
 			this.buildings = decodeBuildingTable(buildingBuffer);
-			this.adjacency = decodeAdjacencyTable(adjacencyBuffer);
 			this.loadedMilliseconds = Math.round(performance.now() - startedAt);
 			this.status = 'ready';
 		} catch (failure) {
 			this.errorMessage = failure instanceof Error ? failure.message : 'gagal memuat data';
 			this.status = 'error';
+			return;
+		}
+
+		void this.loadAdjacency();
+	}
+
+	async loadAdjacency(): Promise<void> {
+		if (this.adjacencyStatus === 'loading' || this.adjacencyStatus === 'ready') return;
+		this.adjacencyStatus = 'loading';
+		try {
+			this.adjacency = decodeAdjacencyTable(await fetchBinary('adjacency.bin'));
+			this.adjacencyStatus = 'ready';
+		} catch {
+			this.adjacencyStatus = 'error';
 		}
 	}
 }

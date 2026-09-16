@@ -50,6 +50,13 @@
 		/>
 	</label>
 
+	{#if !reach}
+		<p class="text-graphite mt-3 text-[12px] leading-[1.55]">
+			Menyiapkan tabel ketetanggaan bangunan. Angka jangkauan muncul setelah berkas itu selesai
+			dimuat.
+		</p>
+	{/if}
+
 	{#if reach}
 		<div class="mt-3 grid grid-cols-2 gap-px">
 			<div class="hairline-box bg-paper px-3 py-2.5">

@@ -186,6 +186,8 @@ Koreksi terhadap kesimpulan yang salah di tahap sebelumnya:
 
 Error deck.gl di konsol sempat dilaporkan sebagai artefak perender perangkat lunak di browser headless. Kesimpulan itu keliru. Pemeriksaan `WEBGL_debug_renderer_info` menunjukkan browser uji memakai ANGLE Metal Renderer pada GPU Apple M4, bukan perender perangkat lunak. Setelah ditelusuri ke sumber deck.gl, pemicunya adalah `assert(!this.internalState)` di `Layer._initialize`, yaitu penolakan terhadap instance layer yang sudah final lalu dipakai ulang. Penyebabnya `MapboxOverlay` menerima larik layer lewat konstruktor, lalu larik yang sama diserahkan sekali lagi lewat `setProps` ketika gaya peta siap. Perbaikannya membuat overlay dibangun tanpa layer, dan seluruh penyerahan layer lewat satu jalur saja. Setelah itu konsol bersih, nol error dan nol peringatan, di seluruh alur termasuk klik segmen, pergantian tab, dan panel air.
 
+Catatan koreksi yang ditambahkan kemudian: klaim keberhasilan di paragraf ini salah, dan kesalahannya lebih serius daripada error yang hendak diperbaiki. Konsol memang menjadi bersih, tetapi karena tidak ada satu layer deck.gl pun yang tergambar lagi. Rinciannya dicatat di tahap 16.
+
 Kinerja muatan awal:
 
 `adjacency.bin` berukuran 2,8 MB ikut memblokir gambar peta pertama, padahal berkas itu hanya dipakai simulasi api dan jangkauan air. Berkas itu dipindahkan ke pemuatan latar setelah peta siap, dan panel air menampilkan keadaan menunggu selama berkas itu belum tiba. Berkas font juga diganti ke subset latin sesuai Bagian B3, dari enam berkas menjadi tiga.
@@ -314,6 +316,37 @@ Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
 3. Teks keadaan memuat diganti, dan lima berkas spec lain ternyata menunggu teks lama itu hilang. Akibatnya spec itu diam-diam berhenti menunggu data. Seluruhnya diperbarui ke teks baru.
 4. Pemindaian aksesibilitas pada keadaan data gagal menemukan kartu siaga RT kehilangan judul tingkat satu, karena judulnya hanya ada di cabang data berhasil dimuat. Pelanggaran ini tidak pernah muncul pada pemindaian biasa karena data selalu berhasil dimuat di sana. Judul ditambahkan pada setiap keadaan, dan spec aksesibilitas khusus keadaan gagal ditambahkan.
 5. Tangkapan layar keadaan data gagal menunjukkan pesan yang sama tampil dua kali, di area peta dan di panel samping, sehingga pembaca layar mendengar dua peringatan berturut-turut. Salinan di panel samping dibuang, dan spec kini menuntut tepat satu pesan.
+
+### Tahap 16, regresi yang lolos ke produksi dan uji yang seharusnya sudah ada
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Memeriksa situs yang sudah ter-deploy dari sisi pengunjung, memperbaiki temuan, lalu commit dan push ulang |
+| Dihasilkan AI | Diagnosis regresi, perbaikan pelacakan dependensi efek, uji render peta, perapian dua istilah |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Temuan utama: di situs produksi, tidak ada satu pun layer deck.gl yang tergambar. Sumber air, garis selang, titik henti, penjalaran api di peta, jangkauan air, dan kantong tak terjangkau semuanya hilang dari peta. Seluruh panel dan angka tetap benar, hanya gambarnya di peta yang tidak muncul.
+
+Cara ketahuannya: tangkapan layar lokal dari tahap pemindahan ke Palmerah memuat 1.470 piksel berwarna air di area peta. Tangkapan layar produksi memuat nol. Pembacaan langsung isi kanvas WebGL tidak dapat dipercaya untuk pemeriksaan ini, karena tanpa `preserveDrawingBuffer` buffer sudah dikosongkan setelah bingkai tampil, sehingga pengukuran dilakukan pada tangkapan layar.
+
+Penyebabnya adalah perbaikan deck.gl pada tahap 11 itu sendiri. Efek yang menyerahkan layer berbunyi `if (overlay && styleReady)`. Karena `overlay` bukan state reaktif dan bernilai null saat efek pertama berjalan, operator `&&` berhenti sebelum `styleReady` sempat terbaca. Svelte 5 hanya melacak nilai reaktif yang benar-benar dibaca, sehingga efek tidak pernah berlangganan ke `styleReady` dan tidak berjalan lagi ketika peta siap. Instrumentasi sementara memastikannya: `setProps` tidak pernah dipanggil sekali pun, dan deck.gl berisi nol layer. Kode asli selamat dari masalah ini hanya karena layer juga diserahkan lewat konstruktor. Ketika jalur konstruktor itu dibuang, tidak tersisa satu jalur pun yang benar-benar mengirim layer.
+
+Perbaikannya menjadikan `overlay` state reaktif memakai `$state.raw`, supaya objek deck.gl tidak dibungkus proxy, dan membaca ketiga dependensi tanpa hubung singkat. Pemeriksaan interaktif memastikan dua hal sekaligus: layer benar-benar tergambar, dan galat instance layer yang sudah final tidak kembali, termasuk sepanjang siklus menambah, membuang, dan menambah ulang layer saat berpindah tab.
+
+Kenapa lolos sampai produksi: suite uji end to end berisi 50 uji dan seluruhnya lolos, padahal peta rusak. Tidak ada satu uji pun yang memeriksa bahwa layer deck.gl tergambar. Uji yang ada hanya memeriksa konsol bersih, dan versi yang rusak justru lolos pemeriksaan itu karena layer yang tidak pernah dibuat tentu tidak pernah melempar galat. Bukti yang tampak meyakinkan, yaitu konsol bersih, dibaca sebagai tanda berhasil tanpa diperiksa apa yang sebenarnya tergambar di layar.
+
+Uji baru `tests/e2e/peta-tergambar.spec.ts` menghitung piksel berwarna air pada tangkapan layar area peta. Uji ini tidak diterima hanya karena lolos pada kode yang benar. Bug hubung singkat itu dikembalikan sementara, dan uji gagal dengan hasil 0 dari minimum 300 piksel, yaitu persis ciri regresinya. Setelah perbaikan dipulihkan, uji kembali lolos.
+
+Temuan lain dari tangkapan layar produksi, yang juga lolos dari uji istilah pada tahap 15:
+
+1. Tombol hapus pada panel air masih berbunyi hapus sekian usulan untuk hidran uji coba. Tabrakan kata usulan dengan usulan koreksi lapangan ternyata masih tersisa di tombol ini, karena pola terlarang hanya menangkap frasa hidran usulan.
+2. Label posisi unit berdampingan dengan catatan posisi mobil pemadam pada panel yang sama.
+
+Keduanya diseragamkan dan ditambahkan ke daftar varian terlarang.
+
+Pemeriksaan produksi yang lolos: seluruh halaman menjawab 200 dan jalur yang tidak ada menjawab 404, pengalihan garis miring bekerja, berkas PMTiles melayani range request dengan jawaban 206 dan tanda tangan berkas yang sah, data dikirim terkompresi Brotli, header cache dari `vercel.json` terpasang, peta tergambar dalam kurang dari setengah detik, dan tidak ada galat konsol maupun permintaan yang gagal.
 
 ## Yang tidak dikerjakan AI
 

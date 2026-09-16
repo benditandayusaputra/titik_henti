@@ -21,7 +21,7 @@ test.describe('aksesibilitas dan tata letak', () => {
 				await page.setViewportSize({ width: lebar, height: lebar === 380 ? 820 : 900 });
 				await page.goto(halaman.jalur);
 				await page.waitForFunction(
-					() => !document.body.textContent?.includes('Memuat berkas data'),
+					() => !document.body.textContent?.includes('Memuat peta wilayah'),
 					undefined,
 					{ timeout: 60000 }
 				);

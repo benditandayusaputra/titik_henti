@@ -43,13 +43,13 @@
 	const pipelineStages = [
 		{
 			index: '01',
-			title: 'Ingest',
-			body: 'Footprint bangunan Google Open Buildings V3 diambil dari sel S2 level 6 yang memuat bounding box kelurahan, lalu disaring per baris dengan ambang kepercayaan. Jaringan jalan, sumber air, batas kelurahan, dan tag tinggi bangunan diambil dari OpenStreetMap lewat Overpass.'
+			title: 'Pengambilan data',
+			body: 'Tapak bangunan Google Open Buildings V3 diambil dari sel S2 level 6 yang memuat bounding box kelurahan, lalu disaring per baris dengan ambang kepercayaan. Jaringan jalan, sumber air, batas kelurahan, dan tag tinggi bangunan diambil dari OpenStreetMap lewat Overpass.'
 		},
 		{
 			index: '02',
 			title: 'Rasterisasi dan rangka',
-			body: `Union footprint bangunan dan badan air dirasterisasi pada grid ${0.5} meter per piksel. Ruang terbuka adalah komplemen raster penghalang di dalam batas area. Distance transform pada ruang terbuka memberi jarak ke penghalang terdekat, dan skeletonize memberi garis tengah. Lebar pada tiap piksel rangka adalah dua kali nilai distance transform.`
+			body: `Gabungan tapak bangunan dan badan air dirasterisasi pada grid ${0.5} meter per piksel. Ruang terbuka adalah komplemen raster penghalang di dalam batas area. Distance transform pada ruang terbuka memberi jarak ke penghalang terdekat, dan skeletonize memberi garis tengah. Lebar pada tiap piksel rangka adalah dua kali nilai distance transform.`
 		},
 		{
 			index: '03',
@@ -58,13 +58,13 @@
 		},
 		{
 			index: '04',
-			title: 'Ketetanggaan bangunan',
-			body: `Untuk tiap bangunan dicari seluruh bangunan lain dalam radius ${ADJACENCY_RADIUS_METERS} meter, dengan jarak diukur tepi ke tepi, bukan pusat ke pusat. Hasilnya ditulis sebagai daftar ketetanggaan biner berindeks integer supaya asset tetap ringan.`
+			title: 'Jarak antarbangunan',
+			body: `Untuk tiap bangunan dicari seluruh bangunan lain dalam radius ${ADJACENCY_RADIUS_METERS} meter, dengan jarak diukur tepi ke tepi, bukan pusat ke pusat. Hasilnya ditulis sebagai daftar jarak antarbangunan dalam format biner berindeks bilangan bulat supaya aset tetap ringan.`
 		},
 		{
 			index: '05',
-			title: 'Emit',
-			body: 'Segmen gang dan footprint bangunan ditulis sebagai PMTiles, ketetanggaan dan atribut bangunan sebagai berkas biner, graf jaringan dan metadata sebagai JSON. Seluruh keluaran bersifat statis dan tidak memerlukan server.'
+			title: 'Penulisan keluaran',
+			body: 'Segmen gang dan tapak bangunan ditulis sebagai PMTiles, jarak antarbangunan dan atribut bangunan sebagai berkas biner, graf jaringan dan metadata sebagai JSON. Seluruh keluaran bersifat statis dan tidak memerlukan server.'
 		}
 	];
 
@@ -160,7 +160,7 @@
 			<p class="text-graphite prose-measure mt-3 text-[12px] leading-[1.6]">
 				Uji ini memeriksa algoritmanya, bukan datanya. Hasil sempurna di sini berarti perhitungan
 				geometrinya benar bila bentuk bangunan yang masuk juga benar. Uji ini tidak membuktikan
-				bahwa footprint satelit sesuai dengan keadaan di lapangan.
+				bahwa tapak bangunan dari satelit sesuai dengan keadaan di lapangan.
 			</p>
 
 			<h3 class="font-display text-ink mt-8 mb-1.5 text-[14px] leading-none font-semibold">
@@ -341,7 +341,7 @@
 			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Model penjalaran api</h2>
 			<div class="hairline-box bg-paper px-5 py-5">
 				<p class="text-ink text-[13px] leading-[1.65]">
-					Cellular automata heterogen di atas graf ketetanggaan bangunan. Mekanismenya mengacu pada
+					Cellular automata heterogen di atas graf jarak antarbangunan. Mekanismenya mengacu pada
 					model berbasis fisika Himoto dan Tanaka untuk kebakaran perkotaan padat, disederhanakan
 					menjadi tiga suku ditambah percikan bara.
 				</p>

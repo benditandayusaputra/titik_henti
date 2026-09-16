@@ -58,7 +58,7 @@ test.describe('tabel validasi dan penandaan sumber data', () => {
 	test('penanda estimasi satelit tampil di lembar kerja', async ({ page }) => {
 		await page.goto('/peta/');
 		await page.waitForFunction(
-			() => !document.body.textContent?.includes('Memuat berkas data'),
+			() => !document.body.textContent?.includes('Memuat peta wilayah'),
 			undefined,
 			{ timeout: 60000 }
 		);

@@ -153,7 +153,7 @@ def emit_meta_document(
         "measuredHeightCount": measured_heights,
         "provenance": [
             {
-                "label": "Footprint bangunan",
+                "label": "Tapak bangunan",
                 "source": "Google Open Buildings V3 (polygons S2 level 6)",
                 "licence": "CC BY 4.0",
                 "retrievedAt": datetime.now(timezone.utc).date().isoformat(),

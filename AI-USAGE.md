@@ -277,6 +277,44 @@ Cara membacanya: hasil ini tidak membuktikan angka kami benar. Yang dibuktikanny
 
 Keputusan teknis: hasil skrip ditulis ke berkas JSON yang diimpor halaman metode saat build dan divalidasi dengan zod. Tidak ada angka yang disalin tangan dari keluaran skrip ke kode, sehingga angka di halaman tidak bisa melenceng dari hasil skripnya.
 
+### Tahap 15, keadaan, galat, dan satu benda satu nama
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Memastikan tidak ada layar yang bisa diam tanpa penjelasan, dan tidak ada benda yang punya dua nama |
+| Dihasilkan AI | Protokol kegagalan worker, keadaan data gagal dan kerangka memuat, daftar istilah beserta tes penegaknya, penulisan ulang teks |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Audit sebelum membangun menemukan empat cara antarmuka bisa diam tanpa penjelasan:
+
+1. Penanganan galat pada worker simulasi tidak ada sama sekali. Tidak ada `onerror` di klien dan tidak ada `try` di worker, jadi galat di tengah perhitungan mematikan worker diam-diam dan tombol tertahan di keadaan menghitung selamanya.
+2. Tombol Jalankan tidak memeriksa kesiapan worker. Ini regresi yang berasal dari tahap kinerja sebelumnya: sejak data jarak antarbangunan dimuat di latar, menekan Jalankan sebelum data itu tiba membuat permintaan ke worker tidak terkirim dan tombol tertahan selamanya.
+3. Kartu siaga RT tertahan di keadaan menyiapkan kartu selamanya bila data gagal dimuat, karena cabang galatnya tidak ada.
+4. Halaman peta menampilkan nama berkas mentah saat data gagal, tanpa menawarkan jalan lain.
+
+Yang dibangun: worker kini melaporkan kegagalan dengan penyebab yang dibedakan, yaitu belum siap atau berhenti di tengah perhitungan. Klien menangkap galat worker di tiga jalur, yaitu pesan kegagalan, `onerror`, dan `onmessageerror`, dan setiap pemanggil menghentikan keadaan menghitung lalu menampilkan penyebabnya. Simulasi yang gagal menawarkan tombol mengulang dengan parameter awal. Tombol Jalankan dinonaktifkan sampai worker siap, dengan kalimat yang menjelaskan alasannya. Halaman peta dan kartu siaga RT menjelaskan bahwa data wilayah belum tersedia dan menawarkan muat ulang serta tautan ke panduan siaga.
+
+Kerangka memuat sengaja dibuat statis. Bagian B5 melarang gerak berulang tanpa dipicu, jadi efek berdenyut yang lazim dipakai pada kerangka memuat tidak dipakai.
+
+Satu benda satu nama: audit menemukan benda yang punya lebih dari satu nama, antara lain kartu siaga yang ditulis dengan tiga cara, tapak bangunan yang juga disebut footprint, dan hidran uji coba yang disebut hidran usulan, hidran hipotetis, dan hidran percobaan. Nama hidran usulan paling berbahaya karena kata usulan juga dipakai untuk usulan koreksi lapangan, sehingga dua benda berbeda berbagi satu kata. Seluruh nama baku dikumpulkan di `src/lib/ui/istilah.ts`, dan sebuah unit test memindai seluruh teks antarmuka, artikel, dan metadata lalu gagal bila varian terlarang muncul kembali.
+
+Sapuan teks menurut Bagian B7 juga menemukan istilah teknis berbahasa Inggris di panel untuk warga, seperti mode batch pada worker, jalankan optimizer, dan terjemahan harfiah lari untuk run. Judul tahap pipeline Ingest dan Emit diterjemahkan. Seed diganti benih acak, sesuai istilah yang dipakai arah desain sendiri.
+
+Dua kesalahan yang ditemukan sambil jalan, di luar soal istilah:
+
+1. Sebuah label berbunyi kandidat dievaluasi tetapi menampilkan jumlah intervensi yang terpilih. Label dan angkanya tidak cocok, dan labelnya diganti menjadi intervensi terpilih.
+2. Catatan biaya di panel intervensi menyebut nama berkas kode `constants.ts` kepada warga.
+
+Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
+
+1. Teks keadaan memuat kartu siaga RT sempat menjanjikan bahwa tombol cetak aktif setelah kartu tersusun, padahal tombol itu tidak pernah dinonaktifkan. Tombolnya kini benar-benar menunggu kartu tersusun.
+2. Petunjuk simulasi sempat memakai kata tentukan titik api, padahal tombolnya berbunyi tetapkan titik api. Diseragamkan, dan varian itu ditambahkan ke daftar terlarang.
+3. Teks keadaan memuat diganti, dan lima berkas spec lain ternyata menunggu teks lama itu hilang. Akibatnya spec itu diam-diam berhenti menunggu data. Seluruhnya diperbarui ke teks baru.
+4. Pemindaian aksesibilitas pada keadaan data gagal menemukan kartu siaga RT kehilangan judul tingkat satu, karena judulnya hanya ada di cabang data berhasil dimuat. Pelanggaran ini tidak pernah muncul pada pemindaian biasa karena data selalu berhasil dimuat di sana. Judul ditambahkan pada setiap keadaan, dan spec aksesibilitas khusus keadaan gagal ditambahkan.
+5. Tangkapan layar keadaan data gagal menunjukkan pesan yang sama tampil dua kali, di area peta dan di panel samping, sehingga pembaca layar mendengar dua peringatan berturut-turut. Salinan di panel samping dibuang, dan spec kini menuntut tepat satu pesan.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

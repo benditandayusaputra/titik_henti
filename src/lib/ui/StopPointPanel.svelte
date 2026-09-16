@@ -32,7 +32,7 @@
 		</p>
 	{:else if !solution.reachable}
 		<p class="text-alarm text-[12px] leading-[1.55]">
-			Tidak ada segmen kelas unit besar yang terhubung ke bangunan ini. Unit pemadam tidak punya
+			Tidak ada segmen kelas unit besar yang terhubung ke bangunan ini. Mobil pemadam tidak punya
 			titik henti yang sah, dan air hanya bisa datang lewat sumber lain.
 		</p>
 	{:else}

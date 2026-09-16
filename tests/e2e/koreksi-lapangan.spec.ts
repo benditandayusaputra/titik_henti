@@ -13,7 +13,7 @@ const USULAN_TERSTRUKTUR = {
 async function bukaLembarKerja(page: Page): Promise<void> {
 	await page.goto('/peta/');
 	await page.waitForFunction(
-		() => !document.body.textContent?.includes('Memuat berkas data'),
+		() => !document.body.textContent?.includes('Memuat peta wilayah'),
 		undefined,
 		{ timeout: 60000 }
 	);

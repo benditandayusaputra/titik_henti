@@ -10,16 +10,21 @@
 	import PanelSection from '$lib/ui/PanelSection.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
 	import WindDial from '$lib/ui/WindDial.svelte';
+	import { PESAN_GAGAL_SIMULASI } from '$lib/ui/istilah';
 	import { workspace } from '$lib/workspace.svelte';
 
 	interface Props {
 		waterArrival: WaterArrivalField | null;
+		workerReady: boolean;
 		onrun: () => void;
+		onretry: () => void;
 		onreset: () => void;
 		buildingCount: number;
 	}
 
-	let { waterArrival, onrun, onreset, buildingCount }: Props = $props();
+	let { waterArrival, workerReady, onrun, onretry, onreset, buildingCount }: Props = $props();
+
+	const failure = $derived(workspace.simulationFailure);
 
 	const playback = $derived(workspace.playback);
 	const summary = $derived<FireStepSummary | null>(workspace.currentFireSummary);
@@ -129,10 +134,10 @@
 		<button
 			type="button"
 			class="field-button-solid"
-			disabled={workspace.ignitionBuildingIndices.length === 0 || playback.running}
+			disabled={workspace.ignitionBuildingIndices.length === 0 || playback.running || !workerReady}
 			onclick={onrun}
 		>
-			{playback.running ? 'Menghitung…' : 'Jalankan'}
+			{playback.running ? 'Menghitung' : 'Jalankan'}
 		</button>
 		<button
 			type="button"
@@ -144,6 +149,26 @@
 		</button>
 		<button type="button" class="field-button" onclick={onreset}>Ulang</button>
 	</div>
+
+	{#if !workerReady}
+		<p class="text-graphite mt-2.5 text-[11.5px] leading-[1.5]">
+			Menyiapkan mesin simulasi dan data jarak antarbangunan. Tombol Jalankan aktif setelah keduanya
+			siap.
+		</p>
+	{:else if workspace.ignitionBuildingIndices.length === 0}
+		<p class="text-graphite mt-2.5 text-[11.5px] leading-[1.5]">
+			Tetapkan minimal satu titik api lebih dulu, lalu tekan Jalankan.
+		</p>
+	{/if}
+
+	{#if failure && failure.task === 'run'}
+		<div class="border-alarm mt-3 border-l-4 py-1 pl-3" role="alert">
+			<p class="text-ink text-[12px] leading-[1.55]">{PESAN_GAGAL_SIMULASI[failure.cause]}</p>
+			<button type="button" class="field-button mt-2.5" onclick={onretry}>
+				Ulangi dengan parameter awal
+			</button>
+		</div>
+	{/if}
 
 	<label class="mt-3 block">
 		<span class="field-label-sm text-graphite">
@@ -174,7 +199,7 @@
 <PanelSection title="Hasil simulasi">
 	{#if !summary}
 		<p class="text-graphite text-[11.5px] leading-[1.55]">
-			Belum ada lari simulasi. Tetapkan titik api lalu tekan jalankan.
+			Belum ada simulasi. Tetapkan titik api, lalu tekan Jalankan.
 		</p>
 	{:else}
 		<div class="mb-3 grid grid-cols-3 gap-px">

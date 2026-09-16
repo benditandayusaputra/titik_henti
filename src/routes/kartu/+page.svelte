@@ -9,6 +9,7 @@
 		WATER_SOURCE_LABEL
 	} from '$lib/domain/constants';
 	import { dataset } from '$lib/data/dataset.svelte';
+	import DataUnavailable from '$lib/ui/DataUnavailable.svelte';
 	import {
 		buildPlanViewport,
 		mergeAlleyPaths,
@@ -34,14 +35,24 @@
 	const WRITE_LINE_COUNT = 4;
 
 	let plan = $state.raw<PrintPlanDocument | null>(null);
-	let planError = $state('');
+	let planFailed = $state(false);
 
-	onMount(() => {
-		void dataset.load();
+	function loadPrintPlan(): void {
+		planFailed = false;
 		void fetch(`${base}${DATA_BASE_PATH}/print.json`)
 			.then((response) => (response.ok ? response.json() : Promise.reject(new Error('print.json'))))
 			.then((payload: PrintPlanDocument) => (plan = payload))
-			.catch(() => (planError = 'Berkas peta cetak tidak dapat dimuat'));
+			.catch(() => (planFailed = true));
+	}
+
+	function reloadCard(): void {
+		void dataset.load();
+		loadPrintPlan();
+	}
+
+	onMount(() => {
+		void dataset.load();
+		loadPrintPlan();
 	});
 
 	const planHeight = $derived.by(() => {
@@ -159,7 +170,7 @@
 </script>
 
 <svelte:head>
-	<title>Kartu Siaga RT — Titik Henti</title>
+	<title>Kartu siaga RT — Titik Henti</title>
 </svelte:head>
 
 <div class="bg-concrete flex-1 px-4 py-6 print:bg-white print:p-0">
@@ -168,7 +179,7 @@
 			Lembar ini dirancang untuk dicetak A4 potret hitam putih dan ditempel di pos RT. Kelas gang
 			dibedakan dengan pola garis, bukan warna, supaya tetap terbaca setelah difotokopi.
 		</p>
-		<button type="button" class="field-button-solid ml-auto shrink-0" onclick={openPrintDialog}>
+		<button type="button" class="field-button-solid ml-auto shrink-0" disabled={!dataset.meta} onclick={openPrintDialog}>
 			Cetak lembar
 		</button>
 	</div>
@@ -283,10 +294,15 @@
 							</li>
 						{/each}
 					</ul>
-				{:else}
-					<p class="text-graphite py-10 text-center text-[11px]">
-						{planError || 'Menyiapkan peta…'}
+				{:else if planFailed}
+					<p class="text-ink py-6 text-[11px] leading-[1.55]" role="alert">
+						Gambar peta untuk kartu ini tidak berhasil diambil. Isi tabel di bawah tetap benar, tetapi
+						sebaiknya muat ulang halaman sebelum mencetak supaya petanya ikut tercetak.
 					</p>
+				{:else}
+					<div class="border-ink/20 flex h-[220px] w-full items-center border px-4" aria-busy="true">
+						<p class="text-graphite text-[11px]" role="status">Menggambar peta kelurahan</p>
+					</div>
 				{/if}
 			</section>
 
@@ -404,7 +420,7 @@
 
 			<footer class="pt-1.5">
 				<p class="text-graphite text-[8.5px] leading-[1.5]">
-					Sumber data: footprint bangunan Google Open Buildings V3 (CC BY 4.0); jaringan jalan,
+					Sumber data: tapak bangunan Google Open Buildings V3 (CC BY 4.0); jaringan jalan,
 					sumber air, dan batas kelurahan dari OpenStreetMap (ODbL 1.0). Lebar gang pada lembar ini
 					adalah estimasi citra satelit yang dihitung pada grid {dataset.meta
 						.rasterResolutionMeters} meter per piksel, bukan hasil ukur lapangan, dan wajib
@@ -413,8 +429,20 @@
 					adalah simpul jaringan yang masih dapat dilalui unit besar, bukan pos parkir resmi.
 				</p>
 			</footer>
+		{:else if dataset.status === 'error'}
+			<div class="py-10 print:hidden">
+				<h1 class="font-display text-ink mb-5 text-[29px] leading-none font-semibold">Kartu siaga RT</h1>
+				<DataUnavailable onretry={reloadCard} />
+			</div>
 		{:else}
-			<p class="text-graphite py-20 text-center text-[12px]">Menyiapkan kartu…</p>
+			<div class="py-10" aria-busy="true">
+				<h1 class="font-display text-ink mb-3 text-[29px] leading-none font-semibold">Kartu siaga RT</h1>
+				<p class="text-ink text-[13px] leading-[1.55]" role="status">Menyusun kartu siaga RT</p>
+				<p class="text-graphite prose-measure mt-1.5 text-[12px] leading-[1.55]">
+					Data titik henti, sumber air, dan kantong tak terjangkau sedang diambil. Tombol cetak aktif
+					setelah kartu selesai disusun.
+				</p>
+			</div>
 		{/if}
 	</article>
 </div>

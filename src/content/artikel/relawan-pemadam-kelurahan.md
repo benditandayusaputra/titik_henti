@@ -30,7 +30,7 @@ Angka itu penting dibaca bersama peta. Hidran mandiri bukan sekadar sumber air t
 
 Titik Henti menghitung jarak dari sumber air terdekat ke tiap bangunan lewat jaringan gang, bukan lewat garis lurus. Dalam hitungan itu, satu hidran di dalam kampung bernilai jauh lebih besar daripada satu hidran di jalan besar di tepinya.
 
-Panel Air di lembar kerja bisa dipakai untuk menguji dugaan ini. Taruh hidran percobaan di kantong yang paling besar, lalu lihat berapa bangunan yang berpindah status dari tidak terjangkau menjadi terjangkau.
+Panel Air di lembar kerja bisa dipakai untuk menguji dugaan ini. Taruh hidran uji coba di kantong yang paling besar, lalu lihat berapa bangunan yang berpindah status dari tidak terjangkau menjadi terjangkau.
 
 ## Yang bisa dikerjakan pengurus RT
 

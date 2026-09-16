@@ -42,10 +42,12 @@
 	import ComparisonPanel from '$lib/ui/ComparisonPanel.svelte';
 	import CorrectionPanel from '$lib/ui/CorrectionPanel.svelte';
 	import DataNotice from '$lib/ui/DataNotice.svelte';
+	import DataUnavailable from '$lib/ui/DataUnavailable.svelte';
 	import FirePanel from '$lib/ui/FirePanel.svelte';
 	import HoseRulerOverlay from '$lib/ui/HoseRulerOverlay.svelte';
 	import Legend from '$lib/ui/Legend.svelte';
 	import OptimizerPanel from '$lib/ui/OptimizerPanel.svelte';
+	import PanelSkeleton from '$lib/ui/PanelSkeleton.svelte';
 	import SegmentPanel from '$lib/ui/SegmentPanel.svelte';
 	import StatsPanel from '$lib/ui/StatsPanel.svelte';
 	import StopPointPanel from '$lib/ui/StopPointPanel.svelte';
@@ -224,6 +226,10 @@
 			: `Bangunan ${row.buildingIndex} dipilih, tidak terjangkau air dari sumber mana pun.`;
 	}
 
+	function reloadDataset(): void {
+		void dataset.load();
+	}
+
 	function handleMapPick(position: LonLat): void {
 		if (workspace.placingHydrant) {
 			workspace.addHypotheticalSource(position);
@@ -233,6 +239,7 @@
 	function runSimulation(): void {
 		const waterArrival = workspace.waterArrival;
 		if (!waterArrival) return;
+		workspace.simulationFailure = null;
 		workspace.playback = {
 			snapshots: [],
 			timeline: [],
@@ -269,8 +276,18 @@
 					currentStep: 0,
 					secondsToTenBuildings: message.secondsToTenBuildings
 				};
+			},
+			(cause) => {
+				workspace.playback = { ...workspace.playback, running: false, playing: false };
+				workspace.simulationFailure = { task: 'run', cause };
 			}
 		);
+	}
+
+	function retryWithDefaultParameters(): void {
+		workspace.resetCoefficients();
+		workspace.simulationFailure = null;
+		runSimulation();
 	}
 
 	function summariseScenario(
@@ -305,6 +322,7 @@
 			{ label: 'Semua gang naik satu kelas', network: upgradeAccessClasses(baseNetwork) }
 		];
 
+		workspace.simulationFailure = null;
 		for (const entry of networks) {
 			const arrival = computeWaterArrival(entry.network, buildings, workspace.extraWaterNodeIds);
 			const reach = computeHoseReach({
@@ -318,6 +336,10 @@
 				maximumHoseLengthMeters: workspace.maximumHoseLengthMeters
 			});
 			const outcome = await runScenarioInWorker(arrival.secondsPerBuilding);
+			if (!outcome) {
+				comparisonRunning = false;
+				return;
+			}
 			scenarios.push(
 				summariseScenario(
 					entry.label,
@@ -336,7 +358,7 @@
 
 	function runScenarioInWorker(
 		waterArrivalSeconds: Float32Array
-	): Promise<{ burntCount: number; savedCount: number }> {
+	): Promise<{ burntCount: number; savedCount: number } | null> {
 		return new Promise((resolve) => {
 			let lastSummary = { burntCount: 0, savedCount: 0 };
 			fireClient.run(
@@ -357,7 +379,11 @@
 						savedCount: message.summary.savedCount
 					};
 				},
-				() => resolve(lastSummary)
+				() => resolve(lastSummary),
+				(cause) => {
+					workspace.simulationFailure = { task: 'run', cause };
+					resolve(null);
+				}
 			);
 		});
 	}
@@ -366,6 +392,7 @@
 		const arrival = workspace.waterArrival;
 		if (!arrival) return;
 		batchRunning = true;
+		workspace.simulationFailure = null;
 		fireClient.runBatch(
 			BATCH_PROBE_RUN_COUNT,
 			workspace.coefficients,
@@ -376,6 +403,10 @@
 			(statistics) => {
 				batchStatistics = statistics;
 				batchRunning = false;
+			},
+			(cause) => {
+				batchRunning = false;
+				workspace.simulationFailure = { task: 'batch', cause };
 			}
 		);
 	}
@@ -390,6 +421,7 @@
 		const candidates = buildInterventionCandidates(network, buildings, slowest);
 
 		workspace.optimizerRunning = true;
+		workspace.simulationFailure = null;
 		workspace.optimizerProgress = { completed: 0, total: 1, note: 'Menyiapkan kandidat' };
 		fireClient.optimize(
 			budgetRupiah,
@@ -411,6 +443,10 @@
 			(outcome) => {
 				workspace.optimizerOutcome = outcome;
 				workspace.optimizerRunning = false;
+			},
+			(cause) => {
+				workspace.optimizerRunning = false;
+				workspace.simulationFailure = { task: 'optimize', cause };
 			}
 		);
 	}
@@ -433,7 +469,7 @@
 </script>
 
 <svelte:head>
-	<title>Lembar Kerja — Titik Henti</title>
+	<title>Lembar kerja — Titik Henti</title>
 </svelte:head>
 
 <h1 class="sr-only">Lembar kerja pra-rencana kebakaran</h1>
@@ -472,16 +508,18 @@
 					{workspace.settingIgnition ? 'Klik bangunan untuk titik api' : 'Klik peta untuk hidran'}
 				</div>
 			{/if}
+		{:else if dataset.status === 'error'}
+			<div class="flex h-full items-center px-6 py-10">
+				<DataUnavailable tone="gelap" onretry={reloadDataset} />
+			</div>
 		{:else}
-			<div class="flex h-full items-center px-6">
+			<div class="flex h-full items-center px-6" aria-busy="true">
 				<div>
-					<p class="font-display text-concrete text-[18px] leading-tight font-semibold">
-						{dataset.status === 'error' ? 'Berkas data gagal dimuat' : 'Memuat berkas data'}
+					<p class="font-display text-concrete text-[18px] leading-tight font-semibold" role="status">
+						Memuat peta wilayah
 					</p>
 					<p class="text-graphite-pale prose-measure mt-2 text-[12.5px] leading-[1.55]">
-						{dataset.status === 'error'
-							? dataset.errorMessage
-							: 'Peta, jaringan gang, dan tabel bangunan sedang diambil dari aset statis.'}
+						Jaringan gang dan tabel bangunan sedang diambil. Biasanya selesai dalam beberapa detik.
 					</p>
 				</div>
 			</div>
@@ -559,6 +597,8 @@
 				{:else if workspace.activeTab === 'api'}
 					<FirePanel
 						waterArrival={workspace.waterArrival}
+						workerReady={fireClient.ready}
+						onretry={retryWithDefaultParameters}
 						onrun={runSimulation}
 						onreset={() => {
 							fireClient.cancelActiveRun();
@@ -584,6 +624,9 @@
 						onprobe={runBatchProbe}
 					/>
 				{/if}
+			{:else if dataset.status !== 'error'}
+				<PanelSkeleton label="Memuat panel wilayah kerja" rows={4} />
+				<PanelSkeleton label="Memuat klasifikasi gang" rows={5} />
 			{/if}
 		</div>
 

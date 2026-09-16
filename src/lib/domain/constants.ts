@@ -193,7 +193,7 @@ export const WATER_SOURCE_LABEL: Record<WaterSourceKind, string> = {
 	openWater: 'Air permukaan',
 	reservoir: 'Tandon',
 	applianceStand: 'Posisi unit',
-	hypothetical: 'Hidran usulan'
+	hypothetical: 'Hidran uji coba'
 };
 
 export const OPTIMIZER_EXTINGUISHER_COST_RUPIAH = 850_000;

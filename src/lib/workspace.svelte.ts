@@ -46,8 +46,14 @@ import {
 	type StopPointField
 } from '$lib/sim/stopPoint';
 import { computeWaterArrival } from '$lib/sim/waterArrival';
+import type { SimulationFailureCause, SimulationTask } from '$lib/sim/workers/messages';
 
 export type WorkspaceTab = 'akses' | 'daftar' | 'titikHenti' | 'api' | 'air' | 'intervensi';
+
+export interface SimulationFailure {
+	task: SimulationTask;
+	cause: SimulationFailureCause;
+}
 
 export interface HypotheticalSource {
 	id: number;
@@ -105,6 +111,7 @@ class Workspace {
 	optimizerProgress = $state.raw({ completed: 0, total: 0, note: '' });
 	appliedInterventionNodeIds = $state.raw<number[]>([]);
 	appliedInterventionSegmentIds = $state.raw<number[]>([]);
+	simulationFailure = $state.raw<SimulationFailure | null>(null);
 
 	baseNetwork = $derived(dataset.network);
 
@@ -329,7 +336,7 @@ class Workspace {
 				lon: source.position.lon,
 				lat: source.position.lat,
 				kind: 'hypothetical' as const,
-				label: 'Hidran usulan',
+				label: 'Hidran uji coba',
 				nearestNodeId: source.nodeId,
 				nearestNodeDistanceMeters: 0
 			}))

@@ -8,6 +8,7 @@
 	import type { FireBatchStatistics, InterventionKind } from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
+	import { PESAN_GAGAL_SIMULASI } from '$lib/ui/istilah';
 	import { workspace } from '$lib/workspace.svelte';
 
 	interface Props {
@@ -45,11 +46,13 @@
 	const applied = $derived(
 		workspace.appliedInterventionNodeIds.length + workspace.appliedInterventionSegmentIds.length
 	);
+
+	const failure = $derived(workspace.simulationFailure);
 </script>
 
 <PanelSection
-	title="Optimizer intervensi"
-	note="Maksimalisasi submodular serakah. Tiap putaran memilih kandidat dengan kenaikan ekspektasi bangunan selamat per rupiah tertinggi, sampai anggaran habis."
+	title="Pencarian intervensi"
+	note="Tiap putaran memilih intervensi yang paling banyak menambah bangunan selamat untuk setiap rupiah, lalu mengulanginya sampai anggaran habis."
 >
 	<label class="block">
 		<span class="flex items-baseline justify-between gap-2">
@@ -74,7 +77,7 @@
 			disabled={workspace.optimizerRunning}
 			onclick={onrun}
 		>
-			{workspace.optimizerRunning ? 'Mencari…' : 'Jalankan optimizer'}
+			{workspace.optimizerRunning ? 'Mencari…' : 'Cari intervensi'}
 		</button>
 		<button
 			type="button"
@@ -85,6 +88,12 @@
 			Pasang hasil ke simulasi
 		</button>
 	</div>
+
+	{#if failure && failure.task === 'optimize'}
+		<div class="border-alarm mt-3 border-l-4 py-1 pl-3" role="alert">
+			<p class="text-ink text-[12px] leading-[1.55]">{PESAN_GAGAL_SIMULASI[failure.cause]}</p>
+		</div>
+	{/if}
 
 	{#if workspace.optimizerRunning}
 		<div class="mt-3">
@@ -157,14 +166,19 @@
 
 <PanelSection
 	title="Uji cepat sebaran risiko"
-	note="Mode batch pada worker menjalankan banyak lari simulasi dengan titik api dan arah angin acak, lalu mengembalikan statistik agregat saja."
+	note="Menjalankan banyak simulasi sekaligus dengan titik api dan arah angin acak, lalu menampilkan ringkasannya saja."
 >
 	<button type="button" class="field-button" disabled={batchRunning} onclick={onprobe}>
-		{batchRunning ? 'Menjalankan…' : `Jalankan ${BATCH_PROBE_RUN_COUNT} lari acak`}
+		{batchRunning ? 'Menjalankan…' : `Jalankan ${BATCH_PROBE_RUN_COUNT} simulasi acak`}
 	</button>
+	{#if failure && failure.task === 'batch'}
+		<div class="border-alarm mt-3 border-l-4 py-1 pl-3" role="alert">
+			<p class="text-ink text-[12px] leading-[1.55]">{PESAN_GAGAL_SIMULASI[failure.cause]}</p>
+		</div>
+	{/if}
 	{#if batchStatistics}
 		<div class="mt-3">
-			<ValueRow label="Jumlah lari" value={formatCount(batchStatistics.runCount)} />
+			<ValueRow label="Jumlah simulasi" value={formatCount(batchStatistics.runCount)} />
 			<ValueRow
 				label="Rata-rata bangunan terbakar"
 				value={formatDecimal(batchStatistics.meanAffectedCount, 1)}
@@ -185,12 +199,12 @@
 
 <PanelSection title="Catatan biaya">
 	<p class="text-graphite text-[11px] leading-[1.55]">
-		Biaya satuan disimpan di constants.ts dan bersifat perkiraan kasar untuk membandingkan
-		alternatif, bukan rencana anggaran biaya. Ekspektasi bangunan terbakar dihitung dari rata-rata
-		banyak lari simulasi dengan titik api dan arah angin acak.
+		Biaya satuan adalah perkiraan kasar untuk membandingkan pilihan, bukan rencana anggaran biaya.
+		Perkiraan jumlah bangunan terbakar dihitung dari rata-rata banyak simulasi dengan titik api dan
+		arah angin acak.
 	</p>
 	<ValueRow
-		label="Kandidat dievaluasi"
+		label="Intervensi terpilih"
 		value={formatCount(outcome?.selected.length ?? 0)}
 		tone="graphite"
 	/>

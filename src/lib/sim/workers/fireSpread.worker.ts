@@ -24,6 +24,8 @@ import type {
 	BatchRequest,
 	OptimizeRequest,
 	RunRequest,
+	SimulationFailureCause,
+	SimulationTask,
 	WorkerRequest,
 	WorkerResponse
 } from '$lib/sim/workers/messages';
@@ -37,8 +39,27 @@ function reply(message: WorkerResponse, transfer: Transferable[] = []): void {
 	self.postMessage(message, { transfer });
 }
 
+function reportFailure(
+	requestId: number,
+	task: SimulationTask,
+	cause: SimulationFailureCause
+): void {
+	reply({ kind: 'failed', requestId, task, cause });
+}
+
+function runGuarded(requestId: number, task: SimulationTask, work: () => void): void {
+	try {
+		work();
+	} catch {
+		reportFailure(requestId, task, 'computation');
+	}
+}
+
 function handleRun(request: RunRequest): void {
-	if (!context) return;
+	if (!context) {
+		reportFailure(request.requestId, 'run', 'notReady');
+		return;
+	}
 	const fireState = createFireState(context.buildings.count);
 	for (const ignition of request.scenario.ignitionBuildingIndices) {
 		if (ignition < 0 || ignition >= context.buildings.count) continue;
@@ -107,7 +128,10 @@ function handleRun(request: RunRequest): void {
 }
 
 function handleBatch(request: BatchRequest): void {
-	if (!context) return;
+	if (!context) {
+		reportFailure(request.requestId, 'batch', 'notReady');
+		return;
+	}
 	const random = new SeededRandom(request.randomSeed);
 	let totalAffected = 0;
 	let totalSaved = 0;
@@ -146,7 +170,10 @@ function handleBatch(request: BatchRequest): void {
 }
 
 function handleOptimize(request: OptimizeRequest): void {
-	if (!context || !network || !buildings) return;
+	if (!context || !network || !buildings) {
+		reportFailure(request.requestId, 'optimize', 'notReady');
+		return;
+	}
 	const outcome = runGreedyOptimizer({
 		context,
 		network,
@@ -183,14 +210,14 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
 		return;
 	}
 	if (request.kind === 'run') {
-		handleRun(request);
+		runGuarded(request.requestId, 'run', () => handleRun(request));
 		return;
 	}
 	if (request.kind === 'batch') {
-		handleBatch(request);
+		runGuarded(request.requestId, 'batch', () => handleBatch(request));
 		return;
 	}
 	if (request.kind === 'optimize') {
-		handleOptimize(request);
+		runGuarded(request.requestId, 'optimize', () => handleOptimize(request));
 	}
 };

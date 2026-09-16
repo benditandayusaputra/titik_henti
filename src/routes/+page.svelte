@@ -145,8 +145,8 @@
 		<p class="text-graphite-pale prose-measure mt-6 text-[12.5px] leading-[1.6]">
 			Setiap tautan pada rantai ini dihitung, bukan dinarasikan. Kontrol
 			<span class="text-concrete">naikkan semua gang satu kelas</span> di lembar kerja menjalankan ulang
-			seluruh rantai dengan seed acak yang identik, sehingga selisih jumlah bangunan terbakar benar
-			benar berasal dari perubahan jaringan gang.
+			seluruh rantai dengan benih acak yang sama persis, sehingga selisih jumlah bangunan terbakar
+			benar-benar berasal dari perubahan jaringan gang.
 		</p>
 	</div>
 </section>

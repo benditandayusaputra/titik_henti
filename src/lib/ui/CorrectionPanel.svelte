@@ -39,7 +39,7 @@
 </script>
 
 <PanelSection
-	title="Koreksi dari lapangan"
+	title="Koreksi lapangan"
 	note="Kalimat bebas dari lapangan diubah menjadi usulan terstruktur. Usulan tidak pernah langsung mengubah data, dan baru berlaku setelah Anda setujui."
 >
 	{#if segment === null}

@@ -12,6 +12,8 @@ import type {
 	SerialisedAdjacency,
 	SerialisedBuildings,
 	SerialisedNetwork,
+	SimulationFailureCause,
+	SimulationTask,
 	WorkerRequest,
 	WorkerResponse
 } from '$lib/sim/workers/messages';
@@ -21,6 +23,7 @@ type RunDoneListener = (message: Extract<WorkerResponse, { kind: 'runDone' }>) =
 type ProgressListener = (message: Extract<WorkerResponse, { kind: 'optimizeProgress' }>) => void;
 type OptimizeDoneListener = (outcome: OptimizerOutcome) => void;
 type BatchDoneListener = (statistics: FireBatchStatistics) => void;
+export type FailureListener = (cause: SimulationFailureCause) => void;
 
 export class FireWorkerClient {
 	private worker: Worker | null = null;
@@ -30,6 +33,7 @@ export class FireWorkerClient {
 	private progressListener: ProgressListener | null = null;
 	private optimizeDoneListener: OptimizeDoneListener | null = null;
 	private batchDoneListener: BatchDoneListener | null = null;
+	private failureListeners = new Map<SimulationTask, FailureListener>();
 	private activeRequestId = 0;
 
 	ready = $state(false);
@@ -44,30 +48,14 @@ export class FireWorkerClient {
 			type: 'module'
 		});
 		this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-			const message = event.data;
-			if (message.kind === 'ready') {
-				this.ready = true;
-				return;
-			}
-			if (message.kind === 'snapshot' && message.requestId === this.activeRequestId) {
-				this.snapshotListener?.(message);
-				return;
-			}
-			if (message.kind === 'runDone' && message.requestId === this.activeRequestId) {
-				this.runDoneListener?.(message);
-				return;
-			}
-			if (message.kind === 'optimizeProgress') {
-				this.progressListener?.(message);
-				return;
-			}
-			if (message.kind === 'optimizeDone') {
-				this.optimizeDoneListener?.(message.outcome);
-				return;
-			}
-			if (message.kind === 'batchDone') {
-				this.batchDoneListener?.(message.statistics);
-			}
+			this.handleMessage(event.data);
+		};
+		this.worker.onerror = (event: ErrorEvent) => {
+			event.preventDefault();
+			this.failAllPending('computation');
+		};
+		this.worker.onmessageerror = () => {
+			this.failAllPending('computation');
 		};
 		this.post({
 			kind: 'init',
@@ -89,13 +77,15 @@ export class FireWorkerClient {
 		waterArrivalSeconds: Float32Array | null,
 		extinguisherBoost: Float32Array | null,
 		onSnapshot: SnapshotListener,
-		onDone: RunDoneListener
+		onDone: RunDoneListener,
+		onFailed: FailureListener
 	): void {
 		this.activeRequestId = this.nextRequestId;
 		this.nextRequestId += 1;
 		this.snapshotListener = onSnapshot;
 		this.runDoneListener = onDone;
-		this.post({
+		this.failureListeners.set('run', onFailed);
+		this.dispatch('run', {
 			kind: 'run',
 			requestId: this.activeRequestId,
 			scenario,
@@ -116,11 +106,13 @@ export class FireWorkerClient {
 		maximumHoseLengthMeters: number,
 		ignitionPool: number[],
 		onProgress: ProgressListener,
-		onDone: OptimizeDoneListener
+		onDone: OptimizeDoneListener,
+		onFailed: FailureListener
 	): void {
 		this.progressListener = onProgress;
 		this.optimizeDoneListener = onDone;
-		this.post({
+		this.failureListeners.set('optimize', onFailed);
+		this.dispatch('optimize', {
 			kind: 'optimize',
 			requestId: this.nextRequestId,
 			budgetRupiah,
@@ -143,10 +135,12 @@ export class FireWorkerClient {
 		stepSeconds: number,
 		stepCount: number,
 		randomSeed: number,
-		onDone: BatchDoneListener
+		onDone: BatchDoneListener,
+		onFailed: FailureListener
 	): void {
 		this.batchDoneListener = onDone;
-		this.post({
+		this.failureListeners.set('batch', onFailed);
+		this.dispatch('batch', {
 			kind: 'batch',
 			requestId: this.nextRequestId,
 			runCount,
@@ -164,6 +158,62 @@ export class FireWorkerClient {
 		this.activeRequestId = 0;
 		this.snapshotListener = null;
 		this.runDoneListener = null;
+		this.failureListeners.delete('run');
+	}
+
+	private handleMessage(message: WorkerResponse): void {
+		if (message.kind === 'ready') {
+			this.ready = true;
+			return;
+		}
+		if (message.kind === 'failed') {
+			if (message.task === 'run' && message.requestId !== this.activeRequestId) return;
+			this.fail(message.task, message.cause);
+			return;
+		}
+		if (message.kind === 'snapshot' && message.requestId === this.activeRequestId) {
+			this.snapshotListener?.(message);
+			return;
+		}
+		if (message.kind === 'runDone' && message.requestId === this.activeRequestId) {
+			this.failureListeners.delete('run');
+			this.runDoneListener?.(message);
+			return;
+		}
+		if (message.kind === 'optimizeProgress') {
+			this.progressListener?.(message);
+			return;
+		}
+		if (message.kind === 'optimizeDone') {
+			this.failureListeners.delete('optimize');
+			this.optimizeDoneListener?.(message.outcome);
+			return;
+		}
+		if (message.kind === 'batchDone') {
+			this.failureListeners.delete('batch');
+			this.batchDoneListener?.(message.statistics);
+		}
+	}
+
+	private dispatch(task: SimulationTask, request: WorkerRequest): void {
+		if (!this.worker || !this.ready) {
+			this.fail(task, 'notReady');
+			return;
+		}
+		this.worker.postMessage(request);
+	}
+
+	private fail(task: SimulationTask, cause: SimulationFailureCause): void {
+		const listener = this.failureListeners.get(task);
+		this.failureListeners.delete(task);
+		if (task === 'run') this.activeRequestId = 0;
+		listener?.(cause);
+	}
+
+	private failAllPending(cause: SimulationFailureCause): void {
+		for (const task of [...this.failureListeners.keys()]) {
+			this.fail(task, cause);
+		}
 	}
 
 	private post(request: WorkerRequest): void {

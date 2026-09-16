@@ -26,7 +26,7 @@
 
 <PanelSection
 	title="Naikkan semua gang satu kelas"
-	note="Menaikkan kelas akses seluruh segmen satu tingkat, menghitung ulang titik henti, panjang selang, waktu air sampai, lalu menjalankan simulasi dengan seed yang sama persis."
+	note="Menaikkan kelas akses seluruh segmen satu tingkat, menghitung ulang titik henti, panjang selang, waktu air sampai, lalu menjalankan simulasi dengan benih acak yang sama persis."
 >
 	<div class="flex flex-wrap gap-2">
 		<button type="button" class="field-button-solid" disabled={running} onclick={oncompare}>
@@ -142,7 +142,7 @@
 				{burntDelta > 0 ? '−' : burntDelta < 0 ? '+' : ''}{formatCount(Math.abs(burntDelta))}
 			</p>
 			<p class="text-graphite mt-1 text-[11px] leading-[1.5]">
-				bangunan terbakar, dengan titik api, arah angin, dan seed acak yang identik. Air sampai
+				bangunan terbakar, dengan titik api, arah angin, dan benih acak yang sama persis. Air sampai
 				lebih cepat {formatSeconds(Math.abs(arrivalDelta))} rata-rata.
 			</p>
 		</div>

@@ -129,10 +129,22 @@ export interface OptimizeDoneMessage {
 	outcome: OptimizerOutcome;
 }
 
+export type SimulationTask = 'run' | 'batch' | 'optimize';
+
+export type SimulationFailureCause = 'notReady' | 'computation';
+
+export interface FailedMessage {
+	kind: 'failed';
+	requestId: number;
+	task: SimulationTask;
+	cause: SimulationFailureCause;
+}
+
 export type WorkerResponse =
 	| ReadyMessage
 	| SnapshotMessage
 	| RunDoneMessage
 	| BatchDoneMessage
 	| OptimizeProgressMessage
-	| OptimizeDoneMessage;
+	| OptimizeDoneMessage
+	| FailedMessage;

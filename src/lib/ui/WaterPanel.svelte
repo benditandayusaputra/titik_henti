@@ -53,8 +53,7 @@
 
 	{#if !reach}
 		<p class="text-graphite mt-3 text-[12px] leading-[1.55]">
-			Menyiapkan tabel ketetanggaan bangunan. Angka jangkauan muncul setelah berkas itu selesai
-			dimuat.
+			Menyiapkan data jarak antarbangunan. Angka jangkauan muncul setelah data itu selesai dimuat.
 		</p>
 	{/if}
 
@@ -92,7 +91,7 @@
 
 <PanelSection
 	title="Sumber air"
-	note="Posisi unit pemadam adalah titik henti kandidat pada segmen kelas unit besar, bukan hidran terpasang."
+	note="Posisi mobil pemadam adalah titik henti kandidat pada segmen kelas unit besar, bukan hidran terpasang."
 >
 	{#each sourceCounts as [kind, count] (kind)}
 		<ValueRow
@@ -107,7 +106,7 @@
 			class={workspace.placingHydrant ? 'field-button-solid' : 'field-button'}
 			onclick={() => (workspace.placingHydrant = !workspace.placingHydrant)}
 		>
-			{workspace.placingHydrant ? 'Mode taruh hidran aktif' : 'Taruh hidran hipotetis'}
+			{workspace.placingHydrant ? 'Klik peta untuk menaruh hidran uji coba' : 'Taruh hidran uji coba'}
 		</button>
 		<button
 			type="button"

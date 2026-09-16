@@ -55,7 +55,7 @@
 
 	let container: HTMLDivElement;
 	let map: maplibregl.Map | null = $state(null);
-	let overlay: MapboxOverlay | null = null;
+	let overlay = $state.raw<MapboxOverlay | null>(null);
 	let overlayCanvasWatcher: MutationObserver | null = null;
 	let styleReady = $state(false);
 	let previousSelected: number | null = null;
@@ -214,8 +214,10 @@
 
 	$effect(() => {
 		const activeLayers = layers;
-		if (overlay && styleReady) {
-			overlay.setProps({ layers: activeLayers });
+		const activeOverlay = overlay;
+		const ready = styleReady;
+		if (activeOverlay && ready) {
+			activeOverlay.setProps({ layers: activeLayers });
 		}
 	});
 

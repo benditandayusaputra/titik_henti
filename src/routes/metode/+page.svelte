@@ -281,7 +281,7 @@
 			<ol class="flex flex-col">
 				{#each pipelineStages as stage (stage.index)}
 					<li class="hairline-b flex gap-4 py-4 last:border-b-0">
-						<span class="readout text-graphite w-8 shrink-0 pt-[2px] text-[12px]">
+						<span class="field-label text-graphite w-8 shrink-0 pt-[2px]">
 							{stage.index}
 						</span>
 						<div class="min-w-0">
@@ -393,7 +393,7 @@
 							<td class="text-graphite py-2 pr-3 text-[11.5px] leading-[1.45]">
 								{source.source}
 							</td>
-							<td class="readout text-ink py-2 text-right text-[11px]">{source.licence}</td>
+							<td class="text-ink py-2 text-right text-[11px]">{source.licence}</td>
 						</tr>
 					{/each}
 				</tbody>

@@ -203,13 +203,13 @@
 				<div class="border-ink/25 flex w-[38mm] flex-col justify-between border-l pl-3 text-right">
 					<div>
 						<p class="field-label-sm text-graphite">Tanggal olah</p>
-						<p class="readout text-ink mt-1 text-[11px]">
+						<p class="field-label text-ink mt-1">
 							{formatDate(dataset.meta.processedAt)}
 						</p>
 					</div>
 					<div>
 						<p class="field-label-sm text-graphite">Versi pipeline</p>
-						<p class="readout text-ink mt-1 text-[11px]">v{dataset.meta.pipelineVersion}</p>
+						<p class="field-label text-ink mt-1">v{dataset.meta.pipelineVersion}</p>
 					</div>
 				</div>
 			</header>

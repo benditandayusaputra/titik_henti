@@ -26,12 +26,12 @@
 		{#each meta.provenance as source (source.label)}
 			<div class="flex items-baseline gap-1.5">
 				<dt class="field-label-sm text-graphite">{source.label}</dt>
-				<dd class="readout text-graphite text-[10px]">{source.licence}</dd>
+				<dd class="text-graphite text-[10px] leading-none">{source.licence}</dd>
 			</div>
 		{/each}
 		<div class="flex items-baseline gap-1.5">
 			<dt class="field-label-sm text-graphite">Olah</dt>
-			<dd class="readout text-graphite text-[10px]">
+			<dd class="text-graphite text-[10px] leading-none">
 				Diolah {formatDate(meta.processedAt)}, pipeline versi {meta.pipelineVersion}
 			</dd>
 		</div>

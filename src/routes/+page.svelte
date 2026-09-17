@@ -128,7 +128,7 @@
 		<ol class="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
 			{#each chain as step, index (step)}
 				<li class="border-concrete/20 border px-4 py-4">
-					<span class="readout text-graphite-pale text-[11px]">
+					<span class="field-label-sm text-graphite-pale">
 						{(index + 1).toString().padStart(2, '0')}
 					</span>
 					<p class="text-concrete mt-2 text-[13px] leading-[1.45]">{step}</p>

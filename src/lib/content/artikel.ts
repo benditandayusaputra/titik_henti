@@ -35,6 +35,7 @@ export type ArticleFrontmatter = z.infer<typeof frontmatterSchema>;
 export interface Article extends ArticleFrontmatter {
 	slug: string;
 	html: string;
+	htmlCetak: string;
 }
 
 const CATEGORY_ORDER: Record<ArticleCategory, number> = {
@@ -69,6 +70,14 @@ function buildArticles(): Article[] {
 		import: 'default',
 		eager: true
 	}) as Record<string, string>;
+	const printFiles = import.meta.glob('../../content/artikel/cetak/*.md', {
+		query: '?raw',
+		import: 'default',
+		eager: true
+	}) as Record<string, string>;
+	const printBodyBySlug = new Map(
+		Object.entries(printFiles).map(([path, raw]) => [readSlug(path), raw])
+	);
 
 	const articles: Article[] = [];
 	for (const [path, raw] of Object.entries(files)) {
@@ -82,11 +91,20 @@ function buildArticles(): Article[] {
 					.join('; ')}`
 			);
 		}
+		const printBody = printBodyBySlug.get(slug);
+		if (printBody === undefined) {
+			throw new Error(`artikel ${slug} belum punya versi cetak di content/artikel/cetak`);
+		}
+		printBodyBySlug.delete(slug);
 		articles.push({
 			...parsed.data,
 			slug,
-			html: marked.parse(body, { async: false })
+			html: marked.parse(body, { async: false }),
+			htmlCetak: marked.parse(printBody, { async: false })
 		});
+	}
+	if (printBodyBySlug.size > 0) {
+		throw new Error(`versi cetak tanpa artikel: ${[...printBodyBySlug.keys()].join(', ')}`);
 	}
 
 	articles.sort((first, second) => {

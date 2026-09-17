@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PageMeta from '$lib/ui/PageMeta.svelte';
-	import { ARTICLE_WRITE_LINE_COUNT } from '$lib/domain/constants';
+	import { ARTICLE_WRITE_LINE_COUNT, SITE_URL } from '$lib/domain/constants';
 	import { formatDate, formatList } from '$lib/format';
 	import type { PageData } from './$types';
 
@@ -34,25 +34,33 @@
 			{artikel.judul}
 		</h1>
 
-		<p class="text-graphite prose-measure mt-3 text-[14px] leading-[1.6] print:text-[11pt]">
+		<p class="text-graphite prose-measure mt-3 text-[14px] leading-[1.6] print:hidden">
 			{artikel.ringkasan}
 		</p>
 
-		<p class="field-label-sm text-graphite mt-3">
+		<p class="field-label-sm text-graphite mt-3 print:hidden">
 			{artikel.kategori}, {artikel.waktuBacaMenit} menit baca, untuk {formatList(artikel.untuk)}
 		</p>
 
-		<div class="bg-ink mt-5 mb-7 h-[2px] w-full"></div>
+		<div class="bg-ink mt-5 mb-7 h-[2px] w-full print:mt-3 print:mb-3"></div>
 
-		<div class="artikel-isi prose-measure">
+		<div class="artikel-isi prose-measure print:hidden">
 			{@html artikel.html}
 		</div>
 
-		<section class="hairline-t mt-10 pt-5">
-			<h2 class="font-display text-ink text-[15px] leading-none font-semibold">Sumber</h2>
-			<ul class="mt-3 flex flex-col gap-2">
+		<div class="artikel-isi artikel-cetak hidden print:block">
+			{@html artikel.htmlCetak}
+			<p class="catatan-cetak">
+				Lembar ini hanya memuat langkah intinya. Penjelasan lengkap ada di
+				{SITE_URL}/artikel/{artikel.slug}/
+			</p>
+		</div>
+
+		<section class="hairline-t mt-10 pt-5 print:mt-3 print:pt-2">
+			<h2 class="font-display text-ink text-[15px] leading-none font-semibold print:text-[10pt]">Sumber</h2>
+			<ul class="mt-3 flex flex-col gap-2 print:mt-1 print:gap-0.5">
 				{#each artikel.sumber as sumber (sumber.tautan)}
-					<li class="text-ink text-[12.5px] leading-[1.6]">
+					<li class="text-ink text-[12.5px] leading-[1.6] print:text-[8pt] print:leading-[1.3]">
 						{sumber.lembaga}
 						<span class="tautan-cetak text-graphite block break-all">
 							<a href={sumber.tautan} class="underline underline-offset-2" rel="noreferrer">
@@ -62,12 +70,12 @@
 					</li>
 				{/each}
 			</ul>
-			<p class="field-label-sm text-graphite mt-4">
+			<p class="field-label-sm text-graphite mt-4 print:mt-1">
 				Diperbarui {formatDate(artikel.diperbarui)}
 			</p>
 		</section>
 
-		<section class="ruang-tulis hairline-t mt-8 hidden pt-5">
+		<section class="ruang-tulis hairline-t mt-8 hidden pt-5 print:mt-3 print:pt-2">
 			<h2 class="font-display text-ink text-[13pt] leading-none font-semibold">
 				Catatan pos RT
 			</h2>
@@ -158,6 +166,36 @@
 
 		.ruang-tulis {
 			display: block;
+		}
+
+		.artikel-cetak :global(h2) {
+			font-size: 12pt;
+			margin-top: 0.7rem;
+			margin-bottom: 0.25rem;
+		}
+
+		.artikel-cetak :global(p),
+		.artikel-cetak :global(ol),
+		.artikel-cetak :global(ul) {
+			font-size: 10.5pt;
+			line-height: 1.4;
+			margin-bottom: 0.4rem;
+		}
+
+		.artikel-cetak :global(li) {
+			margin-bottom: 0.1rem;
+		}
+
+		.artikel-cetak :global(blockquote) {
+			margin: 0.5rem 0;
+			padding: 0.2rem 0 0.2rem 0.7rem;
+			border-left-color: var(--color-ink);
+		}
+
+		.artikel-cetak .catatan-cetak {
+			font-size: 9pt;
+			color: var(--color-graphite);
+			margin-top: 0.6rem;
 		}
 
 		.tautan-cetak a {

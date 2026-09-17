@@ -573,7 +573,7 @@
 						records={workspace.corrections}
 						submitting={workspace.correctionSubmitting}
 						errorMessage={workspace.correctionErrorMessage}
-						onsubmit={(sentence) => void workspace.requestCorrection(sentence)}
+						onsubmit={(sentence) => workspace.requestCorrection(sentence)}
 						ondecide={(id, approved) =>
 							workspace.setCorrectionStatus(id, approved ? 'approved' : 'rejected')}
 					/>

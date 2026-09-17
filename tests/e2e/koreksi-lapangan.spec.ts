@@ -128,6 +128,7 @@ test.describe('koreksi lapangan berbantuan AI', () => {
 		await expect(usulan).toBeVisible();
 		await expect(usulan).toContainText('gang ini sebenarnya cuma dua meter karena ada warung permanen');
 		await expect(usulan).toContainText('2,00 m');
+		await expect(page.locator('#kalimat-koreksi')).toHaveValue('');
 
 		await expect(panel).toHaveText(sebelum ?? '');
 	});
@@ -183,6 +184,30 @@ test.describe('koreksi lapangan berbantuan AI', () => {
 		await expect(page.getByRole('status')).toBeVisible();
 		await expect(page.locator('article').filter({ hasText: 'Lebar usulan' })).toHaveCount(0);
 		await expect(panel).toHaveText(sebelum ?? '');
+	});
+
+	test('kalimat tetap tersimpan dan pesan menyebut langkah berikutnya bila layanan gagal', async ({
+		page
+	}) => {
+		await page.route('**/api/koreksi', (route) =>
+			route.fulfill({
+				status: 502,
+				contentType: 'application/json',
+				body: JSON.stringify({
+					ok: false,
+					message: 'Layanan koreksi gagal merespons. Kalimat Anda tetap tersimpan, kirim ulang sebentar lagi.'
+				})
+			})
+		);
+		await bukaLembarKerja(page);
+		await pilihSegmenGang(page);
+		const kalimat = 'gang ini sebenarnya cuma dua meter karena ada warung permanen';
+		await page.fill('#kalimat-koreksi', kalimat);
+		await page.getByRole('button', { name: 'Buat usulan' }).click();
+
+		await expect(page.getByText('kirim ulang sebentar lagi')).toBeVisible();
+		await expect(page.locator('#kalimat-koreksi')).toHaveValue(kalimat);
+		await expect(page.locator('article').filter({ hasText: 'Lebar usulan' })).toHaveCount(0);
 	});
 
 	test('kunci API tidak pernah sampai ke sisi klien', async ({ page }) => {

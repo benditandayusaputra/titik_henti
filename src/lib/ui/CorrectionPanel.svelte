@@ -15,7 +15,7 @@
 		records: CorrectionRecord[];
 		submitting: boolean;
 		errorMessage: string;
-		onsubmit: (sentence: string) => void;
+		onsubmit: (sentence: string) => Promise<boolean>;
 		ondecide: (id: number, approved: boolean) => void;
 	}
 
@@ -33,8 +33,10 @@
 	function submit(event: SubmitEvent): void {
 		event.preventDefault();
 		if (!canSubmit) return;
-		onsubmit(trimmed);
-		sentence = '';
+		const sent = trimmed;
+		void onsubmit(sent).then((accepted) => {
+			if (accepted && sentence.trim() === sent) sentence = '';
+		});
 	}
 </script>
 

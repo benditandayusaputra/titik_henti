@@ -187,23 +187,23 @@ async function requestProposalText(
 			return { ok: false, status: 429, message: 'Layanan sedang padat. Coba lagi beberapa saat lagi.' };
 		}
 		if (!response.ok) {
-			return { ok: false, status: 502, message: 'Layanan koreksi gagal merespons.' };
+			return { ok: false, status: 502, message: 'Layanan koreksi gagal merespons. Kalimat Anda tetap tersimpan, kirim ulang sebentar lagi.' };
 		}
 
 		const payload = chatCompletionSchema.safeParse(await response.json());
 		if (!payload.success) {
-			return { ok: false, status: 502, message: 'Bentuk jawaban layanan koreksi tidak dikenali.' };
+			return { ok: false, status: 502, message: 'Bentuk jawaban layanan koreksi tidak dikenali. Kirim ulang kalimat yang sama.' };
 		}
 		const content = payload.data.choices[0].message.content;
 		if (!content) {
-			return { ok: false, status: 422, message: 'Kalimat ini tidak dapat diproses menjadi usulan koreksi.' };
+			return { ok: false, status: 422, message: 'Kalimat ini tidak dapat diproses menjadi usulan koreksi. Sebutkan lebar atau penghalangnya, lalu kirim ulang.' };
 		}
 		return { ok: true, content };
 	} catch (failure) {
 		if (failure instanceof Error && failure.name === 'AbortError') {
-			return { ok: false, status: 504, message: 'Layanan koreksi tidak menjawab tepat waktu.' };
+			return { ok: false, status: 504, message: 'Layanan koreksi tidak menjawab tepat waktu. Kalimat Anda tetap tersimpan, kirim ulang.' };
 		}
-		return { ok: false, status: 502, message: 'Tidak dapat menghubungi layanan koreksi.' };
+		return { ok: false, status: 502, message: 'Tidak dapat menghubungi layanan koreksi. Kalimat Anda tetap tersimpan, kirim ulang sebentar lagi.' };
 	} finally {
 		clearTimeout(timeout);
 	}

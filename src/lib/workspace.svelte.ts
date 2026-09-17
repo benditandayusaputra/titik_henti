@@ -239,9 +239,9 @@ class Workspace {
 		this.correctionErrorMessage = '';
 	}
 
-	async requestCorrection(sentence: string): Promise<void> {
+	async requestCorrection(sentence: string): Promise<boolean> {
 		const segment = this.selectedSegment;
-		if (!segment) return;
+		if (!segment) return false;
 
 		this.correctionSubmitting = true;
 		this.correctionErrorMessage = '';
@@ -266,8 +266,8 @@ class Workspace {
 				this.correctionErrorMessage =
 					parsed.success && !parsed.data.ok
 						? parsed.data.message
-						: 'Jawaban layanan koreksi tidak dapat dibaca dan ditolak.';
-				return;
+						: 'Jawaban layanan koreksi tidak dapat dibaca dan ditolak. Kirim ulang kalimat yang sama.';
+				return false;
 			}
 			this.corrections = [
 				...this.corrections,
@@ -281,8 +281,11 @@ class Workspace {
 					status: 'pending'
 				}
 			];
+			return true;
 		} catch {
-			this.correctionErrorMessage = 'Gagal menghubungi layanan koreksi.';
+			this.correctionErrorMessage =
+				'Tidak dapat menghubungi layanan koreksi. Periksa koneksi, lalu kirim ulang.';
+			return false;
 		} finally {
 			this.correctionSubmitting = false;
 		}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { DATA_URL } from '$lib/data/sources';
-	import { MapboxOverlay } from '@deck.gl/mapbox';
+	import type { MapboxOverlay } from '@deck.gl/mapbox';
 	import type { Layer } from '@deck.gl/core';
 	import maplibregl, { type MapGeoJSONFeature } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
@@ -143,9 +143,7 @@
 		);
 
 		created.on('load', () => {
-			overlay = new MapboxOverlay({ interleaved: false });
-			created.addControl(overlay);
-			overlayCanvasWatcher = keepOverlayCanvasOutOfTabOrder(container);
+			void pasangLapisanDeck(created);
 			created.resize();
 			created.fitBounds(
 				[
@@ -212,6 +210,15 @@
 			maplibregl.removeProtocol('pmtiles');
 		};
 	});
+
+	async function pasangLapisanDeck(created: maplibregl.Map): Promise<void> {
+		const { MapboxOverlay } = await import('@deck.gl/mapbox');
+		if (map !== created && map !== null) return;
+		const dibuat = new MapboxOverlay({ interleaved: false });
+		created.addControl(dibuat);
+		overlay = dibuat;
+		overlayCanvasWatcher = keepOverlayCanvasOutOfTabOrder(container);
+	}
 
 	$effect(() => {
 		const activeLayers = layers;

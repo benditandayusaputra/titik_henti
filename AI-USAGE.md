@@ -348,6 +348,78 @@ Keduanya diseragamkan dan ditambahkan ke daftar varian terlarang.
 
 Pemeriksaan produksi yang lolos: seluruh halaman menjawab 200 dan jalur yang tidak ada menjawab 404, pengalihan garis miring bekerja, berkas PMTiles melayani range request dengan jawaban 206 dan tanda tangan berkas yang sah, data dikirim terkompresi Brotli, header cache dari `vercel.json` terpasang, peta tergambar dalam kurang dari setengah detik, dan tidak ada galat konsol maupun permintaan yang gagal.
 
+### Tahap 17, kinerja dan pengerasan produksi
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Menyelesaikan fase kinerja dan pengerasan produksi dari rencana eksekusi, mengukur setiap anggaran, lalu commit dan push |
+| Dihasilkan AI | Audit terhadap sebelas butir fase, pemindahan berkas data, pramuat huruf, huruf cadangan bermetrik setara, kebijakan keamanan konten, meta per halaman, gambar Open Graph, peta situs, alur kerja CI, uji unit simulasi, spec end to end produksi |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Audit sebelum membangun menemukan sebagian besar butir sudah tersentuh, tetapi ada empat masalah yang tidak kelihatan dari luar:
+
+1. Beranda, halaman metode, dan kartu siaga RT memanggil pemuat data lengkap hanya untuk menampilkan angka dari `meta.json`. Beranda mengunduh `graph.json` 1,6 MB dan `buildings.bin` 424 KB demi empat angka, dan angka itu baru muncul setelah unduhan selesai, bukan di HTML hasil build.
+2. Berkas data dilayani dengan header cache satu tahun `immutable`, padahal namanya tetap, misalnya `/data/gangs.pmtiles`. Setelah pipeline dijalankan ulang, pengunjung lama akan terus memakai data lama selama setahun tanpa cara memaksanya berganti.
+3. Tidak ada kebijakan keamanan konten, meta Open Graph, peta situs, maupun robots.txt.
+4. `package-lock.json` tidak sinkron dengan `package.json`, sehingga `npm ci` gagal. Ini tidak pernah ketahuan karena Vercel memakai `npm install` yang toleran.
+
+Yang dibangun:
+
+1. Berkas data dipindah dari `static/data/` ke `src/lib/data/files/` dan diimpor lewat `?url`. Vite memberi sidik jari pada namanya, misalnya `gangs.ZoQ9Ye4Q.pmtiles`, dan adapter Vercel sudah melayani `/_app/immutable/` dengan cache panjang. Aturan cache manual di `vercel.json` dibuang. `meta.json` diimpor sebagai modul, sehingga angka beranda dan tabel sumber data di halaman metode sudah ada di HTML hasil build tanpa unduhan apa pun. Keluaran pipeline ikut dipindah.
+2. Hanya tiga huruf yang tampil di layar pertama setiap halaman yang dipramuat, yaitu Plex Sans Condensed 600 serta Plex Sans 400 dan 500, lewat `hooks.server.ts`.
+3. Kebijakan keamanan konten dipasang lewat `kit.csp` dengan hash skrip, karena halaman hasil prerender tidak bisa diberi nonce. `frame-ancestors`, `X-Content-Type-Options`, `Referrer-Policy`, dan `Permissions-Policy` dipasang sebagai header di `vercel.json`, karena `frame-ancestors` diabaikan bila ditulis lewat tag meta.
+4. Komponen `PageMeta` memberi setiap halaman judul, deskripsi, tautan kanonik, dan Open Graph sendiri. Gambar Open Graph dihasilkan saat build dari `print.json` asli dengan proyeksi yang sama dengan denah kartu siaga RT, lalu dienkode ke PNG memakai `zlib` bawaan Node tanpa pustaka tambahan. Gambar itu dan peta situs ditulis sebagai endpoint yang dirender saat build, sehingga keduanya menjadi berkas statis. Server route yang benar-benar berjalan di server tetap hanya `/api/koreksi`.
+5. Alur kerja GitHub Actions menjalankan cek komentar paling awal, lalu instalasi bersih, cek tipe, build, uji unit, dan uji Playwright.
+6. Delapan modul di `src/lib/sim` yang belum punya uji unit kini punya: geo, heap, hoseReach, network, optimizer, random, spatialGrid, dan waterArrival. Jumlah uji unit naik dari 47 ke 80.
+
+Pengukuran:
+
+| Ukuran | Sebelum | Sesudah | Anggaran |
+| --- | --- | --- | --- |
+| JavaScript beranda setelah gzip | 38,7 KB | 38,7 KB | di bawah 180 KB |
+| Unduhan data saat membuka beranda | 2,0 MB | 0 | tidak ditetapkan |
+| LCP beranda, 4G lambat dan CPU 4 kali lebih lambat, produksi | 1.664 ms, sekali ukur | 1.676 sampai 1.804 ms pada 380 px, 1.708 ms pada 1440 px, pencilan dicatat di bawah | di bawah 2 detik |
+| CLS beranda, kondisi sama | 0,0183 | 0,0016 pada 380 px, 0,0043 pada 1440 px | di bawah 0,02 |
+| CLS artikel pada 380 px, kondisi sama | 0,0402 | 0,0015 | tidak ditetapkan |
+
+LCP tidak membaik, dan angka sesudah tidak boleh dibaca sebagai satu nilai pasti. Pengukuran sebelum hanya diambil sekali. Pengukuran beranda sesudah pada 380 piksel diulang tiga kali dan menghasilkan 1.804, 5.040, dan 1.676 milidetik. Nilai 5.040 dan satu nilai 3.984 pada kartu siaga RT muncul saat deploy baru sedang ditayangkan, jadi dugaannya cache CDN yang masih dingin, tetapi dugaan itu belum dibuktikan. Di luar dua pencilan itu, seluruh halaman berada di 1.676 sampai 1.804 milidetik, di bawah anggaran 2 detik dengan sisa yang tipis.
+
+MapLibre dan deck.gl hanya ada di bundel rute peta. Bundel itu 481 KB setelah gzip dan tidak pernah dimuat oleh beranda maupun artikel.
+
+Penyebab CLS ditelusuri lewat sumber pergeseran, bukan ditebak. Tautan di kepala halaman terbungkus tiga baris saat huruf cadangan tampil dan dua baris setelah Plex Condensed tiba, sehingga seluruh isi halaman bergeser 13 piksel. Pramuat saja tidak cukup pada 4G lambat. Perbaikannya permukaan huruf cadangan `IBM Plex Sans Condensed Fallback` dari Arial atau Roboto dengan `size-adjust` 88 persen, angka yang diukur dari rasio lebar teks kepala halaman pada kedua huruf. Tinggi setiap tautan dan judul dibandingkan dengan huruf diblokir dan dengan huruf termuat pada tiga halaman dan tujuh lebar dari 320 sampai 1440 piksel, dan hasilnya identik di seluruh 21 kombinasi.
+
+Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
+
+1. Pramuat huruf pertama kali ikut memuat berkas `.woff` cadangan di samping `.woff2`, sehingga setiap huruf terunduh dua kali. Ketahuan dari HTML hasil build, lalu dibatasi ke `.woff2`.
+2. Percobaan pertama memperbaiki CLS mengunci label kepala halaman agar tidak terbungkus. Pengukuran menunjukkan label Metode terpotong 30 piksel pada lebar 380 karena Plex pun sudah terbungkus di lebar itu. Percobaan itu dibatalkan sebelum di-commit.
+3. Skrip perapian indentasi di halaman metode mencari tabel pertama di berkas, bukan tabel sumber data, sehingga menggeser indentasi rentang yang salah. Berkas dipulihkan dari git lalu diubah ulang dengan pencarian yang tepat.
+4. Deskripsi kartu siaga RT sempat ditulis kartu siaga tanpa RT. Uji istilah dari tahap 15 menangkapnya.
+5. Uji kebijakan keamanan konten menemukan pelanggaran `script-src eval` di halaman peta. Sumbernya bukan kode produk, melainkan pemeriksaan `new Function` milik zod v4 yang dilempar lalu ditelan, tetapi tetap tercatat sebagai pelanggaran. Kebijakannya tidak dilonggarkan dengan `unsafe-eval`. Zod diimpor lewat satu modul yang menyalakan mode `jitless`, dan pelanggaran hilang di keenam halaman.
+6. Global gitignore di mesin pengembang mengabaikan folder `.github`, sehingga berkas alur kerja pertama kali gagal ditambahkan tanpa ketahuan sampai perintah commit berhenti. Berkas itu ditambahkan paksa, konfigurasi global tidak diubah.
+7. Jalankan CI pertama gagal di `npm ci` karena lockfile tidak sinkron. Direproduksi di klon bersih dengan Node 22 dan Node 24. `npm install --package-lock-only` tidak memperbaikinya, `npm install` penuh memperbaikinya. Perbandingan isi lockfile per paket menunjukkan hanya dua entri `@emnapi` yang ditambahkan dan penanda `peer` yang dibuang, tanpa satu versi pun berubah.
+8. Jalankan CI kedua lolos sampai uji unit, tetapi enam uji koreksi lapangan gagal karena waktu habis, sementara 54 uji lain lolos, termasuk uji piksel peta. Log tidak bisa dibaca tanpa akun, jadi reporter Playwright di CI diganti ke format anotasi GitHub supaya kegagalan terbaca di halaman run. Penyebabnya ada di uji, bukan produk. Helper uji memilih segmen dengan mengeklik grid 31 kali 21 titik secara buta sampai panel segmen muncul, dan di mesin CI yang menggambar WebGL dengan perangkat lunak, loop itu melewati batas 30 detik. Helper kini memotret area peta, mencari piksel berwarna gang unit kecil yang benar-benar tergambar, lalu mengeklik di sana. Menunggu piksel itu muncul sekaligus menjadi tanda peta siap, bukan jeda tetap. Keenam uji turun dari waktu habis di CI menjadi sekitar 2 detik per uji di lokal. Uji ini dibuktikan gagal saat pembacaan nomor segmen dari klik peta dirusak sementara. Percobaan pertama merusak fungsi yang salah, yaitu pembacaan nomor bangunan yang baris pertamanya identik, dan uji justru tetap lolos karena klik lalu jatuh ke segmen. Setelah sasaran perusakan dibetulkan, uji gagal dengan pesan yang menyebut penyebabnya.
+9. Polling status CI lewat API GitHub tanpa autentikasi menghabiskan kuota 60 permintaan per jam. Pemantauan dipindah ke halaman HTML run.
+
+Jalankan CI keempat hijau: cek komentar, instalasi bersih, cek tipe, build, 80 uji unit, dan 60 uji end to end, total 5 menit 8 detik.
+
+Uji unit baru tidak diterima hanya karena lolos. Setiap modul dirusak sementara di satu titik yang menjadi inti perilakunya, dan uji harus gagal. Tiga mutan awalnya lolos:
+
+1. `spatialGrid` dengan jangkauan pencarian nol tetap lolos, karena titik uji dan bangunan terdekatnya berada di sel yang sama. Titik uji digeser supaya bangunan terdekat berada di sel tetangga.
+2. `optimizer` yang mengabaikan anggaran yang sudah terpakai tetap lolos, karena pada skenario uji hanya satu intervensi yang pernah memberi manfaat. Skenario diganti menjadi rantai gang unit kecil, tempat dua pelebaran berturut-turut sama-sama berguna tetapi anggaran hanya cukup untuk dua dari tiga.
+3. `hoseReach` tanpa pengurutan kantong tetap lolos, karena kantong terbesar kebetulan ditemukan lebih dulu. Data uji diubah supaya kantong kecil ditemukan lebih dulu.
+
+Dua mutan lain lolos karena memang setara dengan kode asli, bukan karena ujinya lemah. Pengaman benih nol di `SeededRandom` tidak diperlukan karena generator kongruensial linear tidak macet di nol, dan pengecekan manfaat tidak positif di optimizer sudah tercakup oleh syarat rasio harus lebih besar dari nol.
+
+Spec baru `tests/e2e/produksi.spec.ts` memeriksa angka beranda ada di HTML hasil build, beranda tidak mengunduh berkas data dan JavaScript-nya di bawah anggaran, berkas data peta bernama bersidik jari, hanya tiga huruf yang dipramuat, tidak ada pelanggaran kebijakan keamanan konten di keenam halaman termasuk peta yang sudah tergambar, setiap halaman punya meta sendiri, serta gambar Open Graph, peta situs, dan robots.txt tersedia.
+
+Pemeriksaan produksi setelah deploy: berkas PMTiles bersidik jari menjawab range request dengan 206, tanda tangan berkas yang sah, dan cache `immutable`. `graph.json` dikirim dengan Brotli. Keempat header keamanan terpasang. Nol pelanggaran kebijakan keamanan konten di keenam halaman. Lapisan deck.gl tergambar di peta produksi.
+
+Temuan yang belum diselesaikan: halaman peta memunculkan peringatan driver GPU `GPU stall due to ReadPixels` sekali per proses browser. Peringatan yang sama muncul pada build sebelum tahap ini, jadi bukan regresi. Instrumentasi menunjukkan tidak ada satu pun panggilan `readPixels` WebGL maupun `getImageData` dari JavaScript halaman, sehingga sumbernya kemungkinan pembacaan balik internal browser atau worker pustaka peta. Penyebab pastinya belum ditemukan.
+
+Riwayat git diperiksa dengan `git log --format=%B`, dan tidak ada penyebutan nama alat, AI, atau kalimat pembuatan otomatis.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

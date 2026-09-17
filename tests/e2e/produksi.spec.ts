@@ -63,6 +63,33 @@ test.describe('kinerja dan pengerasan produksi', () => {
 		for (const tautan of pramuat) expect(tautan).toContain('.woff2');
 	});
 
+	test('rute peta tidak memuat pustaka lapisan dan huruf di jalur kritis', async ({ request, page }) => {
+		test.setTimeout(120000);
+		const html = await (await request.get('/peta/')).text();
+		expect(html.match(/<link[^>]*rel="preload"[^>]*as="font"[^>]*>/g) ?? []).toHaveLength(0);
+
+		const berkasTerpramuat = [...html.matchAll(/<link[^>]*rel="modulepreload"[^>]*>/g)]
+			.map((cocok) => cocok[0].match(/href="([^"]+)"/)?.[1] ?? '')
+			.filter((jalur) => jalur.length > 0)
+			.map((jalur) => jalur.replace(/^\.\.\//, '/'));
+		expect(berkasTerpramuat.length).toBeGreaterThan(0);
+		const berisiDeck = await Promise.all(
+			berkasTerpramuat.map(async (jalur) => {
+				const isi = await (await request.get(jalur)).text();
+				return isi.includes('luma.gl');
+			})
+		);
+		expect(berisiDeck.some(Boolean)).toBe(false);
+
+		await page.goto('/peta/');
+		await page.waitForFunction(
+			() => !document.body.textContent?.includes('Memuat peta wilayah'),
+			undefined,
+			{ timeout: 60000 }
+		);
+		await expect(page.locator('.maplibregl-canvas')).toBeVisible();
+	});
+
 	test('setiap halaman punya kebijakan keamanan konten tanpa pelanggaran', async ({ page }) => {
 		await page.addInitScript(() => {
 			const jendela = window as unknown as { pelanggaranCsp: string[] };

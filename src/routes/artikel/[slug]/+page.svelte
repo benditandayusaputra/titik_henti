@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import { ARTICLE_WRITE_LINE_COUNT } from '$lib/domain/constants';
 	import { formatDate } from '$lib/format';
 	import type { PageData } from './$types';
@@ -17,10 +18,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{artikel.judul} — Titik Henti</title>
-	<meta name="description" content={artikel.ringkasan} />
-</svelte:head>
+<PageMeta title="{artikel.judul} — Titik Henti" description={artikel.ringkasan} type="article" />
 
 <div class="flex-1 px-5 py-12 sm:px-10 print:p-0">
 	<article

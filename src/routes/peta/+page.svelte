@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import type { Layer } from '@deck.gl/core';
 	import type { Map as MapLibreMap } from 'maplibre-gl';
 	import { onMount } from 'svelte';
@@ -468,9 +469,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Lembar kerja — Titik Henti</title>
-</svelte:head>
+<PageMeta
+	title="Lembar kerja — Titik Henti"
+	description="Peta kelas gang Kelurahan Palmerah dengan titik henti kendaraan, panjang selang, simulasi penjalaran api, dan jangkauan air."
+/>
 
 <h1 class="sr-only">Lembar kerja pra-rencana kebakaran</h1>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
@@ -54,13 +55,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Artikel siaga kebakaran — Titik Henti</title>
-	<meta
-		name="description"
-		content="Panduan singkat siaga kebakaran permukiman padat, seluruhnya bersumber dari lembaga resmi."
-	/>
-</svelte:head>
+<PageMeta
+	title="Artikel siaga kebakaran — Titik Henti"
+	description="Panduan singkat siaga kebakaran permukiman padat, seluruhnya bersumber dari lembaga resmi."
+/>
 
 <div class="flex-1 px-5 py-12 sm:px-10">
 	<div class="measure-rail mx-auto w-full max-w-4xl">

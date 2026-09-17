@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import {
 		ADJACENCY_RADIUS_METERS,
 		APPLIANCE_TURNOUT_SECONDS,
@@ -77,9 +78,10 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Metode dan sumber data — Titik Henti</title>
-</svelte:head>
+<PageMeta
+	title="Metode dan sumber data — Titik Henti"
+	description="Cara lebar gang diturunkan dari citra bangunan, ambang kelas akses, model penjalaran api, serta sumber data dan lisensinya."
+/>
 
 <div class="flex-1 px-5 py-12 sm:px-10">
 	<div class="measure-rail mx-auto w-full max-w-4xl">

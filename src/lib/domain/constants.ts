@@ -240,6 +240,12 @@ export const HOSE_RULER_METERS_PER_SECOND = 62;
 export const HOSE_RULER_MIN_DURATION_MS = 420;
 export const HOSE_RULER_MAX_DURATION_MS = 2600;
 
+export const SITE_URL = 'https://titikhenti.vercel.app';
+export const SITE_NAME = 'Titik Henti';
+export const OG_IMAGE_PATH = '/og.png';
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;
+
 export const CORRECTION_ENDPOINT_PATH = '/api/koreksi';
 export const CORRECTION_MIN_WIDTH_METERS = 0.4;
 export const CORRECTION_MAX_WIDTH_METERS = 25;

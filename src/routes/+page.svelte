@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import {
 		ACCESS_CLASS_COLOR,
 		ACCESS_CLASS_LABEL,
@@ -23,9 +24,10 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Titik Henti — perencanaan siaga kebakaran gang</title>
-</svelte:head>
+<PageMeta
+	title="Titik Henti — perencanaan siaga kebakaran gang"
+	description="Titik Henti memetakan lebar gang permukiman padat dan menghitung akibatnya terhadap waktu air sampai serta luas kebakaran."
+/>
 
 <section class="sheet-grid hairline-b px-5 pt-14 pb-16 sm:px-10">
 	<div class="measure-rail mx-auto w-full max-w-5xl">

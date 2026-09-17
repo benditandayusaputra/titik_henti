@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import { DATA_URL } from '$lib/data/sources';
 	import { onMount } from 'svelte';
 	import {
@@ -168,9 +169,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Kartu siaga RT — Titik Henti</title>
-</svelte:head>
+<PageMeta
+	title="Kartu siaga RT — Titik Henti"
+	description="Kartu siaga RT satu halaman A4 hitam putih berisi titik henti, panjang selang, dan sumber air terdekat untuk ditempel di pos RT."
+/>
 
 <div class="bg-concrete flex-1 px-4 py-6 print:bg-white print:p-0">
 	<div class="mx-auto mb-4 flex max-w-[210mm] items-start gap-4 print:hidden">

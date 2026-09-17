@@ -1,42 +1,51 @@
 ---
 {
   "judul": "Tabung gas bocor, urutan tindakannya",
-  "ringkasan": "Yang harus dilakukan saat tercium bau gas, dan dua hal yang justru memperbesar api kalau dilakukan.",
+  "ringkasan": "Urutan tindakan saat kompor gas bocor dan mengeluarkan api, dua larangannya, dan kapan harus berhenti lalu keluar.",
   "kategori": "Saat",
   "untuk": ["Warga", "Pengurus RT"],
   "waktuBacaMenit": 3,
-  "diperbarui": "2026-09-16",
+  "diperbarui": "2026-09-17",
   "sumber": [
     {
       "lembaga": "Dinas Pemadam Kebakaran dan Penyelamatan Kabupaten Bandung",
       "tautan": "https://disdamkar.bandungkab.go.id/detailblog/2524-upaya-pertama-dalam-menangani-kebocoran-gasberikut-langkah-langkah-menanganinya"
+    },
+    {
+      "lembaga": "Dinas Pemadam Kebakaran dan Penyelamatan Kota Cirebon",
+      "tautan": "https://damkar.cirebonkota.go.id/artikel/9-langkah-penting-yang-perlu-dilakukan-ketika-terjadi-kebakaran"
+    },
+    {
+      "lembaga": "Biro Umum dan Administrasi Sekretariat Daerah Provinsi DKI Jakarta",
+      "tautan": "https://biroumum.jakarta.go.id/news_web/detailnews/pemprov-dki-imbau-warga-waspada-dan-antisipasi-kebakaran-rumah"
     }
   ],
   "berlakuUntuk": ["gang_selang_saja"]
 }
 ---
 
-Bau gas yang menyengat berarti gas sudah terkumpul di ruangan. Pada titik itu, satu percikan kecil saja cukup. Yang menyalakan percikan paling sering bukan korek, melainkan saklar lampu.
+Disdamkar Kabupaten Bandung menuliskan urutan tindakan saat kompor gas bocor dan mengeluarkan api. Langkahnya dapat dilakukan sendiri, selama api masih kecil.
 
 ## Urutan tindakannya
 
-Dinas Damkar Kabupaten Bandung menuliskan langkahnya berurutan.
-
-1. **Jangan panik.** Ini disebut sebagai langkah pertama dan utama, karena langkah berikutnya butuh tangan yang tidak gemetar.
+1. **Jangan panik.** Disdamkar Kabupaten Bandung menyebutnya langkah pertama dan utama. Orang yang panik kerap menjadi gagap dan tidak tahu harus melakukan apa, sedangkan orang yang tenang mampu berpikir jernih dan mengambil tindakan yang lebih efektif.
 2. **Segera lepas regulator dari tabung.**
-3. **Tutup sumber api** bila ada, dengan kain yang sudah dibasahi. Pegang kain dengan kedua tangan dalam posisi menjepit, angkat tinggi menutupi kepala, pastikan arah penutup api sejajar dengan angin, berjalan menyamping dengan kaki dalam posisi kuda-kuda, lalu tutup api secara menyeluruh.
-4. **Buka pintu dan jendela** agar gas keluar dari ruangan.
+3. **Tutup sumber api dengan kain yang sudah dibasahi.**
+   - Pegang kain dengan kedua tangan seperti menjepit, kedua tangan tertutup rata oleh kain, lalu angkat tinggi menutupi kepala.
+   - Pastikan arah menutup api dan angin sejajar dengan langkah Anda, supaya kobaran api tidak mengenai tubuh.
+   - Dekati sumber api dengan berjalan menyamping, kaki dalam posisi kuda-kuda, dan badan sedikit merunduk.
+   - Tutup sumber api dengan kain basah secara menyeluruh.
+   - Pastikan api benar-benar mati. Salah satu cirinya, keluar asap putih.
+4. **Buka pintu dan jendela** agar gas dapat keluar. Gas yang menumpuk di ruangan rapat justru berpotensi menyebabkan ledakan dan kebakaran.
 
 ## Dua larangan
 
-> **Jangan menyalakan saklar lampu** saat tercium bau gas yang menyengat.
+> **Jangan menyalakan saklar lampu** bila tercium bau gas yang menyengat, terlebih di ruangan tertutup. Menurut Disdamkar Kabupaten Bandung, energi panas dari listrik yang bercampur dengan gas dapat menyebabkan ledakan.
 
-> **Jangan menyiram langsung dengan air ke sumber api**, karena dapat menyebabkan api menyebar lebih luas.
-
-Larangan kedua sering dilanggar justru oleh orang yang bermaksud baik. Air yang disiramkan ke minyak atau gas yang terbakar akan melontarkan api, bukan memadamkannya.
+> **Jangan menyiram langsung dengan air ke sumber api atau kompor**, karena dapat membuat api semakin menyebar.
 
 ## Kalau apinya sudah besar
 
-Kalau api sudah tidak bisa ditutup dengan satu gerakan kain basah, atau kalau untuk mencapai regulator Anda harus melewati api, berhenti. Keluar, tutup pintu di belakang Anda untuk memperlambat api, dan panggil bantuan.
+Langkah di atas ditulis untuk api yang masih bisa ditutup kain basah. Damkar Kota Cirebon memberi batasnya: jangan memadamkan api jika asap sudah tebal atau api membesar. Segera evakuasi dan panggil bantuan. Bila memungkinkan, tutup pintu ruangan yang terbakar saat keluar untuk menghambat penyebaran api.
 
-Di gang yang hanya bisa dilalui selang, keputusan untuk berhenti mencoba dan mulai memanggil bantuan harus diambil lebih cepat, karena bantuan itu sendiri butuh waktu lebih lama untuk sampai.
+Di Jakarta, bantuan pemadam dipanggil lewat **Jakarta Siaga 112**, bebas pulsa, menurut Pemprov DKI.

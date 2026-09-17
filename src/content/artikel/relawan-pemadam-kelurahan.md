@@ -5,7 +5,7 @@
   "kategori": "Sebelum",
   "untuk": ["Pengurus RT", "Relawan"],
   "waktuBacaMenit": 4,
-  "diperbarui": "2026-09-16",
+  "diperbarui": "2026-09-17",
   "sumber": [
     {
       "lembaga": "Kota Administrasi Jakarta Barat",
@@ -16,15 +16,15 @@
 }
 ---
 
-Di permukiman padat, yang pertama memadamkan api hampir tidak pernah petugas. Yang pertama adalah tetangga.
+Di Kelurahan Palmerah, ada warga yang memang dilatih untuk memadamkan api sebelum petugas datang.
 
 Susilo, anggota Damkar Kecamatan Palmerah, menjelaskan peran relawan pemadam kebakaran kelurahan dengan satu kalimat: mereka hadir untuk membantu memadamkan kebakaran awal, sebelum petugas pemadam kebakaran datang.
 
 ## Yang sudah ada di Palmerah
 
-Menurut Kota Administrasi Jakarta Barat, tim relawan pemadam kebakaran di Palmerah memiliki posko dan hidran mandiri. Sumber air utamanya berada di posko di SDN Palmerah 13 Pagi, dengan 13 hidran tersebar di lingkungan RW 08.
+Menurut Kota Administrasi Jakarta Barat pada Januari 2022, Tim Repkar RW 08 Kelurahan Palmerah beranggotakan 12 orang dan memiliki posko serta hidran mandiri. Mereka dapat mengoperasikan hidran mandiri bila terjadi kebakaran dan rutin memberikan sosialisasi bahaya kebakaran kepada masyarakat. Sumber air utamanya berada di posko di SDN Palmerah 13 Pagi, dengan 13 hidran tersebar di lingkungan RW 08.
 
-Angka itu penting dibaca bersama peta. Hidran mandiri bukan sekadar sumber air tambahan, melainkan yang memperpendek jarak tarik selang. Setiap hidran yang ditaruh lebih dekat ke gang sempit memotong belasan gulung selang yang harus digelar dengan tangan.
+Angka itu penting dibaca bersama peta. Hidran mandiri bukan sekadar sumber air tambahan, melainkan yang memperpendek jarak tarik selang. Seberapa banyak gulung selang yang terpotong bergantung pada letak hidran dan gangnya, dan itu yang bisa diuji di lembar kerja.
 
 ## Kenapa posko dan hidran mandiri menentukan
 

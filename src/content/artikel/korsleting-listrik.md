@@ -1,44 +1,60 @@
 ---
 {
   "judul": "Korsleting listrik dan cara memeriksanya lebih awal",
-  "ringkasan": "Penyebab kebakaran terbanyak di Jakarta, beserta imbauan resmi Dinas Gulkarmat dan nomor yang harus dihubungi.",
+  "ringkasan": "Dugaan penyebab kebakaran tertinggi di Jakarta, tips pencegahan dari Dinas Gulkarmat DKI, dan lima langkah saat korsleting terjadi.",
   "kategori": "Sebelum",
   "untuk": ["Warga", "Pengurus RT"],
-  "waktuBacaMenit": 3,
-  "diperbarui": "2026-09-16",
+  "waktuBacaMenit": 4,
+  "diperbarui": "2026-09-17",
   "sumber": [
     {
       "lembaga": "Dinas Penanggulangan Kebakaran dan Penyelamatan DKI Jakarta, lewat Berita Jakarta",
-      "tautan": "https://m.beritajakarta.id/read/133524/cegah-korsleting-listrik-ini-imbauan-dinas-gulkarmat"
+      "tautan": "https://www.beritajakarta.id/read/133524/cegah-korsleting-listrik-ini-imbauan-dinas-gulkarmat"
     }
   ],
   "berlakuUntuk": ["gang_selang_saja", "gang_unit_kecil"]
 }
 ---
 
-Korsleting listrik adalah dugaan penyebab kebakaran tertinggi di Jakarta. Kepala Dinas Gulkarmat DKI Jakarta, Satriadi Gunawan, menyebut angka 1.216 kejadian kebakaran di Jakarta disebabkan oleh korsleting.
-
-Artinya, pekerjaan pencegahan yang paling besar hasilnya bukan membeli alat baru, melainkan memeriksa apa yang sudah terpasang di rumah.
+Dinas Gulkarmat DKI Jakarta mencatat 2.286 kejadian kebakaran sepanjang 2023. Menurut Kepala Dinas Gulkarmat DKI Jakarta, Satriadi Gunawan, korsleting listrik adalah dugaan penyebab yang paling tinggi: 1.216 kejadian, atau 53,19 persen.
 
 ## Imbauan resminya
 
-Dinas Gulkarmat meminta masyarakat untuk lebih berhati-hati dalam penggunaan listrik serta memastikan peralatan listrik yang digunakan sudah benar serta sesuai Standar Nasional Indonesia, dan melakukan pemeliharaan rutin dan pembaruan instalasi listrik secara teratur.
+Dinas Gulkarmat meminta masyarakat lebih berhati-hati dalam penggunaan listrik, memastikan peralatan listrik yang dipakai sesuai Standar Nasional Indonesia, serta melakukan pemeliharaan rutin dan pembaruan instalasi listrik secara teratur.
 
-Yang bisa dikerjakan sendiri tanpa alat khusus:
+Tips pencegahan dari situs Dinas Gulkarmat DKI Jakarta, seperti dikutip Berita Jakarta:
 
-- Periksa kabel yang getas, terkelupas, atau sudah berubah warna.
-- Periksa colokan yang terasa hangat saat dipegang.
-- Periksa sambungan yang ditumpuk pada satu titik.
-- Pastikan peralatan yang dipakai bertanda SNI.
+- Matikan lampu dan cabut kabel setelah selesai memakai peralatan listrik. Jangan biarkan kabel tetap tertancap di steker.
+- Usahakan punya APAR di rumah.
+- Jangan menumpuk steker.
+- Jauhkan benda yang mudah terbakar dari instalasi listrik.
+- Jangan mengganti sekring pemutus arus induk tanpa izin.
+- Periksa kondisi kabel, panel listrik, dan sambungan kabel. Pembaruan instalasi listrik rumah disarankan lima tahun sekali.
+- Rawat instalasi listrik secara berkala.
 
-## Nomor yang dihubungi
+## Yang disebut sebagai penyebab
 
-Saat terjadi korsleting listrik, Dinas Gulkarmat meminta masyarakat segera menghubungi **Jakarta Siaga 112** dan **PLN di nomor 123**.
+- Alat listrik yang tidak sesuai SNI.
+- Pemakaian listrik yang menumpuk pada satu terminal.
+- Sambungan listrik ilegal yang membuat arus terlalu besar.
+- Instalasi yang tidak sesuai standar atau tidak dikerjakan anggota Asosiasi Kontraktor Listrik Indonesia.
+- Sekring putus yang disambung dengan kawat.
+- Pemutus arus mini atau MCB yang sering turun lalu diganjal.
+- Stop kontak atau kabel yang terkena air, misalnya dari atap bocor atau banjir.
+- Kabel yang tidak sesuai kapasitas hantar arusnya.
 
-Dua nomor, bukan satu. PLN untuk memutus aliran, Jakarta Siaga untuk pemadaman. Di permukiman padat urutan ini penting, karena memadamkan api pada instalasi yang masih bertegangan berbahaya bagi yang memadamkan.
+## Kalau korsleting terjadi
 
-## Kenapa ini lebih genting di gang sempit
+Dinas Gulkarmat DKI Jakarta menuliskan lima langkah:
 
-Rumah yang berada di gang berkelas selang saja punya jeda lebih panjang antara api muncul dan air datang. Pada jeda itu, api yang berawal dari korsleting sudah sempat berpindah ke perabot dan atap.
+1. Segera matikan aliran listrik.
+2. Bila tersedia, bunyikan tanda bahaya atau alarm.
+3. Segera hubungi **Jakarta Siaga 112** dan **PLN di nomor 123**.
+4. Padamkan kebakaran dengan bahan pemadam kering (dry chemical) atau karbon dioksida (CO2).
+5. Segera evakuasi bila kebakaran tidak dapat dikendalikan.
 
-Pencegahan di rumah semacam ini bernilai lebih besar daripada di rumah yang bisa dijangkau mobil pemadam, karena kesempatan untuk diselamatkan dari luar memang lebih kecil.
+> **Jangan padamkan sumber kebakaran dengan air dan busa.**
+
+## Hubungannya dengan peta
+
+Rumah di gang berkelas selang saja punya waktu air sampai yang lebih panjang, karena mobil pemadam berhenti jauh dan selang digelar dengan tangan. Panel Titik henti di lembar kerja menunjukkan angka itu untuk rumah yang dipilih. Selama jeda itu, yang tersedia hanyalah langkah pencegahan dan penanganan awal di atas.

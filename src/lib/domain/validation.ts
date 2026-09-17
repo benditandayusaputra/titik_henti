@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '$lib/domain/zod';
 import rawOsmWidthCheck from './osm-width-check.json';
 
 export interface SyntheticWidthCheck {

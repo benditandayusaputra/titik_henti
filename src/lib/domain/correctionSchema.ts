@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '$lib/domain/zod';
 import {
 	CORRECTION_MAX_WIDTH_METERS,
 	CORRECTION_MIN_WIDTH_METERS,

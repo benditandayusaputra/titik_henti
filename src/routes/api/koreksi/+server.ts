@@ -1,5 +1,5 @@
 import { json, type Cookies, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { z } from '$lib/domain/zod';
 import { env } from '$env/dynamic/private';
 import {
 	ACCESS_CLASS_LABEL,

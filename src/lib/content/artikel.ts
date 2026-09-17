@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { z } from 'zod';
+import { z } from '$lib/domain/zod';
 
 export const ARTICLE_CATEGORIES = ['Sebelum', 'Saat', 'Sesudah'] as const;
 export const ARTICLE_AUDIENCES = ['Warga', 'Pengurus RT', 'Relawan'] as const;

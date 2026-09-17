@@ -7,6 +7,21 @@ const config = {
 		adapter: adapter({ runtime: 'nodejs22.x' }),
 		prerender: {
 			handleHttpError: 'fail'
+		},
+		csp: {
+			mode: 'auto',
+			directives: {
+				'default-src': ['self'],
+				'script-src': ['self'],
+				'worker-src': ['self', 'blob:'],
+				'style-src': ['self', 'unsafe-inline'],
+				'img-src': ['self', 'data:', 'blob:'],
+				'font-src': ['self'],
+				'connect-src': ['self'],
+				'object-src': ['none'],
+				'base-uri': ['self'],
+				'form-action': ['self']
+			}
 		}
 	}
 };

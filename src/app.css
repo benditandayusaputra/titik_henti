@@ -225,32 +225,6 @@
 	@apply flex items-baseline justify-between gap-3 py-[7px];
 }
 
-@utility crop-mark {
-	&::before,
-	&::after {
-		content: '';
-		position: absolute;
-		width: 7px;
-		height: 7px;
-		border-color: var(--color-ink);
-		opacity: 0.5;
-	}
-
-	&::before {
-		top: -1px;
-		left: -1px;
-		border-top-width: 2px;
-		border-left-width: 2px;
-	}
-
-	&::after {
-		right: -1px;
-		bottom: -1px;
-		border-right-width: 2px;
-		border-bottom-width: 2px;
-	}
-}
-
 @utility rule-dotted {
 	background-image: repeating-linear-gradient(
 		to right,

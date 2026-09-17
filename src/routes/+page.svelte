@@ -47,7 +47,7 @@
 		<div class="bg-ink mt-10 h-[2px] w-full"></div>
 
 		<dl class="mt-8 grid grid-cols-2 gap-px md:grid-cols-4">
-			<div class="hairline-box bg-paper crop-mark relative px-4 py-4">
+			<div class="hairline-box bg-paper px-4 py-4">
 				<dt class="field-label-sm text-graphite">Wilayah uji</dt>
 				<dd class="font-display text-ink mt-2 text-[22px] leading-none font-semibold">
 					{meta.villageName}

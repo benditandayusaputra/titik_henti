@@ -19,7 +19,7 @@
 	const rows: AccessClass[] = ['largeUnit', 'smallUnit', 'hoseOnly'];
 </script>
 
-<div class="bg-concrete/95 hairline-box crop-mark pointer-events-none w-[196px] px-3 py-2.5">
+<div class="bg-concrete/95 hairline-box pointer-events-none w-[196px] px-3 py-2.5">
 	<p class="map-label text-graphite mb-2">Kelas akses gang</p>
 	<ul class="flex flex-col gap-[7px]">
 		{#each rows as accessClass (accessClass)}

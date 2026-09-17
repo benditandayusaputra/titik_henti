@@ -420,6 +420,39 @@ Temuan yang belum diselesaikan: halaman peta memunculkan peringatan driver GPU `
 
 Riwayat git diperiksa dengan `git log --format=%B`, dan tidak ada penyebutan nama alat, AI, atau kalimat pembuatan otomatis.
 
+### Tahap 18, kritik diri dan pencabutan
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Memotret setiap halaman pada tiga lebar, memeriksanya terhadap larangan desain, mengukur luas warna alarm, mencabut hiasan yang tidak berguna, lalu menulis catatan desain |
+| Dihasilkan AI | Tangkapan layar dan pengukuran piksel, daftar pelanggaran, perbaikan dan pencabutan, spec end to end, `CATATAN-DESAIN.md` |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Rincian desainnya, termasuk apa yang dicabut, apa yang dipertahankan, dan alasannya, ada di `CATATAN-DESAIN.md`. Bagian ini mencatat cara kerja dan kesalahannya.
+
+Hasil utama: tujuh hal dicabut, yaitu merah kelas gang di tab Api, kotak merah hiasan di tanda nama, tanda potong di kartu angka dan legenda, penomoran daftar batasan, hitam bersemu, nomor revisi fiktif, dan monospasi di luar angka terukur. Luas alarm di setiap layar tidak pernah melewati 3,3 persen, jauh di bawah batas sepersepuluh, jadi pencabutan merah di tab Api didasarkan pada tesis desain, bukan pada batas luas.
+
+Dua kerusakan nyata ditemukan dari tangkapan layar, bukan dari kode:
+
+1. Angka ringkasan kartu siaga RT bertumpuk tidak terbaca pada lebar 380 piksel.
+2. Legenda peta tidak pernah terlihat tanpa menggulir pada lebar 1024 piksel ke atas, karena panel samping memanjangkan seluruh lembar kerja. Kode panel sebenarnya sudah dirancang bergulir sendiri, tetapi induknya tidak pernah dibatasi tinggi. Kesalahan ini sudah ada sebelum tahap ini. Tangkapan layar peta produksi pada tahap 17 pun tidak memuat legenda, tetapi tidak ada yang memperhatikan ketidakhadirannya, karena memeriksa gambar hanya menangkap apa yang salah tergambar, bukan apa yang tidak tergambar.
+
+Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
+
+1. Pengukuran luas alarm pertama hanya menghitung piksel yang mirip persis dengan hex alarm, dan meremehkan merah di peta sampai lima belas kali, karena garis tipis di atas latar gelap tercampur warna latar. Ketahuan karena angka 0,16 persen tidak cocok dengan foto yang terlihat merah. Penghitungan diganti ke rona.
+2. Membatasi tinggi lembar kerja membuat panel samping benar-benar bergulir, dan pemindaian axe langsung menemukan wilayah gulir yang tidak dapat dijangkau papan ketik. `tabindex="0"` statis ditolak Svelte dengan peringatan, dan `tabindex="-1"` menghilangkan peringatan tanpa menyelesaikan masalah. Solusinya lampiran Svelte yang memasang `tabindex="0"` hanya selama isi panel melebihi tingginya.
+3. Panel sempat diubah menjadi elemen `section`, dan uji papan ketik gagal karena pemilihnya menangkap dua elemen. Panel dikembalikan menjadi `div` berperan wilayah.
+4. Uji tumpukan angka kartu siaga RT versi pertama lolos pada kode yang rusak, karena mengukur kotak elemen, sedangkan yang meluber hanya teksnya. Uji diganti mengukur batas teks dan dibuktikan gagal pada kode lama dengan dua tumpukan.
+5. Draf pertama `CATATAN-DESAIN.md` mencantumkan percobaan meredam warna kelas gang di semua tab sebagai hal yang dicoba lalu dibuang, padahal percobaan itu tidak pernah dilakukan. Tabelnya juga mencantumkan angka tab Api pada 380 dan 768 piksel yang belum diukur. Keduanya ketahuan saat draf dibaca ulang terhadap riwayat kerja. Butir palsu diganti dengan percobaan yang benar-benar terjadi, dan angka yang kosong diukur lebih dulu sebelum ditulis.
+
+Pembuktian uji: spec baru `tests/e2e/kritik-diri.spec.ts` dijalankan terhadap kode sebelum tahap ini. Lima dari enam uji gagal, yaitu redaman merah tab Api, legenda di dalam layar, tumpukan angka kartu, larangan rupa di kepala halaman, dan penomoran batasan. Uji luas alarm lolos pada kedua versi, dan itu memang sesuai hasil ukur, karena luasnya tidak pernah melewati batas.
+
+Pemecahan commit: perubahan tahap ini dikerjakan sekaligus lalu diuji utuh. Perubahan itu kemudian diterapkan ulang dari HEAD per tema dengan skrip, dikomit per tema, dan hasil akhirnya dibandingkan per berkas dengan keadaan yang sudah diuji. Kelima belas berkas identik.
+
+Putaran verifikasi di server dev: enam halaman pada tiga lebar, dengan dan tanpa reduced motion, termasuk tab Api di lembar kerja. Nol gulir mendatar, nol pelanggaran axe, dan konsol bersih kecuali peringatan driver GPU yang sudah dicatat pada tahap 17. Seluruh suite end to end lolos, 66 uji.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

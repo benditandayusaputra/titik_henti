@@ -91,6 +91,27 @@ test.describe('artikel', () => {
 		await page.emulateMedia({ media: null });
 	});
 
+	test('setiap artikel tercetak tepat satu halaman A4 berisi versi langkah inti', async ({ page }) => {
+		test.setTimeout(120000);
+		const slugs = readdirSync('src/content/artikel')
+			.filter((nama) => nama.endsWith('.md'))
+			.map((nama) => nama.replace(/\.md$/, ''));
+		for (const slug of slugs) {
+			await page.goto(`/artikel/${slug}/`);
+			await page.waitForLoadState('networkidle');
+			const pdf = await page.pdf({ preferCSSPageSize: true });
+			const jumlahHalaman = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+			expect(jumlahHalaman, slug).toBe(1);
+
+			await page.emulateMedia({ media: 'print' });
+			await expect(page.locator('.artikel-cetak'), slug).toBeVisible();
+			await expect(page.locator('.artikel-cetak'), slug).toContainText(`/artikel/${slug}/`);
+			await expect(page.locator('.artikel-isi:not(.artikel-cetak)'), slug).toBeHidden();
+			await page.emulateMedia({ media: null });
+			await expect(page.locator('.artikel-cetak'), slug).toBeHidden();
+		}
+	});
+
 	test('memilih gang kelas selang saja memunculkan tautan artikel yang relevan', async ({
 		page
 	}) => {

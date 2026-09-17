@@ -32,7 +32,6 @@
 			<span class="border-ink relative flex h-8 w-8 items-center justify-center border">
 				<span class="bg-ink block h-[3px] w-[3px] rounded-full"></span>
 				<span class="bg-ink absolute top-1/2 left-0 h-px w-3 -translate-y-1/2"></span>
-				<span class="bg-alarm absolute right-[5px] bottom-[5px] h-[5px] w-[5px]"></span>
 			</span>
 			<span class="flex flex-col gap-[3px]">
 				<span class="font-display text-ink text-[19px] leading-none font-semibold">Titik henti</span>
@@ -62,7 +61,7 @@
 
 		<div class="ml-auto hidden flex-col justify-center gap-1 px-4 py-2 lg:flex">
 			<span class="field-label-sm text-graphite">Status berkas</span>
-			<span class="field-label text-ink">Pra-rencana, revisi 0.1</span>
+			<span class="field-label text-ink">Pra-rencana, bukan dokumen resmi</span>
 		</div>
 	</div>
 </header>

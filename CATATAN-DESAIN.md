@@ -81,6 +81,6 @@ B3 mengunci monospasi hanya untuk meter dan detik. Monospasi ternyata juga dipak
 2. Uji tumpukan angka kartu siaga RT versi pertama mengukur kotak elemen. Uji itu lolos pada kode yang rusak, karena kotak elemennya tidak bertumpuk, yang meluber hanya teksnya. Uji kini mengukur batas teks sebenarnya dan terbukti gagal pada kode lama.
 3. Panel samping dengan `tabindex` statis. Svelte menolaknya dengan peringatan aksesibilitas, dan aturan repositori menuntut nol peringatan. Nilai `-1` menghilangkan peringatan tetapi tidak membuat panel dapat dijangkau Tab, jadi tidak menyelesaikan masalahnya.
 
-## Temuan terbuka
+## Temuan yang sudah terjawab
 
-Halaman lembar kerja memunculkan peringatan driver GPU `GPU stall due to ReadPixels` sekali per proses browser. Peringatan ini sudah ada sebelum pemeriksaan desain, dan instrumentasi tidak menemukan panggilan pembacaan piksel dari JavaScript halaman. Penyebab pastinya belum ditemukan. Rinciannya ada di tahap 17 `AI-USAGE.md`.
+Halaman lembar kerja sempat memunculkan peringatan driver GPU `GPU stall due to ReadPixels` sekali per proses browser, dan penyebabnya tidak ditemukan saat pemeriksaan desain. Jawabannya muncul pada tahap 22: peringatan itu hanya terjadi di peramban bawaan Playwright, yang menggambar dengan perender perangkat lunak. Di Chrome dengan GPU, konsol bersih sepenuhnya. Rinciannya ada di tahap 17 `AI-USAGE.md`.

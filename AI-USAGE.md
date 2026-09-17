@@ -566,6 +566,43 @@ Satu penyimpangan dari rencana eksekusi tetap ada. Rencana meminta ukuran huruf 
 
 Seluruh suite end to end lolos, 119 uji. Hasil cetak kedelapan artikel ada di `bukti/f22/` dengan awalan `cetak-`.
 
+### Tahap 22, uji alur utama dari sisi juri di ponsel dan laptop
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Menjalankan alur utama seperti juri, langsung di produksi, pada ukuran ponsel dan laptop |
+| Dihasilkan AI | Skrip penelusuran alur, diagnosis empat temuan, perbaikan, spec end to end |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Alur yang dijalankan: beranda, buka lembar kerja, pilih bangunan, tetapkan titik api dan jalankan simulasi, taruh hidran uji coba, cari intervensi, kartu siaga RT, saring artikel, buka artikel, lalu halaman metode. Ponsel diuji dengan emulasi iPhone 13 beserta sentuhan, laptop pada 1440 piksel.
+
+Empat temuan, tiga di antaranya bug nyata:
+
+1. **Mode pilih lokasi di peta terbajak oleh klik pada gang.** Saat mode titik api aktif, klik yang mengenai garis gang memilih segmen dan memindahkan tab ke Akses, sehingga mode titik api ditinggalkan tanpa pemberitahuan. Saat mode hidran uji coba aktif, hal yang sama terjadi dan hidran tidak pernah tertaruh, padahal gang justru tempat yang wajar untuk menaruh hidran. Penanganan klik kini memeriksa mode yang sedang aktif lebih dulu, dan klik pada gang maupun bangunan diperlakukan sebagai pemilihan lokasi selama mode itu menyala.
+2. **Peta di luar layar saat memilih lokasi di ponsel.** Tombol taruh hidran uji coba berada jauh di bawah panel. Setelah ditekan, labelnya berubah menjadi permintaan mengklik peta, padahal peta sudah tidak terlihat. Kini halaman menggulir peta kembali ke bawah kepala halaman ketika mode pilih lokasi menyala, dan tidak menggulir apa pun di layar lebar karena peta selalu terlihat di sana.
+3. **Sasaran sentuh baris daftar terlalu kecil.** Tombol nomor segmen dan nomor bangunan di tab Daftar hanya 51,6 kali 11,5 piksel, di bawah batas 24 kali 24 piksel pada WCAG 2.2. Tombolnya kini setinggi minimal 24 piksel dan selebar kolomnya. Pemindaian aksesibilitas yang biasa tidak menangkap ini karena aturan ukuran sasaran hanya berjalan bila diminta, dan uji baru menjalankannya.
+4. **Istilah node di hasil pencarian intervensi.** Label berbunyi titik APAR di node 8887, sedangkan panel lain memakai simpul jaringan. Diseragamkan.
+
+Temuan lingkungan uji yang mengubah cara mengukur kinerja:
+
+Pengukuran pertama menunjukkan layar terblokir 1.619 milidetik saat bangunan pertama dipilih, dan blokir itu tidak berkurang walau CPU diperlambat. Pemilihan berikutnya hanya 60 milidetik. Profil CPU hampir kosong, dan satu-satunya jejak adalah pemanggilan status program WebGL, yang menunjuk ke kompilasi shader. Percobaan memanaskan shader lebih awal hanya memindahkan blokir ke saat pemuatan, jadi dibatalkan.
+
+Penyebab sebenarnya ada di alat uji. Peramban bawaan Playwright, yaitu headless shell, menggambar dengan SwiftShader, yaitu perender perangkat lunak, dan tidak mendukung `KHR_parallel_shader_compile`. Tanpa ekstensi itu luma.gl menautkan shader secara sinkron di utas utama. Chrome sungguhan pada mesin yang sama memakai GPU Metal dan mendukung ekstensi itu. Diukur ulang di Chrome ber-GPU pada produksi, pemilihan bangunan pertama hanya 136 milidetik dan membuka tab Air 77 milidetik.
+
+Temuan yang sama juga menutup satu temuan terbuka dari tahap 17. Peringatan driver GPU `GPU stall due to ReadPixels` hanya muncul di headless shell. Di Chrome ber-GPU, konsol bersih sepenuhnya di seluruh alur ini.
+
+Pelajaran yang dipakai selanjutnya: pengukuran kinerja yang menyentuh peta harus dijalankan di Chrome ber-GPU, bukan di peramban bawaan Playwright. Uji end to end tetap berjalan di peramban bawaan, karena yang diuji perilakunya, bukan kecepatannya.
+
+Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
+
+1. Penelusuran pertama di ponsel melaporkan bahwa 80 ketukan pada peta tidak pernah memilih bangunan. Itu artefak skrip: ketukan berjarak 120 milidetik pada titik berdekatan dibaca MapLibre sebagai ketukan ganda, sehingga peta terus diperbesar sampai skala 5 meter. Setelah jeda ketukan diperpanjang, pemilihan berhasil pada ketukan ke-22.
+2. Kegagalan menaruh hidran pada penelusuran pertama sempat dikira artefak skrip yang sama. Ternyata itu bug nomor 1 di atas, dan baru terbukti setelah klik diarahkan tepat ke piksel garis gang.
+3. Aturan istilah untuk kata node sempat ditambahkan ke daftar terlarang, padahal berkas yang memuatnya tidak ikut dipindai uji istilah dan tidak bisa ditambahkan karena nama variabel di dalamnya akan ikut tertangkap. Aturan yang tidak berguna itu dicabut, dan perbaikan labelnya tetap.
+
+Verifikasi: seluruh suite end to end lolos, 123 uji. Spec baru `tests/e2e/alur-juri.spec.ts` menguji keempat perbaikan dan dibuktikan gagal pada kode sebelum tahap ini. Tangkapan layar alur di ponsel dan laptop ada di `bukti/f23/`.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

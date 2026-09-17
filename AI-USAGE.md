@@ -501,6 +501,49 @@ Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
 2. Uji reduced motion pertama memilih bangunan lewat tab Daftar, padahal daftar itu berisi 25 bangunan yang paling jauh dari air dan seluruhnya tidak terjangkau, sehingga penggaris selang tidak pernah muncul. Uji diganti memilih bangunan lewat klik peta.
 3. Pengambilan bukti susulan pertama gagal karena peta lokal tidak pernah selesai dimuat. Build terakhir di folder keluaran saat itu berasal dari putaran uji mutan. Build diulang dari kode yang benar dan server preview dijalankan ulang sebelum bukti diambil ulang.
 
+### Tahap 20, empat artikel tertunda dan pemeriksaan ulang artikel lama
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Menulis empat artikel yang tertunda dengan mencari sumber resmi di internet, tanpa mengarang langkah keselamatan |
+| Dihasilkan AI | Pencarian dan verifikasi sumber, empat artikel baru, penulisan ulang empat artikel lama, penyesuaian uji |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Cara kerja sumber: hasil pencarian dan ringkasan alat pengambil halaman tidak dipakai sebagai kutipan. Setiap halaman sumber diunduh utuh dan teksnya diekstrak sendiri, lalu setiap langkah di artikel dicocokkan dengan teks itu. Keputusan ini terbukti perlu tiga kali. Ringkasan halaman Damkar Kota Banda Aceh memotong separuh langkah pemeriksaan pintu, yaitu memeriksa gagang pintu dan pindah jalur bila panas. Ringkasan pencarian tentang Suku Dinas Gulkarmat Jakarta Timur menyebut imbauan agar warga menjauh dari lokasi kebakaran, padahal artikel aslinya tidak memuat imbauan itu. Pengekstrak teks buatan sendiri juga sempat membuang baris pendek, sehingga butir Lokasi lengkap dan Situasi kebakaran dari Damkar Kota Cirebon hilang, dan ekstraksi diulang tanpa batas panjang baris.
+
+Empat artikel baru:
+
+| Rencana | Yang terbit | Sumber |
+| --- | --- | --- |
+| Tiga menit pertama saat api muncul | Menit-menit pertama saat api muncul | Damkar Kota Cirebon, Damkar Kota Banda Aceh, BPBD Provinsi NTB, Biro Umum Setda DKI Jakarta |
+| Langkah pertama setelah api padam | Setelah api padam, jangan dulu masuk | Damkar Kota Cirebon, Bakorwil Bojonegoro, Sudin Gulkarmat Jakarta Timur lewat Berita Jakarta |
+| Menyiapkan jalur keluar di gang buntu | Menjaga jalur keluar dan titik kumpul di gang padat | Kota Administrasi Jakarta Barat tentang uji jalur evakuasi Kecamatan Palmerah, BPBD Kota Yogyakarta, Bakorwil Bojonegoro, Damkar Kota Banda Aceh |
+| Estafet selang saat mobil pemadam tidak bisa masuk | Saat mobil pemadam tidak bisa masuk gang | Sudin Gulkarmat Jakarta Barat lewat Berita Jakarta tentang hidran mandiri Kemanggisan, Kota Administrasi Jakarta Barat |
+
+Tiga judul diubah dari rencana karena isinya tidak didukung sumber. Tidak ada sumber resmi yang menyebut angka tiga menit, jadi angka itu dicabut dari judul. Tidak ada sumber yang membahas gang buntu secara khusus, jadi langkah di artikel jalur keluar bersifat umum, dan gang buntu hanya muncul sebagai penjelasan mengapa jalur yang sama dipakai untuk keluar, masuk, dan menggelar selang. Tidak ada sumber resmi yang dapat dijangkau tentang teknik estafet selang atau peran warga saat selang digelar. Beberapa laporan kejadian di situs Dinas Gulkarmat DKI yang muncul di pencarian ternyata sudah tidak tersedia di alamatnya. Artikel itu karena itu tidak menjelaskan teknik estafet, melainkan hidran mandiri yang dibangun khusus untuk lokasi yang tidak bisa dimasuki mobil pemadam dan menjaga jalur akses.
+
+Setiap bagian yang mengaitkan artikel dengan peta ditulis sebagai penjelasan cara kerja produk, bukan langkah keselamatan. Angka 20 meter per gulung disebut sebagai asumsi model, dan dibedakan dari selang hidran mandiri Kemanggisan yang panjangnya 30 meter.
+
+Kalimat yang dicabut dari draf artikel baru saat dicocokkan ulang dengan sumber: larangan masuk kembali untuk mencari orang, karena sumbernya hanya melarang masuk kembali untuk mengambil barang. Anjuran menyebut bagian rumah tempat orang terakhir berada. Klaim bahwa panas dari rumah sebelah merusak kabel yang tidak terlihat terbakar. Klaim bahwa satu motor di mulut gang menghalangi selang digelar.
+
+Pemeriksaan ulang empat artikel lama terhadap sumbernya menemukan bahwa aturan isi dilanggar oleh artikel yang sudah terbit sejak tahap 13:
+
+1. Artikel APAR memuat anjuran menaruh APAR di jalur keluar dan tidak di dekat kompor, serta batas api yang sudah menjalar ke langit-langit. Keduanya tidak ada di sumber BPBD DIY. Sumber itu justru memuat empat aturan pemasangan yang tidak ditulis: mudah terlihat dan dijangkau, menggantung dan terlindungi, tinggi paling banyak 1,2 meter, dan suhu ruangan antara 4 dan 49 derajat Celsius. Artikel ditulis ulang dengan empat aturan itu, dan batas penggunaan APAR diambil dari Damkar Kota Cirebon.
+2. Artikel tabung gas memuat alasan yang tidak ada di sumber, klaim bahwa saklar lampu paling sering menjadi pemicu, dan bagian kalau api sudah besar tanpa sumber. Artikel juga melewatkan langkah dari sumber untuk memastikan api benar-benar mati, dengan ciri keluar asap putih. Artikel ditulis ulang, bagian kalau api sudah besar kini bersumber dari Damkar Kota Cirebon dan Pemprov DKI.
+3. Artikel korsleting memuat anjuran memeriksa colokan yang terasa hangat saat dipegang dan penjelasan tentang instalasi bertegangan yang tidak ada di sumber. Artikel itu juga tidak memuat lima langkah saat korsleting terjadi dari sumber yang sama, termasuk larangan memadamkan dengan air dan busa. Artikel ditulis ulang dengan tujuh tips, delapan penyebab, dan lima langkah dari sumber.
+4. Artikel relawan memuat klaim bahwa yang pertama memadamkan api hampir tidak pernah petugas dan bahwa setiap hidran memotong belasan gulung selang. Keduanya dicabut. Tahun data sumber, Januari 2022, kini disebut.
+
+Kesalahan ini lolos karena uji artikel hanya memeriksa bahwa setiap artikel menampilkan daftar sumber, bukan bahwa setiap langkahnya ada di sumber itu. Pencocokan langkah dengan sumber tidak dapat diotomatiskan dengan andal, jadi dilakukan dengan membaca teks sumber yang diunduh.
+
+Temuan lain:
+
+1. Catatan di halaman daftar artikel menampilkan tanggal pembaruan artikel pertama menurut urutan kategori, bukan tanggal terbaru. Diperbaiki.
+2. Tombol di halaman artikel berbunyi cetak satu halaman A4, padahal seluruh delapan artikel tercetak dua sampai tiga halaman. Label tombol diganti menjadi cetak artikel supaya sesuai dengan yang terjadi, sesuai Bagian B7. Rencana eksekusi meminta mode cetak satu halaman A4 dengan huruf yang lebih besar. Artikel terpendek pun setinggi sekitar 1.269 piksel pada mode cetak, sedangkan satu halaman A4 dengan margin 14 milimeter memuat sekitar 1.017 piksel. Memenuhi permintaan itu berarti memangkas isi artikel atau mengecilkan huruf, dan keputusannya diserahkan kepada pemilik repo.
+
+Verifikasi: uji unit istilah lolos untuk kedelapan artikel. Spec artikel kini menghitung jumlah artikel dari folder, bukan angka tetap. Pemindaian aksesibilitas mencakup keempat artikel baru pada kelima lebar. Seluruh suite end to end lolos, 118 uji. Tangkapan layar kedelapan artikel dan halaman daftar pada tiga lebar ada di `bukti/f22/`.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

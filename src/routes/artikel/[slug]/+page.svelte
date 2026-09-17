@@ -78,7 +78,7 @@
 
 		<div class="mt-8 flex flex-wrap gap-2 print:hidden">
 			<button type="button" class="field-button-solid" onclick={cetak}>
-				Cetak satu halaman A4
+				Cetak artikel
 			</button>
 			<a href="/peta/" class="field-button">Buka lembar kerja</a>
 		</div>

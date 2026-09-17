@@ -603,6 +603,37 @@ Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
 
 Verifikasi: seluruh suite end to end lolos, 123 uji. Spec baru `tests/e2e/alur-juri.spec.ts` menguji keempat perbaikan dan dibuktikan gagal pada kode sebelum tahap ini. Tangkapan layar alur di ponsel dan laptop ada di `bukti/f23/`.
 
+### Tahap 23, waktu peta pertama tergambar di ponsel dan jaringan 4G
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Menguji target PRD bagian 4.2, yaitu peta pertama tergambar di bawah 3 detik, pada kondisi yang disebutkan target itu |
+| Dihasilkan AI | Pengukuran piksel peta di ponsel dan 4G, tiga perubahan jalur kritis, uji penjaga |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Cara mengukur: emulasi iPhone 13 di Chrome ber-GPU, jaringan diperlambat ke preset 4G lambat dan 4G biasa, CPU empat kali lebih lambat. Waktu dihitung dari mulai navigasi sampai area peta benar-benar berisi piksel yang bukan latar, diperiksa lewat tangkapan layar berulang, bukan lewat peristiwa di kode.
+
+Hasil awal: 4G lambat 12.314 milidetik, 4G biasa 2.169 milidetik. Target 3 detik gagal jauh pada 4G lambat.
+
+Tiga penyebab ditemukan dan diperbaiki:
+
+1. **Peta menunggu data yang tidak dibutuhkannya.** Kanvas peta baru dipasang setelah `dataset.meta` ada, dan itu menunggu `graph.json` 1,6 MB serta `buildings.bin` 424 KB selesai diunduh. Padahal sejak tahap 17 metadata wilayah, termasuk bounding box, sudah tersedia langsung dari modul. Peta kini digambar seketika, dan keadaan memuat berubah dari layar penuh menjadi penanda kecil di atas peta yang menyebut peta sudah bisa digeser sambil menunggu. Teks penandanya sengaja dipertahankan sama supaya uji yang menunggu teks itu hilang tetap berlaku.
+2. **deck.gl ikut di jalur kritis.** Pustaka lapisan hanya dibutuhkan untuk gambar di atas peta, bukan untuk peta itu sendiri, tetapi ikut dalam bundel rute. Sekarang dimuat setelah peta tampil. Bundel rute peta turun dari 483 KB menjadi 306 KB setelah gzip.
+3. **Huruf ikut dipramuat di rute peta.** Tiga berkas huruf 66 KB bersaing dengan bundel peta, padahal teks di layar peta sedikit. Pramuat huruf kini dilewati khusus rute peta. Pergeseran tata letak di rute itu tetap 0,0009, karena huruf cadangan bermetrik setara dari tahap 17 sudah menahannya.
+
+| Ukuran | Sebelum | Sesudah | Target |
+| --- | --- | --- | --- |
+| Peta tergambar, 4G lambat | 12.314 ms | 5.485 ms | di bawah 3 detik |
+| Peta tergambar, 4G biasa | 2.169 ms | 986 ms | di bawah 3 detik |
+
+Target tercapai pada 4G biasa dan belum tercapai pada 4G lambat. Sisa waktunya didominasi unduhan MapLibre sendiri: 306 KB setelah gzip pada 157 KB per detik berarti sekitar dua detik, ditambah beberapa perjalanan bolak-balik untuk ubin peta pada latensi 562 milidetik. Menurunkannya lagi berarti mengganti pustaka peta atau menampilkan gambar statis lebih dulu sebagai pengganti peta, dan keduanya keputusan pemilik repo, bukan penyetelan kecil.
+
+Uji penjaga baru memastikan jalur kritis rute peta tetap ramping: tidak ada huruf yang dipramuat di sana, dan tidak ada potongan yang memuat pustaka lapisan di antara berkas yang dipramuat. Uji ini dibuktikan gagal pada kode sebelum tahap ini.
+
+Verifikasi: seluruh suite end to end lolos, 124 uji.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

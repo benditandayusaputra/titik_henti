@@ -453,6 +453,54 @@ Pemecahan commit: perubahan tahap ini dikerjakan sekaligus lalu diuji utuh. Peru
 
 Putaran verifikasi di server dev: enam halaman pada tiga lebar, dengan dan tanpa reduced motion, termasuk tab Api di lembar kerja. Nol gulir mendatar, nol pelanggaran axe, dan konsol bersih kecuali peringatan driver GPU yang sudah dicatat pada tahap 17. Seluruh suite end to end lolos, 66 uji.
 
+### Tahap 19, audit definition of done keseluruhan
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Memeriksa kedua puluh satu butir definition of done keseluruhan di rencana eksekusi satu per satu, lalu menutup celahnya |
+| Dihasilkan AI | Pemeriksaan otomatis per butir, tabel pembanding akurasi di beranda, perbaikan penyimpanan kalimat koreksi, spec end to end, tangkapan layar susulan |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Hasil per butir:
+
+| Butir | Isi singkat | Status dan bukti |
+| --- | --- | --- |
+| 1 | cek komentar, check, build | Lolos |
+| 2 | Tanpa gulir mendatar di 380, 768, 1024, 1440, 1920 | Sebelumnya hanya tiga lebar yang diuji. Spec aksesibilitas kini mencakup kelima lebar dan kesembilan halaman, termasuk keempat artikel. Lolos |
+| 3 | Navigasi papan ketik penuh, fokus selalu terlihat | Uji lama hanya memeriksa gaya garis fokus di satu halaman. Uji baru menekan Tab di enam halaman pada dua lebar dan mengukur kontras garis fokus terhadap latarnya, minimal 3 banding 1. Lolos |
+| 4 | Nol pelanggaran aksesibilitas otomatis di seluruh halaman | Lolos di 9 halaman dan 5 lebar |
+| 5 | Reduced motion dihormati dan diuji | Sebelumnya tidak ada uji permanen. Uji baru merekam angka penggaris selang setiap 16 milidetik: dengan reduced motion hanya muncul nilai akhir, tanpa reduced motion muncul lebih dari dua nilai. Lolos |
+| 6 | Isi peta dapat dipahami tanpa melihat peta | Tab Daftar dan uji alur tanpa tetikus dari tahap 12. Lolos |
+| 7 | Sumber data dan lisensi disebut di antarmuka | Halaman metode dan catatan data peta, diuji sejak tahap 9. Lolos |
+| 8 | Penanda estimasi satelit | Catatan data peta, diuji. Lolos |
+| 9 | Tabel pembanding ukur lapangan di beranda | Belum ada. Kini beranda memuat tabel pembanding tiga uji: permukiman sintetis, ukur meteran lapangan yang ditulis belum dilakukan, dan pembanding OpenStreetMap, dengan tautan ke halaman metode |
+| 10 | Ter-deploy publik tanpa login | Lolos |
+| 11 | Repo publik tanpa kunci atau kredensial | Seluruh riwayat dipindai untuk pola kunci API dan berkas `.env`. Tidak ditemukan |
+| 12 | Riwayat git bersih dari nama alat | Lolos |
+| 13 | Nol komentar di kode | Lolos, termasuk berkas konfigurasi di akar yang tidak dipindai skrip |
+| 14 | AI-USAGE lengkap sampai fase terakhir | Tahap ini |
+| 15 | Catatan desain berisi minimal tiga pencabutan | Tujuh pencabutan di `CATATAN-DESAIN.md` |
+| 16 | Spec hijau, bukti tiap fase pada ketiga lebar | Spec hijau, 98 uji end to end dan 80 uji unit. Bukti fase lama tidak lengkap di ketiga lebar. Kekurangannya ditambal dengan tangkapan layar berakhiran `-susulan`, diambil dari build sekarang, bukan dari saat fase itu dikerjakan. Namanya sengaja dibedakan supaya tidak terbaca sebagai bukti asli fase tersebut |
+| 17 | Tanpa gamifikasi | Dipindai. Satu-satunya kata peringkat adalah judul hasil optimizer yang mengurutkan intervensi menurut manfaat per rupiah, bukan papan peringkat pengguna |
+| 18 | Api hanya perubahan warna bangunan | Lapisan api hanya titik berwarna per status bangunan. Lolos |
+| 19 | Nol emoji di produk | Dipindai di sumber, konten, README, dan dokumen. Nol |
+| 20 | Seluruh ikon lewat satu pembungkus Lucide | Produk tidak memakai pustaka ikon sama sekali. Satu-satunya glyph berbentuk ikon, tanda seru dalam kotak di catatan data, adalah hiasan karena kalimat di sebelahnya sudah menyampaikan maksudnya, jadi dicabut. Tombol perbesar dan perkecil peta memakai glyph bawaan kontrol MapLibre, dan ini dicatat sebagai pengecualian |
+| 21 | Seluruh kode di dalam `titik_henti/` | Di luar folder hanya ada `test/spike_gang.py` dan `bukti/f0/` dari tahap validasi data F0 yang dikerjakan pemilik repo, serta log alat Playwright. Tidak dipindahkan tanpa persetujuan pemilik |
+
+Temuan di luar daftar butir:
+
+1. Kolom kalimat koreksi lapangan dikosongkan sebelum hasil pengiriman diketahui. Bila layanan model gagal, kalimat yang diketik petugas di lapangan hilang dan harus diketik ulang. Ini ditemukan saat mengambil bukti susulan dengan model sungguhan di produksi: percobaan pertama pada lebar 768 piksel mendapat jawaban gagal dari layanan model, percobaan kedua berhasil. Kalimat kini hanya dikosongkan bila usulan berhasil dibuat, dan pesan galat yang bersifat sementara menyebut bahwa kalimat tetap tersimpan dan dapat dikirim ulang, sesuai Bagian B7. Uji baru dibuktikan gagal saat perilaku lama dikembalikan.
+2. Pembuka halaman metode menulis dua pengujian, padahal ada tiga. Diperbaiki.
+3. Penghitung karakter kolom koreksi memakai monospasi. Diganti huruf isi. Nilai di baris panel lewat komponen `ValueRow` juga memakai monospasi untuk jumlah dan persen, tidak hanya meter dan detik. Ini tidak diubah pada tahap ini karena menyentuh seluruh panel lembar kerja dan berada di luar daftar butir.
+
+Kesalahan yang dibuat pada tahap ini dan cara memperbaikinya:
+
+1. Pengukuran kontras garis fokus pertama melaporkan tiga tombol hitam dengan garis fokus tidak terlihat, rasio kontras sekitar 1. Tangkapan layar yang diambil saat itu seolah membenarkannya. Penyebabnya bukan tampilan, melainkan waktu ukur: tombol memakai transisi 100 milidetik pada warna garis, dan pengukuran diambil tepat setelah Tab, saat warna masih berangkat dari warna teks tombol. Diukur ulang setelah 250 milidetik, seluruh fokus terlihat. Uji permanen menunggu transisi selesai, dan dibuktikan gagal saat warna garis fokus sengaja diganti warna latar.
+2. Uji reduced motion pertama memilih bangunan lewat tab Daftar, padahal daftar itu berisi 25 bangunan yang paling jauh dari air dan seluruhnya tidak terjangkau, sehingga penggaris selang tidak pernah muncul. Uji diganti memilih bangunan lewat klik peta.
+3. Pengambilan bukti susulan pertama gagal karena peta lokal tidak pernah selesai dimuat. Build terakhir di folder keluaran saat itu berasal dari putaran uji mutan. Build diulang dari kode yang benar dan server preview dijalankan ulang sebelum bukti diambil ulang.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

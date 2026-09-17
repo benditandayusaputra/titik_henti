@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import { ARTICLE_WRITE_LINE_COUNT } from '$lib/domain/constants';
-	import { formatDate } from '$lib/format';
+	import { formatDate, formatList } from '$lib/format';
 	import type { PageData } from './$types';
 
 	interface Props {
@@ -39,7 +39,7 @@
 		</p>
 
 		<p class="field-label-sm text-graphite mt-3">
-			{artikel.kategori}, {artikel.waktuBacaMenit} menit baca, untuk {artikel.untuk.join(' dan ')}
+			{artikel.kategori}, {artikel.waktuBacaMenit} menit baca, untuk {formatList(artikel.untuk)}
 		</p>
 
 		<div class="bg-ink mt-5 mb-7 h-[2px] w-full"></div>

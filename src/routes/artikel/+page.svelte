@@ -11,7 +11,7 @@
 		type ArticleAudience,
 		type ArticleCategory
 	} from '$lib/content/artikel';
-	import { formatDate } from '$lib/format';
+	import { formatDate, formatList } from '$lib/format';
 
 	let pencarian = $state('');
 
@@ -147,9 +147,7 @@
 								{artikel.ringkasan}
 							</p>
 							<p class="field-label-sm text-graphite mt-2">
-								{artikel.kategori}, {artikel.waktuBacaMenit} menit baca, untuk {artikel.untuk.join(
-									' dan '
-								)}
+								{artikel.kategori}, {artikel.waktuBacaMenit} menit baca, untuk {formatList(artikel.untuk)}
 							</p>
 						</a>
 					</li>

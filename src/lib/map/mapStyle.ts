@@ -78,7 +78,7 @@ export function buildMapStyle(
 			[ALLEY_SOURCE_ID]: {
 				type: 'vector',
 				url: `pmtiles://${alleyTilesUrl}`,
-				attribution: 'OpenStreetMap (ODbL) · turunan Titik Henti',
+				attribution: 'OpenStreetMap (ODbL), turunan Titik Henti',
 				bounds: [bounds.west, bounds.south, bounds.east, bounds.north]
 			}
 		},

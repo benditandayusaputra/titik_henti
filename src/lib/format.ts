@@ -1,4 +1,5 @@
 const SECONDS_PER_MINUTE = 60;
+const LIST_FORMAT = new Intl.ListFormat('id-ID', { type: 'conjunction' });
 const MILLION = 1_000_000;
 
 export function formatMeters(value: number, decimals = 0): string {
@@ -63,4 +64,8 @@ export function formatDate(isoText: string): string {
 		month: 'short',
 		year: 'numeric'
 	});
+}
+
+export function formatList(items: string[]): string {
+	return LIST_FORMAT.format(items);
 }

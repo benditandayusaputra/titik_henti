@@ -407,11 +407,8 @@
 		<section class="mb-4">
 			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Batasan yang harus dibaca lebih dulu</h2>
 			<ul class="flex flex-col">
-				{#each limitations as limitation, index (limitation)}
-					<li class="hairline-b flex gap-3 py-3 last:border-b-0">
-						<span class="readout text-graphite w-6 shrink-0 pt-[2px] text-[12px]">
-							{(index + 1).toString().padStart(2, '0')}
-						</span>
+				{#each limitations as limitation (limitation)}
+					<li class="hairline-b py-3 last:border-b-0">
 						<p class="text-ink text-[12.5px] leading-[1.6]">{limitation}</p>
 					</li>
 				{/each}

@@ -1,0 +1,48 @@
+name: Pemeriksaan
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  periksa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cek komentar di dalam kode
+        run: npm run cek:komentar
+
+      - name: Pasang dependensi
+        run: npm ci
+
+      - name: Cek tipe dan Svelte
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Uji unit
+        run: npm test
+
+      - name: Pasang browser uji
+        run: npx playwright install --with-deps chromium
+
+      - name: Uji end to end
+        run: npx playwright test
+        env:
+          CI: true
+
+      - name: Simpan jejak uji yang gagal
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jejak-playwright
+          path: test-results/
+          retention-days: 7

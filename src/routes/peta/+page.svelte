@@ -18,20 +18,10 @@
 	} from '$lib/domain/constants';
 	import { ACCESS_CLASS_LABEL } from '$lib/domain/constants';
 	import { dataset } from '$lib/data/dataset.svelte';
+	import { pipelineMeta } from '$lib/data/sources';
 	import { formatMeters, formatSeconds } from '$lib/format';
 	import type { ComparisonSummary, FireBatchStatistics, LonLat } from '$lib/domain/types';
 	import MapCanvas from '$lib/map/MapCanvas.svelte';
-	import {
-		buildFireStateLayer,
-		buildHosePathLayer,
-		buildHoseTickLayer,
-		buildInterventionLayer,
-		buildPocketLayer,
-		buildReachedBuildingsLayer,
-		buildStopPointLayer,
-		buildWaterSourceLayer,
-		measureSolutionTip
-	} from '$lib/map/layers';
 	import { computeHoseReach } from '$lib/sim/hoseReach';
 	import { fireClient } from '$lib/sim/fireClient.svelte';
 	import { rankSlowestBuildings } from '$lib/sim/network';
@@ -74,11 +64,13 @@
 	let batchStatistics = $state.raw<FireBatchStatistics | null>(null);
 	let batchRunning = $state(false);
 	let mapArea: HTMLDivElement | undefined = $state();
+	let lapisanPeta = $state.raw<typeof import('$lib/map/layers') | null>(null);
 	let animationHandle = 0;
 	let playbackHandle = 0;
 
 	onMount(() => {
 		prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		void import('$lib/map/layers').then((modul) => (lapisanPeta = modul));
 		void dataset.load();
 		return () => {
 			cancelAnimationFrame(animationHandle);
@@ -147,31 +139,33 @@
 	});
 
 	const hoseTip = $derived.by<LonLat | null>(() => {
+		const pembangun = lapisanPeta;
 		const solution = workspace.stopPointSolution;
-		if (!solution || !solution.reachable) return null;
-		return measureSolutionTip(solution, hoseDrawnMeters);
+		if (!pembangun || !solution || !solution.reachable) return null;
+		return pembangun.measureSolutionTip(solution, hoseDrawnMeters);
 	});
 
 	const deckLayers = $derived.by<Layer[]>(() => {
 		const layers: Layer[] = [];
+		const pembangun = lapisanPeta;
 		const buildings = dataset.buildings;
-		if (!buildings) return layers;
+		if (!pembangun || !buildings) return layers;
 
 		if (workspace.activeTab === 'air' && workspace.hoseReach) {
-			layers.push(...buildReachedBuildingsLayer(buildings, workspace.hoseReach));
-			layers.push(...buildPocketLayer(buildings, workspace.hoseReach.pockets));
+			layers.push(...pembangun.buildReachedBuildingsLayer(buildings, workspace.hoseReach));
+			layers.push(...pembangun.buildPocketLayer(buildings, workspace.hoseReach.pockets));
 		}
 
 		const fireState = workspace.currentFireState;
 		if (fireState) {
-			layers.push(...buildFireStateLayer(buildings, fireState));
+			layers.push(...pembangun.buildFireStateLayer(buildings, fireState));
 		}
 
-		layers.push(...buildWaterSourceLayer(workspace.listWaterSourcesForMap()));
+		layers.push(...pembangun.buildWaterSourceLayer(workspace.listWaterSourcesForMap()));
 
 		if (workspace.optimizerOutcome) {
 			layers.push(
-				...buildInterventionLayer(
+				...pembangun.buildInterventionLayer(
 					workspace.optimizerOutcome.selected.map((item) => item.position)
 				)
 			);
@@ -179,9 +173,9 @@
 
 		const solution = workspace.stopPointSolution;
 		if (solution) {
-			layers.push(...buildHosePathLayer(solution, hoseDrawnMeters));
-			layers.push(...buildHoseTickLayer(solution, hoseDrawnMeters));
-			layers.push(...buildStopPointLayer(solution));
+			layers.push(...pembangun.buildHosePathLayer(solution, hoseDrawnMeters));
+			layers.push(...pembangun.buildHoseTickLayer(solution, hoseDrawnMeters));
+			layers.push(...pembangun.buildStopPointLayer(solution));
 		}
 
 		return layers;
@@ -504,54 +498,51 @@
 
 <div class="flex min-h-0 flex-1 flex-col lg:flex-row" data-lembar-kerja>
 	<div class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0" bind:this={mapArea}>
-		{#if dataset.meta}
-			<MapCanvas
-				bounds={dataset.meta.boundingBox}
-				layers={deckLayers}
-				upgradedAlleys={workspace.wideningScenarioActive}
-				mutedAlleyClasses={workspace.activeTab === 'api'}
-				selectedBuildingIndex={workspace.selectedBuildingIndex}
-				selectedSegmentId={workspace.selectedSegmentId}
-				correctedSegmentIds={workspace.correctedSegmentIds}
-				ignitionBuildingIndices={workspace.ignitionBuildingIndices}
-				onbuildingpick={handleBuildingPick}
-				onsegmentpick={handleSegmentPick}
-				onmappick={handleMapPick}
-				onready={(map) => (mapInstance = map)}
-			/>
-			<HoseRulerOverlay
-				map={mapInstance}
-				tip={hoseTip}
-				meters={hoseDrawnMeters}
-				totalMeters={workspace.stopPointSolution?.hoseLengthMeters ?? 0}
-			/>
-			<div class="absolute bottom-4 left-4 z-10">
-				<Legend
-					upgraded={workspace.wideningScenarioActive}
-					muted={workspace.activeTab === 'api'}
-				/>
+		<MapCanvas
+			bounds={pipelineMeta.boundingBox}
+			layers={deckLayers}
+			upgradedAlleys={workspace.wideningScenarioActive}
+			mutedAlleyClasses={workspace.activeTab === 'api'}
+			selectedBuildingIndex={workspace.selectedBuildingIndex}
+			selectedSegmentId={workspace.selectedSegmentId}
+			correctedSegmentIds={workspace.correctedSegmentIds}
+			ignitionBuildingIndices={workspace.ignitionBuildingIndices}
+			onbuildingpick={handleBuildingPick}
+			onsegmentpick={handleSegmentPick}
+			onmappick={handleMapPick}
+			onready={(map) => (mapInstance = map)}
+		/>
+		<HoseRulerOverlay
+			map={mapInstance}
+			tip={hoseTip}
+			meters={hoseDrawnMeters}
+			totalMeters={workspace.stopPointSolution?.hoseLengthMeters ?? 0}
+		/>
+		<div class="absolute bottom-4 left-4 z-10">
+			<Legend upgraded={workspace.wideningScenarioActive} muted={workspace.activeTab === 'api'} />
+		</div>
+		{#if workspace.settingIgnition || workspace.placingHydrant}
+			<div
+				class="bg-ink text-concrete map-label absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
+			>
+				{workspace.settingIgnition ? 'Klik bangunan untuk titik api' : 'Klik peta untuk hidran'}
 			</div>
-			{#if workspace.settingIgnition || workspace.placingHydrant}
-				<div
-					class="bg-ink text-concrete map-label absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
-				>
-					{workspace.settingIgnition ? 'Klik bangunan untuk titik api' : 'Klik peta untuk hidran'}
-				</div>
-			{/if}
-		{:else if dataset.status === 'error'}
-			<div class="flex h-full items-center px-6 py-10">
+		{/if}
+		{#if dataset.status === 'error'}
+			<div class="bg-ink/95 absolute inset-0 z-20 flex items-center px-6 py-10">
 				<DataUnavailable tone="gelap" onretry={reloadDataset} />
 			</div>
-		{:else}
-			<div class="flex h-full items-center px-6" aria-busy="true">
-				<div>
-					<p class="font-display text-concrete text-[18px] leading-tight font-semibold" role="status">
-						Memuat peta wilayah
-					</p>
-					<p class="text-graphite-pale prose-measure mt-2 text-[12.5px] leading-[1.55]">
-						Jaringan gang dan tabel bangunan sedang diambil. Biasanya selesai dalam beberapa detik.
-					</p>
-				</div>
+		{:else if !dataset.isReady}
+			<div
+				class="bg-ink/90 border-concrete/25 absolute top-3 left-3 z-20 max-w-[280px] border px-3 py-2"
+				aria-busy="true"
+			>
+				<p class="font-display text-concrete text-[13px] leading-tight font-semibold" role="status">
+					Memuat peta wilayah
+				</p>
+				<p class="text-graphite-pale mt-1 text-[11.5px] leading-[1.45]">
+					Jaringan gang dan tabel bangunan sedang diambil. Peta sudah bisa digeser sambil menunggu.
+				</p>
 			</div>
 		{/if}
 	</div>

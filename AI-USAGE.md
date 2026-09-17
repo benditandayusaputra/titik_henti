@@ -628,6 +628,8 @@ Tiga penyebab ditemukan dan diperbaiki:
 | Peta tergambar, 4G lambat | 12.314 ms | 5.485 ms | di bawah 3 detik |
 | Peta tergambar, 4G biasa | 2.169 ms | 986 ms | di bawah 3 detik |
 
+Angka di atas adalah waktu sampai piksel peta pertama muncul. Ubin peta mengalir bertahap, dan pada 4G lambat area peta baru terisi sekitar sepertiganya pada detik ke-12. Pengukuran di produksi setelah deploy: piksel pertama 5.026 milidetik, terisi 35 persen pada 12.133 milidetik. Sebelum perubahan, piksel pertama pun baru muncul pada detik ke-12, jadi yang berubah adalah kapan pengguna melihat peta, bukan kecepatan seluruh ubin tiba.
+
 Target tercapai pada 4G biasa dan belum tercapai pada 4G lambat. Sisa waktunya didominasi unduhan MapLibre sendiri: 306 KB setelah gzip pada 157 KB per detik berarti sekitar dua detik, ditambah beberapa perjalanan bolak-balik untuk ubin peta pada latensi 562 milidetik. Menurunkannya lagi berarti mengganti pustaka peta atau menampilkan gambar statis lebih dulu sebagai pengganti peta, dan keduanya keputusan pemilik repo, bukan penyetelan kecil.
 
 Uji penjaga baru memastikan jalur kritis rute peta tetap ramping: tidak ada huruf yang dipramuat di sana, dan tidak ada potongan yang memuat pustaka lapisan di antara berkas yang dipramuat. Uji ini dibuktikan gagal pada kode sebelum tahap ini.

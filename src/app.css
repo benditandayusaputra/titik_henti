@@ -8,6 +8,13 @@
 @import '@fontsource/ibm-plex-mono/latin-500.css';
 @import '@fontsource/ibm-plex-mono/latin-600.css';
 
+@font-face {
+	font-family: 'IBM Plex Sans Condensed Fallback';
+	src: local('Arial'), local('Roboto');
+	font-weight: 600;
+	size-adjust: 88%;
+}
+
 @theme {
 	--color-concrete: #e8e6e1;
 	--color-concrete-tint: #f2f0ec;
@@ -32,7 +39,7 @@
 	--color-caution: #c98a14;
 	--color-caution-ink: #84590d;
 
-	--font-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+	--font-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans Condensed Fallback', system-ui, sans-serif;
 	--font-body: 'IBM Plex Sans', system-ui, sans-serif;
 	--font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 

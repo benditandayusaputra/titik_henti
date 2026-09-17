@@ -1,5 +1,6 @@
 <script lang="ts">
 	import PageMeta from '$lib/ui/PageMeta.svelte';
+	import { keyboardScrollable } from '$lib/ui/keyboardScrollable';
 	import type { Layer } from '@deck.gl/core';
 	import type { Map as MapLibreMap } from 'maplibre-gl';
 	import { onMount } from 'svelte';
@@ -478,7 +479,7 @@
 
 <p class="sr-only" role="status" aria-live="polite">{selectionAnnouncement}</p>
 
-<div class="flex min-h-0 flex-1 flex-col lg:flex-row">
+<div class="flex min-h-0 flex-1 flex-col lg:flex-row" data-lembar-kerja>
 	<div class="bg-ink-deep relative min-h-[58vh] flex-1 lg:min-h-0">
 		{#if dataset.meta}
 			<MapCanvas
@@ -544,7 +545,12 @@
 			{/each}
 		</nav>
 
-		<div class="min-h-0 flex-1 overflow-y-auto">
+		<div
+			class="min-h-0 flex-1 overflow-y-auto"
+			role="region"
+			aria-label="Isi panel kerja"
+			{@attach keyboardScrollable}
+		>
 			{#if dataset.meta && dataset.buildings && workspace.network}
 				{#if workspace.activeTab === 'akses'}
 					<StatsPanel meta={dataset.meta} />

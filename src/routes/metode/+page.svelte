@@ -96,7 +96,7 @@
 			</h2>
 			<p class="text-ink prose-measure mb-5 text-[13px] leading-[1.6]">
 				Angka lebar gang adalah keluaran algoritma, bukan hasil ukur. Karena itu pertanyaan pertama
-				yang pantas diajukan adalah seberapa jauh algoritma ini boleh dipercaya. Dua pengujian di
+				yang pantas diajukan adalah seberapa jauh algoritma ini boleh dipercaya. Tiga pengujian di
 				bawah ini kami tampilkan lebih dulu, termasuk bagian yang belum selesai.
 			</p>
 

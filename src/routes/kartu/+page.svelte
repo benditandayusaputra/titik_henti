@@ -214,7 +214,7 @@
 				</div>
 			</header>
 
-			<section class="border-ink/25 grid grid-cols-4 gap-x-3 border-b py-2">
+			<section class="border-ink/25 grid grid-cols-2 gap-x-3 gap-y-2 border-b py-2 sm:grid-cols-4 print:grid-cols-4">
 				<div>
 					<p class="field-label-sm text-graphite">Bangunan</p>
 					<p class="readout-lg text-ink mt-1">{formatCount(dataset.meta.buildingCount)}</p>
@@ -307,7 +307,7 @@
 				{/if}
 			</section>
 
-			<div class="border-ink/25 grid grid-cols-2 gap-x-6 border-b py-2.5">
+			<div class="border-ink/25 grid gap-x-6 gap-y-4 border-b py-2.5 sm:grid-cols-2 print:grid-cols-2">
 				<section>
 					<h2 class="field-label text-ink mb-1.5">02 Titik henti dan selang terjauh</h2>
 					<table class="w-full">
@@ -398,7 +398,7 @@
 				</section>
 			</div>
 
-			<section class="border-ink/25 grid grid-cols-3 gap-x-5 border-b py-2.5">
+			<section class="border-ink/25 grid gap-x-5 gap-y-3 border-b py-2.5 sm:grid-cols-3 print:grid-cols-3">
 				<div>
 					<h2 class="field-label text-ink mb-1.5">05 Kontak RT</h2>
 					{#each writeLines as line (line)}

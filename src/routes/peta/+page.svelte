@@ -73,6 +73,7 @@
 	let selectionAnnouncement = $state('');
 	let batchStatistics = $state.raw<FireBatchStatistics | null>(null);
 	let batchRunning = $state(false);
+	let mapArea: HTMLDivElement | undefined = $state();
 	let animationHandle = 0;
 	let playbackHandle = 0;
 
@@ -186,16 +187,38 @@
 		return layers;
 	});
 
-	function handleBuildingPick(buildingIndex: number): void {
+	$effect(() => {
+		const choosingOnMap = workspace.settingIgnition || workspace.placingHydrant;
+		if (choosingOnMap) bringMapIntoView();
+	});
+
+	function bringMapIntoView(): void {
+		if (!mapArea) return;
+		const mastheadBottom = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0;
+		const mapTop = mapArea.getBoundingClientRect().top;
+		if (mapTop >= mastheadBottom) return;
+		window.scrollBy({ top: mapTop - mastheadBottom, behavior: 'instant' });
+	}
+
+	function handleBuildingPick(buildingIndex: number, position: LonLat): void {
 		if (workspace.settingIgnition) {
 			workspace.toggleIgnition(buildingIndex);
+			return;
+		}
+		if (workspace.placingHydrant) {
+			workspace.addHypotheticalSource(position);
 			return;
 		}
 		workspace.selectBuilding(buildingIndex);
 		if (workspace.activeTab === 'akses') workspace.activeTab = 'titikHenti';
 	}
 
-	function handleSegmentPick(segmentId: number): void {
+	function handleSegmentPick(segmentId: number, position: LonLat): void {
+		if (workspace.placingHydrant) {
+			workspace.addHypotheticalSource(position);
+			return;
+		}
+		if (workspace.settingIgnition) return;
 		workspace.selectSegment(segmentId);
 		workspace.activeTab = 'akses';
 	}
@@ -480,7 +503,7 @@
 <p class="sr-only" role="status" aria-live="polite">{selectionAnnouncement}</p>
 
 <div class="flex min-h-0 flex-1 flex-col lg:flex-row" data-lembar-kerja>
-	<div class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0">
+	<div class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0" bind:this={mapArea}>
 		{#if dataset.meta}
 			<MapCanvas
 				bounds={dataset.meta.boundingBox}

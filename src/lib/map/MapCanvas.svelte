@@ -34,7 +34,7 @@
 		correctedSegmentIds?: Set<number>;
 		ignitionBuildingIndices?: number[];
 		onbuildingpick?: (buildingIndex: number, position: LonLat) => void;
-		onsegmentpick?: (segmentId: number) => void;
+		onsegmentpick?: (segmentId: number, position: LonLat) => void;
 		onmappick?: (position: LonLat) => void;
 		onready?: (map: maplibregl.Map) => void;
 	}
@@ -186,7 +186,7 @@
 			if (segmentHit) {
 				const segmentId = readSegmentId(segmentHit);
 				if (segmentId !== null) {
-					onsegmentpick?.(segmentId);
+					onsegmentpick?.(segmentId, position);
 					return;
 				}
 			}

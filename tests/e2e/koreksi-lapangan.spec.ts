@@ -20,15 +20,69 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 	await page.waitForTimeout(1200);
 }
 
-async function pilihSegmenGang(page: Page): Promise<void> {
-	for (let y = 200; y <= 700; y += 25) {
-		for (let x = 150; x <= 900; x += 25) {
-			await page.mouse.click(x, y);
-			await page.waitForTimeout(40);
-			if (await page.getByText('Segmen gang terpilih').isVisible()) return;
+const AREA_PETA = { x: 0, y: 60, width: 840, height: 640 };
+const WARNA_GANG_UNIT_KECIL = { merah: 0xc9, hijau: 0x8a, biru: 0x14 };
+const TOLERANSI_WARNA = 36;
+const JARAK_ANTAR_SASARAN = 24;
+const BATAS_SASARAN = 24;
+const JEDA_TUNGGU_PANEL_MS = 600;
+
+async function cariSasaranGangDiPeta(page: Page): Promise<{ x: number; y: number }[]> {
+	const gambar = await page.screenshot({ clip: AREA_PETA });
+	return page.evaluate(
+		async ({ dataUrl, warna, toleransi, jarak, batas }) => {
+			const citra = new Image();
+			citra.src = dataUrl;
+			await citra.decode();
+			const kanvas = document.createElement('canvas');
+			kanvas.width = citra.width;
+			kanvas.height = citra.height;
+			const konteks = kanvas.getContext('2d');
+			if (!konteks) return [];
+			konteks.drawImage(citra, 0, 0);
+			const piksel = konteks.getImageData(0, 0, kanvas.width, kanvas.height).data;
+			const sasaran: { x: number; y: number }[] = [];
+			const selTerpakai = new Set<string>();
+			for (let y = 0; y < kanvas.height && sasaran.length < batas; y += 2) {
+				for (let x = 0; x < kanvas.width && sasaran.length < batas; x += 2) {
+					const indeks = (y * kanvas.width + x) * 4;
+					const cocok =
+						Math.abs(piksel[indeks] - warna.merah) < toleransi &&
+						Math.abs(piksel[indeks + 1] - warna.hijau) < toleransi &&
+						Math.abs(piksel[indeks + 2] - warna.biru) < toleransi;
+					const sel = `${Math.floor(x / jarak)}:${Math.floor(y / jarak)}`;
+					if (cocok && !selTerpakai.has(sel)) {
+						selTerpakai.add(sel);
+						sasaran.push({ x, y });
+					}
+				}
+			}
+			return sasaran;
+		},
+		{
+			dataUrl: `data:image/png;base64,${gambar.toString('base64')}`,
+			warna: WARNA_GANG_UNIT_KECIL,
+			toleransi: TOLERANSI_WARNA,
+			jarak: JARAK_ANTAR_SASARAN,
+			batas: BATAS_SASARAN
 		}
+	);
+}
+
+async function pilihSegmenGang(page: Page): Promise<void> {
+	await expect
+		.poll(async () => (await cariSasaranGangDiPeta(page)).length, { timeout: 60000 })
+		.toBeGreaterThan(0);
+	const panelSegmen = page.getByText('Segmen gang terpilih');
+	for (const titik of await cariSasaranGangDiPeta(page)) {
+		await page.mouse.click(AREA_PETA.x + titik.x, AREA_PETA.y + titik.y);
+		const terpilih = await panelSegmen
+			.waitFor({ state: 'visible', timeout: JEDA_TUNGGU_PANEL_MS })
+			.then(() => true)
+			.catch(() => false);
+		if (terpilih) return;
 	}
-	throw new Error('tidak ada segmen gang yang terpilih dari klik peta');
+	throw new Error('tidak ada segmen gang yang terpilih dari klik pada garis gang yang tergambar');
 }
 
 async function balasUsulan(page: Page): Promise<void> {

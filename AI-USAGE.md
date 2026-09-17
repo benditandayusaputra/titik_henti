@@ -544,6 +544,28 @@ Temuan lain:
 
 Verifikasi: uji unit istilah lolos untuk kedelapan artikel. Spec artikel kini menghitung jumlah artikel dari folder, bukan angka tetap. Pemindaian aksesibilitas mencakup keempat artikel baru pada kelima lebar. Seluruh suite end to end lolos, 118 uji. Tangkapan layar kedelapan artikel dan halaman daftar pada tiga lebar ada di `bukti/f22/`.
 
+### Tahap 21, cetak artikel satu halaman A4
+
+Status catatan: dicatat saat tahap berjalan.
+
+| Aspek | Isi |
+| --- | --- |
+| Prompt inti | Pemilik repo memilih opsi pertama dari tiga pilihan: versi cetak hanya memuat langkah inti, penjelasan disembunyikan |
+| Dihasilkan AI | Pasangan versi cetak untuk kedelapan artikel, pemuat yang mewajibkan pasangan itu, gaya cetak, uji jumlah halaman |
+| Diubah manual | Diisi setelah tinjauan pemilik repo |
+
+Menyembunyikan bagian artikel per judul bagian tidak dipilih. Artikel menit-menit pertama versi lengkap setinggi 2.572 piksel dalam mode cetak, dan hampir seluruh bagiannya berisi langkah yang ditulis bersama nama lembaga dan alasannya, sehingga membuang bagian penjelas saja diperkirakan tidak akan mendekati batas satu halaman. Perkiraan ini tidak diukur terpisah. Karena itu setiap artikel diberi pasangan versi cetak di `src/content/artikel/cetak/`. Isinya hanya langkah yang sudah ada di artikel lengkap, dipadatkan tanpa menambah langkah baru, dan setiap pasangan dibaca ulang terhadap artikel lengkapnya. Pada pembacaan ulang itu, versi cetak korsleting sempat menulis perbarui instalasi lima tahun sekali sebagai perintah, padahal sumbernya menyebut disarankan. Kalimat itu dikembalikan menjadi saran.
+
+Pemuat artikel gagal saat build bila ada artikel tanpa versi cetak atau versi cetak tanpa artikel. Layar tetap menampilkan artikel lengkap. Saat dicetak, halaman menampilkan versi inti, alamat versi lengkapnya, daftar sumber, dan ruang catatan pos RT. Ringkasan dan keterangan waktu baca disembunyikan karena tidak berguna di kertas. Garis kutipan larangan dicetak hitam, bukan merah, sesuai register dokumen sipil yang dirancang untuk difotokopi.
+
+Hasil: kedelapan artikel tercetak tepat satu halaman A4. Artikel terpanjang setinggi 969 piksel dari batas sekitar 1.017 piksel. Percobaan pertama masih menghasilkan dua halaman untuk artikel itu, lalu tiga butir peringatan digabung menjadi satu kalimat, bagian tidak dapat keluar dijadikan satu butir, dan ringkasan disembunyikan saat dicetak.
+
+Uji baru mencetak setiap artikel ke PDF dan menuntut tepat satu halaman, serta memastikan versi inti hanya muncul saat dicetak. Uji itu dibuktikan gagal dengan hasil dua halaman saat ringkasan dikembalikan ke cetakan. Label tombol cetak yang pada tahap 20 diganti menjadi cetak artikel dikembalikan menjadi cetak satu halaman A4, karena kini sesuai dengan yang terjadi.
+
+Satu penyimpangan dari rencana eksekusi tetap ada. Rencana meminta ukuran huruf naik pada mode cetak, sedangkan versi inti dicetak 10,5 poin dan daftar sumber 8 poin supaya muat satu halaman. Muat satu halaman diutamakan karena itu yang dipilih pemilik repo.
+
+Seluruh suite end to end lolos, 119 uji. Hasil cetak kedelapan artikel ada di `bukti/f22/` dengan awalan `cetak-`.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

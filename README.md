@@ -6,7 +6,7 @@ Platform perencanaan siaga kebakaran berbasis aksesibilitas gang untuk permukima
 
 Titik Henti menjawab satu pertanyaan yang biasanya tidak pernah dijawab sebelum kebakaran terjadi: kalau rumah ini terbakar, mobil pemadam berhenti di mana, dan berapa meter selang yang harus ditarik dari titik itu.
 
-Sistem menurunkan jaringan gang langsung dari citra bangunan, mengukur lebar tiap segmen, lalu memakai angka itu untuk menghitung titik henti kendaraan, panjang selang, kantong wilayah yang tidak terjangkau air, dan simulasi penjalaran api antarbangunan. Keluarannya bukan hanya layar, tapi juga Kartu Siaga RT yang bisa dicetak hitam putih dan ditempel di pos RT.
+Sistem menurunkan jaringan gang langsung dari citra bangunan, mengukur lebar tiap segmen, lalu memakai angka itu untuk menghitung titik henti kendaraan, panjang selang, kantong wilayah yang tidak terjangkau air, dan simulasi penjalaran api antarbangunan. Keluarannya bukan hanya layar, tapi juga Kartu siaga RT yang bisa dicetak hitam putih dan ditempel di pos RT.
 
 Ini alat perencanaan yang dipakai saat tidak sedang terjadi apa-apa. Bukan sistem pelaporan kebakaran dan bukan alat panggil darurat.
 
@@ -25,9 +25,9 @@ Dari seluruh panjang jaringan gang itu, 57,2 persen tidak dapat dilalui kendaraa
 | F2 | Titik henti dan panjang selang | Pilih bangunan, sistem menghitung titik terdekat yang masih dapat dicapai kendaraan dan panjang selang dari titik itu |
 | F3 | Simulasi penjalaran api | Cellular automata heterogen di Web Worker, dengan panel kalibrasi koefisien |
 | F4 | Jangkauan selang dan kantong tak terjangkau | Poligon jangkauan dari tiap sumber air, ditambah mode uji coba penempatan hidran |
-| F5 | Kartu Siaga RT | Satu halaman A4 potret siap cetak hitam putih |
+| F5 | Kartu siaga RT | Satu halaman A4 potret siap cetak hitam putih |
 | F6 | Koreksi lapangan berbantuan AI | Kalimat bebas dari lapangan diubah jadi usulan koreksi terstruktur yang wajib disetujui manusia |
-| F7 | Optimizer intervensi | Pemilihan intervensi berbasis anggaran terhadap dampak simulasi |
+| F7 | Pencarian intervensi | Pemilihan intervensi berbasis anggaran terhadap dampak simulasi, diurutkan menurut manfaat per rupiah |
 | F8 | Artikel siaga | Panduan singkat bersumber lembaga resmi, tersaring lewat URL, punya mode cetak A4, dan tersambung ke kondisi yang ditunjukkan peta |
 
 ## Batasan yang wajib dibaca
@@ -40,10 +40,10 @@ Halaman Metode di dalam produk memuat daftar batasan lengkap beserta sumber data
 
 | Lapisan | Sumber | Lisensi |
 | --- | --- | --- |
-| Footprint bangunan | Google Open Buildings V3 | CC BY 4.0 |
+| Tapak bangunan | Google Open Buildings V3 | CC BY 4.0 |
 | Jaringan jalan dan gang | OpenStreetMap lewat Overpass API | ODbL 1.0 |
 | Sumber air | OpenStreetMap | ODbL 1.0 |
-| Batas kelurahan | OpenStreetMap relasi 5802347 | ODbL 1.0 |
+| Batas kelurahan | OpenStreetMap relasi 5802216 | ODbL 1.0 |
 
 ## Menjalankan secara lokal
 
@@ -73,7 +73,7 @@ npm run build
 
 ## Pipeline data
 
-Pipeline Python berjalan offline dan tidak ikut di-deploy. Keluarannya adalah aset statis di `static/data/`.
+Pipeline Python berjalan offline dan tidak ikut di-deploy. Keluarannya adalah aset statis di `src/lib/data/files/`, yang diberi sidik jari oleh Vite saat build.
 
 ```bash
 cd pipeline
@@ -86,9 +86,13 @@ python3 -m venv .venv
 
 SvelteKit 2 dan Svelte 5 dengan runes, TypeScript strict, TailwindCSS, MapLibre GL JS dengan PMTiles, deck.gl lewat MapboxOverlay, Web Worker untuk seluruh simulasi, adapter Vercel dengan seluruh halaman prerender kecuali satu server route. Panggilan model bahasa memakai `fetch` langsung ke endpoint kompatibel OpenAI, tanpa SDK penyedia.
 
-## Pemanfaatan AI
+## Dokumen
 
-Dilaporkan terbuka di `AI-USAGE.md`.
+| Berkas | Isi |
+| --- | --- |
+| `AI-USAGE.md` | Laporan terbuka pemakaian AI per tahap, termasuk kesalahan yang dibuat dan cara memperbaikinya |
+| `CATATAN-DESAIN.md` | Kritik diri terhadap tampilan: apa yang dicabut, apa yang dipertahankan, dan alasannya |
+| `CLAUDE.md` | Arah desain dan aturan repositori yang berlaku mengikat |
 
 ## Lisensi
 

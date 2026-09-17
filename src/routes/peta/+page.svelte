@@ -480,7 +480,7 @@
 <p class="sr-only" role="status" aria-live="polite">{selectionAnnouncement}</p>
 
 <div class="flex min-h-0 flex-1 flex-col lg:flex-row" data-lembar-kerja>
-	<div class="bg-ink-deep relative min-h-[58vh] flex-1 lg:min-h-0">
+	<div class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0">
 		{#if dataset.meta}
 			<MapCanvas
 				bounds={dataset.meta.boundingBox}

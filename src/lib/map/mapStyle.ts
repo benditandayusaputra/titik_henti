@@ -17,7 +17,7 @@ export const ALLEY_CASING_LAYER_ID = 'alley-casing';
 export const ALLEY_SELECTED_LAYER_ID = 'alley-selected';
 export const ALLEY_CORRECTED_LAYER_ID = 'alley-corrected';
 
-const BACKGROUND_COLOR = '#101013';
+const BACKGROUND_COLOR = '#1a1a1c';
 const BUILDING_FILL_COLOR = '#2c2c34';
 const BUILDING_OUTLINE_COLOR = '#43434e';
 const BUILDING_SELECTED_COLOR = '#e8e6e1';

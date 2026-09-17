@@ -127,7 +127,7 @@
 		</h2>
 		<ol class="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
 			{#each chain as step, index (step)}
-				<li class="border-concrete/20 bg-ink-deep border px-4 py-4">
+				<li class="border-concrete/20 border px-4 py-4">
 					<span class="readout text-graphite-pale text-[11px]">
 						{(index + 1).toString().padStart(2, '0')}
 					</span>

@@ -135,7 +135,7 @@ export function buildInterventionCandidates(
 		candidates.push({
 			id: `water-${node}`,
 			kind: 'waterSource',
-			label: `Sumber air baru di node ${node}`,
+			label: `Sumber air baru di simpul jaringan ${node}`,
 			costRupiah: OPTIMIZER_WATER_SOURCE_COST_RUPIAH,
 			targetEdgeId: null,
 			targetNodeId: node,
@@ -152,7 +152,7 @@ export function buildInterventionCandidates(
 		candidates.push({
 			id: `apar-${node}`,
 			kind: 'extinguisher',
-			label: `Titik APAR di node ${node}`,
+			label: `Titik APAR di simpul jaringan ${node}`,
 			costRupiah: OPTIMIZER_EXTINGUISHER_COST_RUPIAH,
 			targetEdgeId: null,
 			targetNodeId: node,

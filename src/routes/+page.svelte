@@ -8,7 +8,23 @@
 		LARGE_UNIT_MIN_WIDTH_METERS
 	} from '$lib/domain/constants';
 	import { pipelineMeta as meta } from '$lib/data/sources';
-	import { formatCount, formatDecimal, formatKilometers, formatShare } from '$lib/format';
+	import {
+		FIELD_MEASUREMENTS,
+		FIELD_MEASUREMENT_TARGET_COUNT,
+		FIELD_MEASUREMENT_TOLERANCE_METERS,
+		OSM_WIDTH_CHECK,
+		SYNTHETIC_WIDTH_CHECKS,
+		countFieldMeasurementsWithinTolerance,
+		findLargestSyntheticError,
+		roundShareToTenths
+	} from '$lib/domain/validation';
+	import {
+		formatCount,
+		formatDecimal,
+		formatKilometers,
+		formatMeters,
+		formatShare
+	} from '$lib/format';
 	import type { AccessClass } from '$lib/domain/types';
 
 	const classes: AccessClass[] = ['largeUnit', 'smallUnit', 'hoseOnly'];
@@ -86,6 +102,81 @@
 			<a href="/kartu/" class="field-button">Kartu siaga RT</a>
 			<a href="/metode/" class="field-button">Metode dan sumber data</a>
 		</div>
+	</div>
+</section>
+
+<section class="hairline-b px-5 py-14 sm:px-10" aria-labelledby="judul-akurasi">
+	<div class="mx-auto w-full max-w-5xl">
+		<h2
+			id="judul-akurasi"
+			class="font-display text-ink mb-3 text-[clamp(1.4rem,3vw,2rem)] leading-tight font-semibold"
+		>
+			Seberapa akurat lebar gang di sini
+		</h2>
+		<p class="text-ink prose-measure mb-6 text-[14px] leading-[1.6]">
+			Lebar gang di produk ini adalah keluaran algoritma dari citra satelit, bukan hasil ukur. Ini
+			pembandingnya, termasuk yang belum dikerjakan.
+		</p>
+		<table class="w-full">
+			<thead>
+				<tr class="border-ink/30 border-b">
+					<th scope="col" class="field-label-sm text-graphite py-2 pr-4 text-left">Uji</th>
+					<th scope="col" class="field-label-sm text-graphite py-2 pr-4 text-left">Dibandingkan dengan</th>
+					<th scope="col" class="field-label-sm text-graphite py-2 text-left">Hasil</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="hairline-b">
+					<th scope="row" class="text-ink py-3 pr-4 text-left align-top text-[13px] font-medium">
+						Permukiman sintetis
+					</th>
+					<td class="text-graphite py-3 pr-4 align-top text-[13px] leading-[1.5]">
+						{SYNTHETIC_WIDTH_CHECKS.length} gang dengan lebar yang ditetapkan lebih dulu
+					</td>
+					<td class="text-ink py-3 align-top text-[13px] leading-[1.5]">
+						Selisih terbesar
+						<span class="readout">{formatMeters(findLargestSyntheticError(SYNTHETIC_WIDTH_CHECKS), 2)}</span>
+					</td>
+				</tr>
+				<tr class="hairline-b">
+					<th scope="row" class="text-ink py-3 pr-4 text-left align-top text-[13px] font-medium">
+						Ukur meteran lapangan
+					</th>
+					<td class="text-graphite py-3 pr-4 align-top text-[13px] leading-[1.5]">
+						{FIELD_MEASUREMENT_TARGET_COUNT} gang di {OSM_WIDTH_CHECK.villageName}, toleransi
+						<span class="readout">{formatMeters(FIELD_MEASUREMENT_TOLERANCE_METERS, 1)}</span>
+					</td>
+					<td class="text-ink py-3 align-top text-[13px] leading-[1.5]">
+						{#if FIELD_MEASUREMENTS.length === 0}
+							Belum dilakukan
+						{:else}
+							{countFieldMeasurementsWithinTolerance(FIELD_MEASUREMENTS)} dari {FIELD_MEASUREMENTS.length}
+							gang dalam toleransi
+						{/if}
+					</td>
+				</tr>
+				<tr class="hairline-b">
+					<th scope="row" class="text-ink py-3 pr-4 text-left align-top text-[13px] font-medium">
+						OpenStreetMap
+					</th>
+					<td class="text-graphite py-3 pr-4 align-top text-[13px] leading-[1.5]">
+						{formatCount(OSM_WIDTH_CHECK.primary.matchedWayCount)} ruas yang lebarnya ditandai kontributor
+					</td>
+					<td class="text-ink py-3 align-top text-[13px] leading-[1.5]">
+						Median selisih
+						<span class="readout">+{formatMeters(OSM_WIDTH_CHECK.primary.medianDifferenceMeters, 2)}</span>,
+						angka kami lebih lebar pada {roundShareToTenths(OSM_WIDTH_CHECK.primary.pipelineWiderShare)}
+						dari 10 ruas
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="text-graphite prose-measure mt-4 text-[12.5px] leading-[1.6]">
+			Uji sintetis membuktikan perhitungannya, bukan datanya. Pembanding OpenStreetMap menunjukkan
+			angka kami cenderung lebih lebar dari badan jalan, jadi lebar di sini sebaiknya dibaca sebagai
+			batas atas. Rinciannya ada di
+			<a href="/metode/" class="text-ink underline underline-offset-4">halaman metode dan sumber data</a>.
+		</p>
 	</div>
 </section>
 

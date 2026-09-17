@@ -40,7 +40,7 @@ test.describe('keadaan memuat, kosong, dan gagal', () => {
 	test('peta menjelaskan keadaan dan menawarkan artikel bila data wilayah gagal dimuat', async ({
 		page
 	}) => {
-		await page.route('**/data/graph.json', (route) => route.abort());
+		await page.route('**/graph*.json', (route) => route.abort());
 		await page.goto('/peta/');
 
 		const penjelasan = page.getByRole('alert').filter({ hasText: 'Data wilayah belum tersedia' });
@@ -55,7 +55,7 @@ test.describe('keadaan memuat, kosong, dan gagal', () => {
 
 	test('muat ulang data memulihkan peta setelah sambungan kembali', async ({ page }) => {
 		let blokir = true;
-		await page.route('**/data/graph.json', (route) => (blokir ? route.abort() : route.continue()));
+		await page.route('**/graph*.json', (route) => (blokir ? route.abort() : route.continue()));
 		await page.goto('/peta/');
 
 		const tombolMuatUlang = page.getByRole('button', { name: 'Muat ulang data' }).first();
@@ -67,7 +67,7 @@ test.describe('keadaan memuat, kosong, dan gagal', () => {
 	});
 
 	test('kartu siaga tidak tertahan di keadaan memuat bila data gagal', async ({ page }) => {
-		await page.route('**/data/graph.json', (route) => route.abort());
+		await page.route('**/graph*.json', (route) => route.abort());
 		await page.goto('/kartu/');
 
 		await expect(
@@ -103,7 +103,7 @@ test.describe('keadaan memuat, kosong, dan gagal', () => {
 	});
 
 	test('tombol jalankan tidak bisa ditekan sebelum mesin simulasi siap', async ({ page }) => {
-		await page.route('**/data/adjacency.bin', () => undefined);
+		await page.route('**/adjacency*.bin', () => undefined);
 		await page.goto('/peta/');
 		await tungguPetaSiap(page);
 		await page.getByRole('button', { name: 'Api', exact: true }).click();
@@ -114,7 +114,7 @@ test.describe('keadaan memuat, kosong, dan gagal', () => {
 
 	for (const jalur of ['/peta/', '/kartu/']) {
 		test(`keadaan data gagal di ${jalur} tetap bebas pelanggaran aksesibilitas`, async ({ page }) => {
-			await page.route('**/data/graph.json', (route) => route.abort());
+			await page.route('**/graph*.json', (route) => route.abort());
 			await page.goto(jalur);
 			await expect(
 				page.getByRole('alert').filter({ hasText: 'Data wilayah belum tersedia' }).first()

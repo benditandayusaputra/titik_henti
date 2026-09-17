@@ -14,7 +14,7 @@ PIPELINE_ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_ROOT.parent
 RAW_DIR = PIPELINE_ROOT / "data" / "raw"
 WORK_DIR = PIPELINE_ROOT / "data" / "work"
-OUTPUT_DIR = PROJECT_ROOT / "static" / "data"
+OUTPUT_DIR = PROJECT_ROOT / "src" / "lib" / "data" / "files"
 CONFIG_PATH = PIPELINE_ROOT / "config.json"
 
 METERS_PER_DEGREE_LATITUDE = 110574.0

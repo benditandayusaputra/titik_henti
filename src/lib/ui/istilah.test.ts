@@ -9,7 +9,7 @@ const AKAR_TEKS_ANTARMUKA = [
 	'src/content',
 	'src/lib/domain/constants.ts',
 	'src/lib/workspace.svelte.ts',
-	'static/data/meta.json'
+	'src/lib/data/files/meta.json'
 ];
 const EKSTENSI_DIPINDAI = new Set(['.svelte', '.ts', '.md', '.json']);
 const BERKAS_DIKECUALIKAN = new Set(['istilah.ts', 'istilah.test.ts']);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { base } from '$app/paths';
+	import { DATA_URL } from '$lib/data/sources';
 	import { MapboxOverlay } from '@deck.gl/mapbox';
 	import type { Layer } from '@deck.gl/core';
 	import maplibregl, { type MapGeoJSONFeature } from 'maplibre-gl';
@@ -7,7 +7,6 @@
 	import { Protocol } from 'pmtiles';
 	import { onMount } from 'svelte';
 	import {
-		DATA_BASE_PATH,
 		MAP_CANVAS_LABEL,
 		MAP_MAX_ZOOM,
 		MAP_MIN_ZOOM,
@@ -119,8 +118,8 @@
 		const created = new maplibregl.Map({
 			container,
 			style: buildMapStyle(
-				`${window.location.origin}${base}${DATA_BASE_PATH}/buildings.pmtiles`,
-				`${window.location.origin}${base}${DATA_BASE_PATH}/gangs.pmtiles`,
+				new URL(DATA_URL.buildingTiles, window.location.href).href,
+				new URL(DATA_URL.alleyTiles, window.location.href).href,
 				bounds
 			),
 			bounds: [

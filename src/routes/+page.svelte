@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import {
 		ACCESS_CLASS_COLOR,
 		ACCESS_CLASS_LABEL,
@@ -7,13 +6,9 @@
 		HOSE_ROLL_LENGTH_METERS,
 		LARGE_UNIT_MIN_WIDTH_METERS
 	} from '$lib/domain/constants';
-	import { dataset } from '$lib/data/dataset.svelte';
+	import { pipelineMeta as meta } from '$lib/data/sources';
 	import { formatCount, formatDecimal, formatKilometers, formatShare } from '$lib/format';
 	import type { AccessClass } from '$lib/domain/types';
-
-	onMount(() => {
-		void dataset.load();
-	});
 
 	const classes: AccessClass[] = ['largeUnit', 'smallUnit', 'hoseOnly'];
 	const chain = [
@@ -49,42 +44,40 @@
 
 		<div class="bg-ink mt-10 h-[2px] w-full"></div>
 
-		{#if dataset.meta}
-			<dl class="mt-8 grid grid-cols-2 gap-px md:grid-cols-4">
-				<div class="hairline-box bg-paper crop-mark relative px-4 py-4">
-					<dt class="field-label-sm text-graphite">Wilayah uji</dt>
-					<dd class="font-display text-ink mt-2 text-[22px] leading-none font-semibold">
-						{dataset.meta.villageName}
-					</dd>
-					<dd class="field-label-sm text-graphite mt-2">
-						Luas {formatDecimal(dataset.meta.areaSquareKilometres, 2)} km persegi
-					</dd>
-					<dd class="field-label-sm text-graphite mt-1">
-						Penduduk {formatCount(dataset.meta.populationCount)} jiwa
-					</dd>
-				</div>
-				<div class="hairline-box bg-paper px-4 py-4">
-					<dt class="field-label-sm text-graphite">Bangunan terpetakan</dt>
-					<dd class="readout-xl text-ink mt-2">{formatCount(dataset.meta.buildingCount)}</dd>
-				</div>
-				<div class="hairline-box bg-paper px-4 py-4">
-					<dt class="field-label-sm text-graphite">Jaringan gang</dt>
-					<dd class="readout-xl text-ink mt-2">
-						{formatKilometers(
-							dataset.meta.alleyLengthMetersByClass.largeUnit +
-								dataset.meta.alleyLengthMetersByClass.smallUnit +
-								dataset.meta.alleyLengthMetersByClass.hoseOnly
-						)}
-					</dd>
-				</div>
-				<div class="hairline-box bg-paper px-4 py-4">
-					<dt class="field-label-sm text-graphite">Tak terlalui kendaraan</dt>
-					<dd class="readout-xl text-alarm mt-2">
-						{formatShare(dataset.meta.inaccessibleLengthShare)}
-					</dd>
-				</div>
-			</dl>
-		{/if}
+		<dl class="mt-8 grid grid-cols-2 gap-px md:grid-cols-4">
+			<div class="hairline-box bg-paper crop-mark relative px-4 py-4">
+				<dt class="field-label-sm text-graphite">Wilayah uji</dt>
+				<dd class="font-display text-ink mt-2 text-[22px] leading-none font-semibold">
+					{meta.villageName}
+				</dd>
+				<dd class="field-label-sm text-graphite mt-2">
+					Luas {formatDecimal(meta.areaSquareKilometres, 2)} km persegi
+				</dd>
+				<dd class="field-label-sm text-graphite mt-1">
+					Penduduk {formatCount(meta.populationCount)} jiwa
+				</dd>
+			</div>
+			<div class="hairline-box bg-paper px-4 py-4">
+				<dt class="field-label-sm text-graphite">Bangunan terpetakan</dt>
+				<dd class="readout-xl text-ink mt-2">{formatCount(meta.buildingCount)}</dd>
+			</div>
+			<div class="hairline-box bg-paper px-4 py-4">
+				<dt class="field-label-sm text-graphite">Jaringan gang</dt>
+				<dd class="readout-xl text-ink mt-2">
+					{formatKilometers(
+						meta.alleyLengthMetersByClass.largeUnit +
+							meta.alleyLengthMetersByClass.smallUnit +
+							meta.alleyLengthMetersByClass.hoseOnly
+					)}
+				</dd>
+			</div>
+			<div class="hairline-box bg-paper px-4 py-4">
+				<dt class="field-label-sm text-graphite">Tak terlalui kendaraan</dt>
+				<dd class="readout-xl text-alarm mt-2">
+					{formatShare(meta.inaccessibleLengthShare)}
+				</dd>
+			</div>
+		</dl>
 
 		<div class="mt-8 flex flex-wrap gap-2">
 			<a href="/peta/" class="field-button-solid">Buka lembar kerja</a>
@@ -110,11 +103,9 @@
 						{ACCESS_CLASS_LABEL[accessClass]}
 					</p>
 					<p class="readout-lg text-ink mt-3">{ACCESS_CLASS_WIDTH_NOTE[accessClass]}</p>
-					{#if dataset.meta}
-						<p class="field-label-sm text-graphite mt-3">
-							{formatKilometers(dataset.meta.alleyLengthMetersByClass[accessClass])} di kelurahan uji
-						</p>
-					{/if}
+					<p class="field-label-sm text-graphite mt-3">
+						{formatKilometers(meta.alleyLengthMetersByClass[accessClass])} di kelurahan uji
+					</p>
 				</div>
 			{/each}
 		</div>

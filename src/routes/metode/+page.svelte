@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import {
 		ADJACENCY_RADIUS_METERS,
 		APPLIANCE_TURNOUT_SECONDS,
@@ -14,7 +13,7 @@
 		LARGE_UNIT_MIN_WIDTH_METERS,
 		SMALL_UNIT_MIN_WIDTH_METERS
 	} from '$lib/domain/constants';
-	import { dataset } from '$lib/data/dataset.svelte';
+	import { pipelineMeta as meta } from '$lib/data/sources';
 	import { formatCount, formatDate, formatDecimal, formatMeters } from '$lib/format';
 	import type { FireCoefficients } from '$lib/domain/types';
 	import {
@@ -33,10 +32,6 @@
 		measureFieldError,
 		roundShareToTenths
 	} from '$lib/domain/validation';
-
-	onMount(() => {
-		void dataset.load();
-	});
 
 	const coefficientKeys = Object.keys(FIRE_COEFFICIENT_LABEL) as (keyof FireCoefficients)[];
 
@@ -381,32 +376,30 @@
 
 		<section class="mb-12">
 			<h2 class="font-display text-ink mb-4 text-[18px] leading-tight font-semibold">Sumber data dan lisensi</h2>
-			{#if dataset.meta}
-				<table class="w-full">
-					<thead>
-						<tr class="border-ink/30 border-b">
-							<th class="field-label-sm text-graphite py-2 text-left">Lapisan</th>
-							<th class="field-label-sm text-graphite py-2 text-left">Sumber</th>
-							<th class="field-label-sm text-graphite py-2 text-right">Lisensi</th>
+			<table class="w-full">
+				<thead>
+					<tr class="border-ink/30 border-b">
+						<th class="field-label-sm text-graphite py-2 text-left">Lapisan</th>
+						<th class="field-label-sm text-graphite py-2 text-left">Sumber</th>
+						<th class="field-label-sm text-graphite py-2 text-right">Lisensi</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each meta.provenance as source (source.label)}
+						<tr class="hairline-b">
+							<td class="text-ink py-2 pr-3 text-[12px]">{source.label}</td>
+							<td class="text-graphite py-2 pr-3 text-[11.5px] leading-[1.45]">
+								{source.source}
+							</td>
+							<td class="readout text-ink py-2 text-right text-[11px]">{source.licence}</td>
 						</tr>
-					</thead>
-					<tbody>
-						{#each dataset.meta.provenance as source (source.label)}
-							<tr class="hairline-b">
-								<td class="text-ink py-2 pr-3 text-[12px]">{source.label}</td>
-								<td class="text-graphite py-2 pr-3 text-[11.5px] leading-[1.45]">
-									{source.source}
-								</td>
-								<td class="readout text-ink py-2 text-right text-[11px]">{source.licence}</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-				<p class="field-label-sm text-graphite mt-3">
-					Tanggal olah {formatDate(dataset.meta.processedAt)}, pipeline versi {dataset.meta
-						.pipelineVersion}
-				</p>
-			{/if}
+					{/each}
+				</tbody>
+			</table>
+			<p class="field-label-sm text-graphite mt-3">
+				Tanggal olah {formatDate(meta.processedAt)}, pipeline versi {meta
+					.pipelineVersion}
+			</p>
 		</section>
 
 		<section class="mb-4">

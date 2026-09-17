@@ -1,7 +1,6 @@
-import { base } from '$app/paths';
 import { decodeAdjacencyTable, decodeBuildingTable } from '$lib/data/binary';
 import { buildAlleyNetwork, listWaterSources, type GraphDocument } from '$lib/data/graph';
-import { DATA_BASE_PATH } from '$lib/domain/constants';
+import { DATA_URL, pipelineMeta } from '$lib/data/sources';
 import type {
 	AdjacencyTable,
 	AlleyNetwork,
@@ -12,20 +11,10 @@ import type {
 
 export type DatasetStatus = 'idle' | 'loading' | 'ready' | 'error';
 
-function resolveDataUrl(fileName: string): string {
-	return `${base}${DATA_BASE_PATH}/${fileName}`;
-}
-
-async function fetchJson<T>(fileName: string): Promise<T> {
-	const response = await fetch(resolveDataUrl(fileName));
-	if (!response.ok) throw new Error(`gagal memuat ${fileName}`);
-	return (await response.json()) as T;
-}
-
-async function fetchBinary(fileName: string): Promise<ArrayBuffer> {
-	const response = await fetch(resolveDataUrl(fileName));
-	if (!response.ok) throw new Error(`gagal memuat ${fileName}`);
-	return await response.arrayBuffer();
+async function fetchData(url: string): Promise<Response> {
+	const response = await fetch(url);
+	if (!response.ok) throw new Error(`gagal memuat ${url.split('/').pop()}`);
+	return response;
 }
 
 class DatasetStore {
@@ -48,13 +37,12 @@ class DatasetStore {
 		this.status = 'loading';
 		const startedAt = performance.now();
 		try {
-			const [meta, graphDocument, buildingBuffer] = await Promise.all([
-				fetchJson<PipelineMeta>('meta.json'),
-				fetchJson<GraphDocument>('graph.json'),
-				fetchBinary('buildings.bin')
+			const [graphDocument, buildingBuffer] = await Promise.all([
+				fetchData(DATA_URL.graph).then((response) => response.json() as Promise<GraphDocument>),
+				fetchData(DATA_URL.buildingTable).then((response) => response.arrayBuffer())
 			]);
 
-			this.meta = meta;
+			this.meta = pipelineMeta;
 			this.network = buildAlleyNetwork(graphDocument);
 			this.waterSources = listWaterSources(graphDocument);
 			this.buildings = decodeBuildingTable(buildingBuffer);
@@ -73,7 +61,9 @@ class DatasetStore {
 		if (this.adjacencyStatus === 'loading' || this.adjacencyStatus === 'ready') return;
 		this.adjacencyStatus = 'loading';
 		try {
-			this.adjacency = decodeAdjacencyTable(await fetchBinary('adjacency.bin'));
+			this.adjacency = decodeAdjacencyTable(
+				await (await fetchData(DATA_URL.adjacency)).arrayBuffer()
+			);
 			this.adjacencyStatus = 'ready';
 		} catch {
 			this.adjacencyStatus = 'error';

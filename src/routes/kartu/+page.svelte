@@ -1,10 +1,9 @@
 <script lang="ts">
+	import { DATA_URL } from '$lib/data/sources';
 	import { onMount } from 'svelte';
-	import { base } from '$app/paths';
 	import {
 		ACCESS_CLASS_LABEL,
 		ACCESS_CLASS_WIDTH_NOTE,
-		DATA_BASE_PATH,
 		DEFAULT_MAX_HOSE_LENGTH_METERS,
 		WATER_SOURCE_LABEL
 	} from '$lib/domain/constants';
@@ -39,7 +38,7 @@
 
 	function loadPrintPlan(): void {
 		planFailed = false;
-		void fetch(`${base}${DATA_BASE_PATH}/print.json`)
+		void fetch(DATA_URL.printPlan)
 			.then((response) => (response.ok ? response.json() : Promise.reject(new Error('print.json'))))
 			.then((payload: PrintPlanDocument) => (plan = payload))
 			.catch(() => (planFailed = true));

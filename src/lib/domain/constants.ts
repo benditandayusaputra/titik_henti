@@ -240,8 +240,6 @@ export const HOSE_RULER_METERS_PER_SECOND = 62;
 export const HOSE_RULER_MIN_DURATION_MS = 420;
 export const HOSE_RULER_MAX_DURATION_MS = 2600;
 
-export const DATA_BASE_PATH = '/data';
-
 export const CORRECTION_ENDPOINT_PATH = '/api/koreksi';
 export const CORRECTION_MIN_WIDTH_METERS = 0.4;
 export const CORRECTION_MAX_WIDTH_METERS = 25;

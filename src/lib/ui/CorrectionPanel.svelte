@@ -63,7 +63,7 @@
 				disabled={submitting}
 			></textarea>
 			<div class="mt-2 flex items-center justify-between gap-3">
-				<span class="readout text-graphite text-[10.5px]">
+				<span class="field-label-sm text-graphite">
 					{trimmed.length}/{CORRECTION_SENTENCE_MAX_LENGTH}
 				</span>
 				<button type="submit" class="field-button-solid" disabled={!canSubmit}>

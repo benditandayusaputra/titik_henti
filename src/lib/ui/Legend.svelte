@@ -2,15 +2,19 @@
 	import {
 		ACCESS_CLASS_LABEL,
 		ACCESS_CLASS_MAP_COLOR,
+		ACCESS_CLASS_MUTED_MAP_COLOR,
 		ACCESS_CLASS_WIDTH_NOTE
 	} from '$lib/domain/constants';
 	import type { AccessClass } from '$lib/domain/types';
 
 	interface Props {
 		upgraded?: boolean;
+		muted?: boolean;
 	}
 
-	let { upgraded = false }: Props = $props();
+	let { upgraded = false, muted = false }: Props = $props();
+
+	const palette = $derived(muted ? ACCESS_CLASS_MUTED_MAP_COLOR : ACCESS_CLASS_MAP_COLOR);
 
 	const rows: AccessClass[] = ['largeUnit', 'smallUnit', 'hoseOnly'];
 </script>
@@ -22,7 +26,7 @@
 			<li class="flex items-center gap-2">
 				<span
 					class="border-ink/45 h-[5px] w-6 shrink-0 border"
-					style:background-color={ACCESS_CLASS_MAP_COLOR[accessClass]}
+					style:background-color={palette[accessClass]}
 				></span>
 				<span class="text-ink flex-1 text-[11px] leading-none">
 					{ACCESS_CLASS_LABEL[accessClass]}
@@ -34,6 +38,11 @@
 		{/each}
 	</ul>
 	{#if upgraded}
-		<p class="field-label-sm text-alarm mt-2.5 leading-[1.4]">Skenario pelebaran aktif</p>
+		<p class="field-label-sm text-ink mt-2.5 leading-[1.4]">Skenario pelebaran aktif</p>
+	{/if}
+	{#if muted}
+		<p class="field-label-sm text-graphite mt-2.5 leading-[1.4]">
+			Warna kelas diredam supaya merah hanya menandai api
+		</p>
 	{/if}
 </div>

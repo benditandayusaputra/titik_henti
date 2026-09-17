@@ -28,6 +28,7 @@
 		bounds: BoundingBox;
 		layers?: Layer[];
 		upgradedAlleys?: boolean;
+		mutedAlleyClasses?: boolean;
 		selectedBuildingIndex?: number | null;
 		selectedSegmentId?: number | null;
 		correctedSegmentIds?: Set<number>;
@@ -42,6 +43,7 @@
 		bounds,
 		layers = [],
 		upgradedAlleys = false,
+		mutedAlleyClasses = false,
 		selectedBuildingIndex = null,
 		selectedSegmentId = null,
 		correctedSegmentIds = new Set<number>(),
@@ -222,11 +224,12 @@
 
 	$effect(() => {
 		const upgraded = upgradedAlleys;
+		const muted = mutedAlleyClasses;
 		if (map && styleReady) {
 			map.setPaintProperty(
 				ALLEY_LINE_LAYER_ID,
 				'line-color',
-				alleyColorExpression(upgraded) as never
+				alleyColorExpression(upgraded, muted) as never
 			);
 		}
 	});

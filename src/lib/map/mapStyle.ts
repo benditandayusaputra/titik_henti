@@ -1,5 +1,10 @@
 import type { StyleSpecification } from 'maplibre-gl';
-import { ACCESS_CLASS_MAP_COLOR, MAP_MAX_ZOOM, MAP_MIN_ZOOM } from '$lib/domain/constants';
+import {
+	ACCESS_CLASS_MAP_COLOR,
+	ACCESS_CLASS_MUTED_MAP_COLOR,
+	MAP_MAX_ZOOM,
+	MAP_MIN_ZOOM
+} from '$lib/domain/constants';
 import type { AccessClass, BoundingBox } from '$lib/domain/types';
 
 export const BUILDING_SOURCE_ID = 'buildings';
@@ -26,9 +31,10 @@ const UPGRADED_CLASS: Record<AccessClass, AccessClass> = {
 	largeUnit: 'largeUnit'
 };
 
-function buildClassColorExpression(upgraded: boolean): unknown[] {
+function buildClassColorExpression(upgraded: boolean, muted: boolean): unknown[] {
+	const palette = muted ? ACCESS_CLASS_MUTED_MAP_COLOR : ACCESS_CLASS_MAP_COLOR;
 	const pick = (accessClass: AccessClass): string =>
-		pickMapColor(upgraded ? UPGRADED_CLASS[accessClass] : accessClass);
+		palette[upgraded ? UPGRADED_CLASS[accessClass] : accessClass];
 	return [
 		'match',
 		['get', 'accessClass'],
@@ -38,10 +44,6 @@ function buildClassColorExpression(upgraded: boolean): unknown[] {
 		pick('smallUnit'),
 		pick('hoseOnly')
 	];
-}
-
-function pickMapColor(accessClass: AccessClass): string {
-	return ACCESS_CLASS_MAP_COLOR[accessClass];
 }
 
 function buildClassWidthExpression(): unknown[] {
@@ -177,7 +179,7 @@ export function buildMapStyle(
 				'source-layer': ALLEY_SOURCE_LAYER,
 				layout: { 'line-cap': 'round', 'line-join': 'round' },
 				paint: {
-					'line-color': buildClassColorExpression(false) as never,
+					'line-color': buildClassColorExpression(false, false) as never,
 					'line-width': buildClassWidthExpression() as never,
 					'line-opacity': 0.92
 				}
@@ -216,6 +218,6 @@ export function buildMapStyle(
 	} as StyleSpecification;
 }
 
-export function alleyColorExpression(upgraded: boolean): unknown[] {
-	return buildClassColorExpression(upgraded);
+export function alleyColorExpression(upgraded: boolean, muted: boolean): unknown[] {
+	return buildClassColorExpression(upgraded, muted);
 }

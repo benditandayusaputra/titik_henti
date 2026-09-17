@@ -42,6 +42,12 @@ export const ACCESS_CLASS_SURFACE_COLOR: Record<AccessClass, string> = {
 	hoseOnly: '#D6202A'
 };
 
+export const ACCESS_CLASS_MUTED_MAP_COLOR: Record<AccessClass, string> = {
+	largeUnit: 'rgba(226,223,216,0.86)',
+	smallUnit: '#8E8C87',
+	hoseOnly: '#5B5A58'
+};
+
 export const ACCESS_CLASS_MAP_COLOR: Record<AccessClass, string> = {
 	largeUnit: 'rgba(226,223,216,0.86)',
 	smallUnit: '#C98A14',

@@ -486,6 +486,7 @@
 				bounds={dataset.meta.boundingBox}
 				layers={deckLayers}
 				upgradedAlleys={workspace.wideningScenarioActive}
+				mutedAlleyClasses={workspace.activeTab === 'api'}
 				selectedBuildingIndex={workspace.selectedBuildingIndex}
 				selectedSegmentId={workspace.selectedSegmentId}
 				correctedSegmentIds={workspace.correctedSegmentIds}
@@ -502,7 +503,10 @@
 				totalMeters={workspace.stopPointSolution?.hoseLengthMeters ?? 0}
 			/>
 			<div class="absolute bottom-4 left-4 z-10">
-				<Legend upgraded={workspace.wideningScenarioActive} />
+				<Legend
+					upgraded={workspace.wideningScenarioActive}
+					muted={workspace.activeTab === 'api'}
+				/>
 			</div>
 			{#if workspace.settingIgnition || workspace.placingHydrant}
 				<div

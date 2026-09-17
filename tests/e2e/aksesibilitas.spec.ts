@@ -10,6 +10,10 @@ const HALAMAN = [
 	{ nama: 'artikel tabung gas', jalur: '/artikel/tabung-gas-bocor/' },
 	{ nama: 'artikel korsleting', jalur: '/artikel/korsleting-listrik/' },
 	{ nama: 'artikel relawan', jalur: '/artikel/relawan-pemadam-kelurahan/' },
+	{ nama: 'artikel menit pertama', jalur: '/artikel/menit-menit-pertama-saat-api-muncul/' },
+	{ nama: 'artikel setelah padam', jalur: '/artikel/setelah-api-padam/' },
+	{ nama: 'artikel jalur keluar', jalur: '/artikel/jalur-keluar-dan-titik-kumpul/' },
+	{ nama: 'artikel mobil pemadam', jalur: '/artikel/saat-mobil-pemadam-tidak-bisa-masuk-gang/' },
 	{ nama: 'metode', jalur: '/metode/' }
 ];
 

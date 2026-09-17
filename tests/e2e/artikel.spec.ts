@@ -1,6 +1,8 @@
+import { readdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
 const SLUG_CONTOH = 'cara-memakai-apar';
+const JUMLAH_ARTIKEL = readdirSync('src/content/artikel').filter((nama) => nama.endsWith('.md')).length;
 
 test.describe('artikel', () => {
 	test('saringan mengubah URL dan tetap terpasang saat URL dibuka ulang', async ({
@@ -9,13 +11,13 @@ test.describe('artikel', () => {
 	}) => {
 		await page.goto('/artikel/');
 		await page.waitForTimeout(800);
-		await expect(page.getByText('4 dari 4 artikel')).toBeVisible();
+		await expect(page.getByText(`${JUMLAH_ARTIKEL} dari ${JUMLAH_ARTIKEL} artikel`)).toBeVisible();
 
 		await page.getByRole('button', { name: 'Sebelum', exact: true }).click();
 		await page.waitForTimeout(500);
 		expect(page.url()).toContain('kategori=Sebelum');
 
-		const jumlahTersaring = await page.getByText(/\d+ dari 4 artikel/).textContent();
+		const jumlahTersaring = await page.getByText(new RegExp(`\\d+ dari ${JUMLAH_ARTIKEL} artikel`)).textContent();
 
 		const halamanBaru = await context.newPage();
 		await halamanBaru.goto(page.url());
@@ -35,7 +37,7 @@ test.describe('artikel', () => {
 
 		await page.fill('#cari-artikel', 'apar');
 		await page.waitForTimeout(400);
-		await expect(page.getByText('1 dari 4 artikel')).toBeVisible();
+		await expect(page.getByText(`1 dari ${JUMLAH_ARTIKEL} artikel`)).toBeVisible();
 
 		await page.fill('#cari-artikel', 'kata yang tidak ada');
 		await page.waitForTimeout(400);
@@ -43,7 +45,7 @@ test.describe('artikel', () => {
 
 		await page.getByRole('button', { name: 'Hapus saringan' }).first().click();
 		await page.waitForTimeout(500);
-		await expect(page.getByText('4 dari 4 artikel')).toBeVisible();
+		await expect(page.getByText(`${JUMLAH_ARTIKEL} dari ${JUMLAH_ARTIKEL} artikel`)).toBeVisible();
 	});
 
 	test('setiap artikel menampilkan daftar sumber dan tanggal pembaruan', async ({ page }) => {

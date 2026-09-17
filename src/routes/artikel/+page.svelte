@@ -31,6 +31,7 @@
 			: null;
 	});
 
+	const terakhirDiperbarui = articles.map((artikel) => artikel.diperbarui).sort().at(-1) ?? '';
 	const hasil = $derived(filterArticles(articles, kategoriTerpilih, untukTerpilih, pencarian));
 	const adaSaringan = $derived(
 		kategoriTerpilih !== null || untukTerpilih !== null || pencarian.trim().length > 0
@@ -162,10 +163,9 @@
 		{/if}
 
 		<p class="text-graphite prose-measure mt-8 text-[12px] leading-[1.6]">
-			Delapan artikel direncanakan. Empat yang sudah terbit adalah yang sumber resminya sudah
-			ditemukan dan dapat dikutip. Sisanya belum ditulis karena sumbernya belum ada, dan menulis
-			langkah keselamatan tanpa sumber adalah hal yang tidak kami lakukan. Terakhir diperbarui
-			{formatDate(articles[0].diperbarui)}.
+			Setiap langkah keselamatan di sini dikutip dari lembaga resmi yang dicantumkan di akhir
+			artikel. Langkah yang sumbernya tidak ditemukan tidak ditulis. Terakhir diperbarui
+			{formatDate(terakhirDiperbarui)}.
 		</p>
 	</div>
 </div>

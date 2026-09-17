@@ -80,7 +80,7 @@
 						<th scope="row" class="py-1 text-left font-normal">
 							<button
 								type="button"
-								class="readout text-ink flex items-center gap-2 text-[11.5px] underline-offset-2 hover:underline"
+								class="readout text-ink flex min-h-6 w-full items-center gap-2 text-left text-[11.5px] underline-offset-2 hover:underline"
 								aria-current={selectedSegmentId === baris.segmentId ? 'true' : undefined}
 								onclick={() => onsegmentpick(baris.segmentId)}
 							>
@@ -134,7 +134,7 @@
 						<th scope="row" class="py-1 text-left font-normal">
 							<button
 								type="button"
-								class="readout text-ink text-[11.5px] underline-offset-2 hover:underline"
+								class="readout text-ink flex min-h-6 w-full items-center text-left text-[11.5px] underline-offset-2 hover:underline"
 								aria-current={selectedBuildingIndex === baris.buildingIndex ? 'true' : undefined}
 								onclick={() => onbuildingpick(baris.buildingIndex)}
 							>

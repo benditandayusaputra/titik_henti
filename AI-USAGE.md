@@ -676,6 +676,16 @@ Yang sengaja belum disentuh: angka hitungan besar di luar baris panel, misalnya 
 
 Uji baru memeriksa huruf hasil hitung peramban pada baris terukur dan tidak terukur, dan dibuktikan gagal pada komponen lama. Tangkapan layar di `bukti/monospasi-terukur/`, konsol bersih, tanpa gulir mendatar. Seluruh suite end to end lolos, 127 uji.
 
+### Tahap 27, huruf cetak artikel membesar
+
+Rencana F9 meminta mode cetak dengan huruf membesar, sementara versi cetak memakai 10,5 pt, lebih kecil dari huruf layar yang 1rem atau 12 pt. Isi cetak kini 13 pt dengan jarak baris 1,35, judul bagian 14 pt.
+
+Menaikkan huruf membuat satu artikel, menit-menit pertama saat api muncul, meluber ke halaman kedua. Isinya langkah keselamatan dari sumber resmi, jadi yang dipangkas adalah tata letak, bukan langkah: margin halaman 14 mm menjadi 12 mm, jarak atas judul bagian dirapatkan, garis tulis tangan dari enam menjadi tiga, dan tautan sumber dicetak di baris yang sama dengan nama lembaganya. Varian yang dicoba lebih dulu, 12 pt, 12,5 pt, dan 13 pt dengan jarak baris 1,4, semuanya tetap dua halaman untuk artikel itu.
+
+Sisa ruang artikel terpanjang hanya sekitar 18 piksel. Artikel lain bersisa 260 sampai 500 piksel, sehingga artikel pendek kini punya ruang kosong di bawah tiga garis tulis. Uji satu halaman A4 yang sudah ada akan gagal bila artikel terpanjang bertambah satu baris.
+
+Uji baru memastikan huruf isi cetak lebih besar dari huruf isi layar, dan dibuktikan gagal pada gaya lama (14 piksel lawan 16 piksel). PDF dan gambar A4 artikel terpanjang dan terpendek disimpan di `bukti/cetak-artikel/`. Seluruh suite end to end lolos, 128 uji.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

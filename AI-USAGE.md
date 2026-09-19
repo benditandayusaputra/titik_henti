@@ -686,6 +686,14 @@ Sisa ruang artikel terpanjang hanya sekitar 18 piksel. Artikel lain bersisa 260 
 
 Uji baru memastikan huruf isi cetak lebih besar dari huruf isi layar, dan dibuktikan gagal pada gaya lama (14 piksel lawan 16 piksel). PDF dan gambar A4 artikel terpanjang dan terpendek disimpan di `bukti/cetak-artikel/`. Seluruh suite end to end lolos, 128 uji.
 
+### Tahap 28, uji akhir di produksi
+
+Seluruh suite end to end dijalankan langsung ke https://titikhenti.vercel.app dengan berkas konfigurasi sementara yang tidak di-commit. Hasilnya 127 lolos dan 1 gagal. Yang gagal adalah uji "kunci API tidak pernah sampai ke sisi klien", jadi diperiksa sebelum dianggap salah alarm.
+
+Pemeriksaannya: daftar permintaan yang ditandai uji berisi 50 alamat, semuanya di domain situs sendiri, dan tidak ada satu pun yang membawa header otorisasi. Seluruh berkas JavaScript produksi, 30 potongan ditambah berkas worker simulasi api, dipindai untuk awalan kunci Gemini, nama variabel lingkungan model bahasa, alamat layanan model, dan kata Bearer. Hasilnya nol untuk semuanya. Kegagalan itu berasal dari uji yang menganggap setiap permintaan di luar `localhost` sebagai kebocoran.
+
+Uji kini membandingkan asal permintaan dengan asal situs yang sedang diuji, sehingga berlaku sama di mesin lokal, CI, dan produksi. Setelah perubahan, uji itu lolos di produksi dan di lokal.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

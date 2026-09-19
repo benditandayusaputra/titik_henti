@@ -58,6 +58,8 @@ Kepala halaman menulis Pra-rencana, revisi 0.1. Nomor revisi itu tidak terhubung
 
 B3 mengunci monospasi hanya untuk meter dan detik. Monospasi ternyata juga dipakai untuk kode lisensi di halaman metode dan catatan data peta, tanggal olah dan versi pipeline di kartu siaga RT, serta nomor urut tahap. Semuanya dipindah ke huruf isi. Koordinat di kartu siaga RT tetap monospasi karena koordinat adalah hasil ukur dan perlu rata kolom.
 
+Baris nilai di panel lembar kerja menyusul kemudian. Komponen `ValueRow` sempat memakai monospasi untuk semua nilai, termasuk jumlah bangunan, persen, rupiah, dan teks seperti Semi permanen atau Perkiraan. Kini monospasi hanya dipakai bila baris itu ditandai terukur: panjang, lebar, luas, kecepatan, waktu, dan koordinat. Nilai lain memakai huruf isi dengan angka rata kolom. Angka hitungan besar di luar baris panel, misalnya jumlah bangunan terbakar atau angka ringkasan beranda, masih monospasi dan belum diputuskan.
+
 ## Yang diperbaiki karena rusak, bukan karena selera
 
 1. Pada lebar 380 piksel, keempat angka ringkasan di kartu siaga RT bertumpuk sampai tidak terbaca. Kartu dirancang untuk A4, dan kisinya dipaksa empat kolom di layar apa pun. Kisi kini dua kolom di layar sempit dan tetap empat kolom saat dicetak.

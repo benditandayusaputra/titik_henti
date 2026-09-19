@@ -666,6 +666,16 @@ Satu kesalahan saat menulis uji: uji gulir panel pertama kali lolos pada kode ya
 
 Verifikasi: tangkapan layar 380, 768, dan 1440 di `bukti/titik-henti-hp/`, konsol bersih, tanpa gulir mendatar. Seluruh suite end to end lolos, 126 uji.
 
+### Tahap 26, monospasi hanya untuk angka terukur di baris panel
+
+Sisa temuan tahap 19: komponen `ValueRow` memakai monospasi untuk semua nilai, padahal B3 menguncinya untuk meter dan detik. Di panel detail bangunan, teks seperti Semi permanen dan Perkiraan pun tampil sebagai huruf mesin ketik.
+
+`ValueRow` kini punya penanda `measured`. Sembilan belas baris ditandai terukur: panjang, lebar, luas, kecepatan, waktu, dan koordinat, dengan koordinat mengikuti keputusan tahap 18 bahwa koordinat adalah hasil ukur. Baris lain memakai utilitas baru `tally`, yaitu huruf isi dengan ukuran dan berat yang sama serta angka rata kolom.
+
+Yang sengaja belum disentuh: angka hitungan besar di luar baris panel, misalnya jumlah bangunan terbakar di tab Api, angka ringkasan beranda, dan kartu siaga RT. Semuanya masih monospasi. Mengubahnya menggeser rupa angka utama di seluruh produk, jadi itu keputusan pemilik repo.
+
+Uji baru memeriksa huruf hasil hitung peramban pada baris terukur dan tidak terukur, dan dibuktikan gagal pada komponen lama. Tangkapan layar di `bukti/monospasi-terukur/`, konsol bersih, tanpa gulir mendatar. Seluruh suite end to end lolos, 127 uji.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

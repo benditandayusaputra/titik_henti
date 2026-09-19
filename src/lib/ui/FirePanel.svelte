@@ -122,7 +122,7 @@
 	</div>
 	<div class="mt-2">
 		<ValueRow label="Arah" value={`${Math.round(workspace.wind.directionDegrees)}°`} />
-		<ValueRow
+		<ValueRow measured
 			label="Kecepatan"
 			value={`${workspace.wind.speedMetersPerSecond.toFixed(1)} m/s`}
 		/>
@@ -239,19 +239,19 @@
 		{/each}
 
 		<div class="bg-ink/15 my-2 h-px"></div>
-		<ValueRow
+		<ValueRow measured
 			label={`Waktu sampai ${FIRE_MILESTONE_BUILDING_COUNT} bangunan`}
 			value={formatSeconds(playback.secondsToTenBuildings)}
 		/>
 		<ValueRow label="Bangunan utuh" value={formatCount(summary.intactCount)} />
 		<ValueRow label="Total bangunan" value={formatCount(buildingCount)} tone="graphite" />
 		{#if waterArrival}
-			<ValueRow
+			<ValueRow measured
 				label="Waktu air sampai rata-rata"
 				value={formatSeconds(waterArrival.meanSecondsReachable)}
 				tone="water"
 			/>
-			<ValueRow
+			<ValueRow measured
 				label="Waktu air sampai terburuk"
 				value={formatSeconds(waterArrival.worstSecondsReachable)}
 				tone="alarm"

@@ -143,4 +143,28 @@ test.describe('kritik diri dan pencabutan', () => {
 		const seksi = page.locator('section').filter({ hasText: 'Batasan yang harus dibaca lebih dulu' });
 		await expect(seksi.locator('li').first()).not.toContainText(/^\s*0?1\b/);
 	});
+
+	test('monospasi di baris nilai panel hanya untuk angka terukur', async ({ page }) => {
+		await page.setViewportSize({ width: 1440, height: 900 });
+		await tungguHalamanSiap(page, '/peta/');
+		await page.getByRole('button', { name: 'Daftar', exact: true }).click();
+		await page.getByRole('button', { name: /pilih bangunan ini/ }).first().click();
+		await page.getByRole('button', { name: 'Akses', exact: true }).click();
+
+		const hurufNilai = (label: string) =>
+			page
+				.locator('.ledger-row')
+				.filter({ has: page.getByText(label, { exact: true }) })
+				.first()
+				.locator('span')
+				.last()
+				.evaluate((elemen) => getComputedStyle(elemen).fontFamily);
+
+		for (const label of ['Tinggi', 'Luas tapak', 'Luas kelurahan']) {
+			expect(await hurufNilai(label), label).toContain('Mono');
+		}
+		for (const label of ['Kelas material', 'Sumber tinggi', 'Bangunan terpetakan', 'Tak terlalui kendaraan']) {
+			expect(await hurufNilai(label), label).not.toContain('Mono');
+		}
+	});
 });

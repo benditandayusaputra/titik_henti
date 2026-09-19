@@ -54,11 +54,11 @@
 		<span class="field-label text-graphite">Indeks</span>
 		<span class="readout-lg text-ink">{buildingIndex.toString().padStart(5, '0')}</span>
 	</div>
-	<ValueRow
+	<ValueRow measured
 		label="Tinggi"
 		value={`${formatDecimal(buildings.heightMeters[buildingIndex], 1)} m`}
 	/>
-	<ValueRow
+	<ValueRow measured
 		label="Luas tapak"
 		value={`${formatDecimal(buildings.areaSquareMeters[buildingIndex], 0)} m²`}
 	/>
@@ -68,7 +68,7 @@
 		value={buildings.heightIsMeasured[buildingIndex] === 1 ? 'Tag OSM' : 'Perkiraan'}
 		tone={buildings.heightIsMeasured[buildingIndex] === 1 ? 'ink' : 'caution'}
 	/>
-	<ValueRow
+	<ValueRow measured
 		label="Koordinat"
 		value={formatCoordinate(buildings.lon[buildingIndex], buildings.lat[buildingIndex])}
 	/>
@@ -83,11 +83,11 @@
 			></span>
 			<span class="text-ink text-[12px]">{ACCESS_CLASS_LABEL[nearestAccessClass]}</span>
 		</div>
-		<ValueRow
+		<ValueRow measured
 			label="Lebar gang terdekat"
 			value={nearestWidth === null ? '—' : formatMeters(nearestWidth, 1)}
 		/>
-		<ValueRow
+		<ValueRow measured
 			label="Jarak ke jaringan"
 			value={formatMeters(buildings.nearestNodeDistanceMeters[buildingIndex], 1)}
 		/>

@@ -36,13 +36,13 @@
 		</span>
 	</div>
 
-	<ValueRow label="Lebar minimum" value={formatMeters(segment.minWidthMeters, 2)} emphasis />
-	<ValueRow
+	<ValueRow measured label="Lebar minimum" value={formatMeters(segment.minWidthMeters, 2)} emphasis />
+	<ValueRow measured
 		label={segment.widthSource === 'field' ? 'Lebar rata rata, masih satelit' : 'Lebar rata rata'}
 		value={formatMeters(segment.meanWidthMeters, 2)}
 		tone={segment.widthSource === 'field' ? 'graphite' : 'ink'}
 	/>
-	<ValueRow label="Panjang segmen" value={formatMeters(segment.lengthMeters, 1)} />
+	<ValueRow measured label="Panjang segmen" value={formatMeters(segment.lengthMeters, 1)} />
 	<ValueRow label="Ruas jaringan" value={formatDecimal(segment.edgeCount, 0)} />
 	<ValueRow label="Jalan bernama" value={segment.isNamedRoad ? 'Ya' : 'Tidak'} />
 

@@ -4,9 +4,10 @@
 		value: string;
 		tone?: 'ink' | 'alarm' | 'water' | 'caution' | 'graphite';
 		emphasis?: boolean;
+		measured?: boolean;
 	}
 
-	let { label, value, tone = 'ink', emphasis = false }: Props = $props();
+	let { label, value, tone = 'ink', emphasis = false, measured = false }: Props = $props();
 
 	const toneClass: Record<string, string> = {
 		ink: 'text-ink',
@@ -21,7 +22,7 @@
 	<span class="text-graphite shrink-0 text-[11.5px] leading-tight">{label}</span>
 	<span class="rule-dotted mb-[3px] min-w-3 flex-1"></span>
 	<span
-		class="{toneClass[tone]} shrink-0 {emphasis ? 'readout-lg' : 'readout'}"
+		class="{toneClass[tone]} shrink-0 {measured ? (emphasis ? 'readout-lg' : 'readout') : 'tally'}"
 		class:tracking-tight={emphasis}
 	>
 		{value}

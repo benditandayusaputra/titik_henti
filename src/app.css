@@ -158,6 +158,14 @@
 	font-variant-numeric: tabular-nums;
 }
 
+@utility tally {
+	font-family: var(--font-body);
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+
 @utility readout-lg {
 	font-family: var(--font-mono);
 	font-size: 26px;

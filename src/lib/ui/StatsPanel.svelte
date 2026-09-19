@@ -34,7 +34,7 @@
 			Kecamatan {meta.districtName}, {meta.cityName}
 		</p>
 	</div>
-	<ValueRow label="Luas kelurahan" value={`${formatDecimal(meta.areaSquareKilometres, 2)} km²`} />
+	<ValueRow measured label="Luas kelurahan" value={`${formatDecimal(meta.areaSquareKilometres, 2)} km²`} />
 	<ValueRow label="Penduduk ({meta.populationYear})" value={formatCount(meta.populationCount)} />
 	<ValueRow label="Bangunan terpetakan" value={formatCount(meta.buildingCount)} />
 	<ValueRow label="Kepadatan bangunan" value={`${formatCount(Math.round(density))} /km²`} />
@@ -65,7 +65,7 @@
 		{/each}
 	</div>
 	{#each classes as accessClass (accessClass)}
-		<ValueRow
+		<ValueRow measured
 			label={ACCESS_CLASS_LABEL[accessClass]}
 			value={formatKilometers(meta.alleyLengthMetersByClass[accessClass])}
 		/>

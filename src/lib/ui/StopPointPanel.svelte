@@ -59,18 +59,18 @@
 			</div>
 		</div>
 
-		<ValueRow
+		<ValueRow measured
 			label="Tambahan waktu sebelum air sampai"
 			value={formatSeconds(solution.extraDelaySeconds)}
 			tone="alarm"
 			emphasis
 		/>
-		<ValueRow
+		<ValueRow measured
 			label="Termasuk penyiapan unit"
 			value={formatSeconds(APPLIANCE_TURNOUT_SECONDS)}
 			tone="graphite"
 		/>
-		<ValueRow
+		<ValueRow measured
 			label="Koordinat titik henti"
 			value={formatCoordinate(solution.stopPoint.lon, solution.stopPoint.lat)}
 		/>

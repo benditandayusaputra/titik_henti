@@ -84,11 +84,11 @@
 			<article class="hairline-box bg-paper mb-2 px-3 py-3">
 				<p class="quoted-line text-ink text-[12px] leading-[1.55]">{record.originalSentence}</p>
 				<div class="mt-2.5">
-					<ValueRow
+					<ValueRow measured
 						label="Lebar minimum sekarang"
 						value={formatMeters(record.previousMinWidthMeters, 2)}
 					/>
-					<ValueRow
+					<ValueRow measured
 						label="Lebar usulan"
 						value={formatMeters(record.proposal.proposedWidthMeters, 2)}
 						emphasis

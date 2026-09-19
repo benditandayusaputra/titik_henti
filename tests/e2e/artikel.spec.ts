@@ -112,6 +112,20 @@ test.describe('artikel', () => {
 		}
 	});
 
+	test('huruf isi versi cetak lebih besar dari huruf isi di layar', async ({ page }) => {
+		await page.goto('/artikel/menit-menit-pertama-saat-api-muncul/');
+		await page.waitForLoadState('networkidle');
+		const ukuranHuruf = (pemilih: string) =>
+			page.locator(pemilih).first().evaluate((elemen) => parseFloat(getComputedStyle(elemen).fontSize));
+
+		const ukuranLayar = await ukuranHuruf('.artikel-isi:not(.artikel-cetak) p');
+		await page.emulateMedia({ media: 'print' });
+		const ukuranCetak = await ukuranHuruf('.artikel-cetak p');
+		await page.emulateMedia({ media: null });
+
+		expect(ukuranCetak).toBeGreaterThan(ukuranLayar);
+	});
+
 	test('memilih gang kelas selang saja memunculkan tautan artikel yang relevan', async ({
 		page
 	}) => {

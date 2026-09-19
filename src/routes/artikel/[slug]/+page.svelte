@@ -62,7 +62,7 @@
 				{#each artikel.sumber as sumber (sumber.tautan)}
 					<li class="text-ink text-[12.5px] leading-[1.6] print:text-[8pt] print:leading-[1.3]">
 						{sumber.lembaga}
-						<span class="tautan-cetak text-graphite block break-all">
+						<span class="tautan-cetak text-graphite block break-all print:ml-1 print:inline">
 							<a href={sumber.tautan} class="underline underline-offset-2" rel="noreferrer">
 								{sumber.tautan}
 							</a>
@@ -149,7 +149,7 @@
 	@media print {
 		@page {
 			size: A4 portrait;
-			margin: 14mm;
+			margin: 12mm;
 		}
 
 		.artikel-isi :global(p),
@@ -169,16 +169,16 @@
 		}
 
 		.artikel-cetak :global(h2) {
-			font-size: 12pt;
-			margin-top: 0.7rem;
+			font-size: 14pt;
+			margin-top: 0.5rem;
 			margin-bottom: 0.25rem;
 		}
 
 		.artikel-cetak :global(p),
 		.artikel-cetak :global(ol),
 		.artikel-cetak :global(ul) {
-			font-size: 10.5pt;
-			line-height: 1.4;
+			font-size: 13pt;
+			line-height: 1.35;
 			margin-bottom: 0.4rem;
 		}
 

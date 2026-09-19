@@ -653,6 +653,19 @@ Hasilnya jujur kecil: sekitar satu detik. Berkas yang diunduh di tampilan awal m
 
 Verifikasi: uji peta, koreksi lapangan, dan alur juri membuktikan klik gang, klik bangunan, dan warna kelas gang tetap bekerja tanpa atribut yang dicabut. Seluruh suite end to end lolos, 124 uji.
 
+### Tahap 25, hasil titik henti di layar pertama ponsel
+
+Temuan tahap 22 menyebut panel detail di ponsel tertutup di bawah layar setelah bangunan dipilih. Pengukuran di iPhone 13 menunjukkan masalahnya lebih sempit dari itu. Panjang selang sudah tampil di atas peta lewat penggaris selang. Yang tertutup adalah isi tab Titik henti sendiri: tab itu membuka dengan detail bangunan, sehingga judul hasilnya ada di piksel 864 dan tambahan waktu sebelum air sampai sekitar dua layar ke bawah, padahal tinggi layar 664.
+
+Dua perubahan:
+
+1. **Hasil lebih dulu.** Di tab Titik henti, panel titik henti kendaraan kini di atas detail bangunan. Judulnya turun ke piksel 536, bilah panjang selang masuk layar pertama, dan tambahan waktu ada tepat di bawah batas layar. Gulir otomatis sengaja tidak dipakai, karena akan menarik layar menjauh dari penggaris selang yang sedang menggambar dirinya di peta.
+2. **Panel dibuka dari atas.** Di laptop, panel kerja punya gulir sendiri dan posisinya terbawa saat berganti tab, sehingga membuka Titik henti setelah menggulir Daftar memotong judul hasil. Posisi gulir panel kini kembali ke atas setiap kali tab berganti.
+
+Satu kesalahan saat menulis uji: uji gulir panel pertama kali lolos pada kode yang belum diperbaiki, karena tanpa bangunan terpilih isi tab terlalu pendek untuk digulir. Uji diperbaiki dengan memilih bangunan lebih dulu, lalu dibuktikan gagal pada kode lama. Uji urutan panel juga dibuktikan gagal pada urutan lama.
+
+Verifikasi: tangkapan layar 380, 768, dan 1440 di `bukti/titik-henti-hp/`, konsol bersih, tanpa gulir mendatar. Seluruh suite end to end lolos, 126 uji.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

@@ -636,6 +636,23 @@ Uji penjaga baru memastikan jalur kritis rute peta tetap ramping: tidak ada huru
 
 Verifikasi: seluruh suite end to end lolos, 124 uji.
 
+### Tahap 24, ubin peta yang lebih ramping
+
+Lanjutan tahap 23: area peta pada 4G lambat baru terisi sepertiganya pada detik ke-12. Pertama dicoba penyederhanaan geometri di tippecanoe, dan hematnya kecil. Pemborosan sebenarnya ada di atribut. Aplikasi hanya membaca `buildingIndex` dan `segmentId` sebagai id fitur serta `accessClass` untuk warna gang, sementara ubin ikut membawa lebar, panjang, tinggi, luas, dan material yang sudah ada di `graph.json` dan `buildings.bin`.
+
+Pipeline kini memanggil tippecanoe dengan `--include accessClass` untuk gang dan `--exclude-all` untuk bangunan. Geometri tidak berubah, jadi tidak ada detail peta yang hilang.
+
+| Ukuran | Sebelum | Sesudah |
+| --- | --- | --- |
+| Berkas ubin gang | 2.774.646 bita | 904.646 bita |
+| Berkas ubin bangunan | 3.990.074 bita | 1.575.132 bita |
+| Area peta terisi 35 persen, 4G lambat, produksi | 12.133 ms | 11.121 ms |
+| Piksel peta pertama, 4G lambat, produksi | 5.026 ms | 5.070 ms |
+
+Hasilnya jujur kecil: sekitar satu detik. Berkas yang diunduh di tampilan awal memang lebih sedikit, tetapi pada latensi 562 milidetik waktunya didominasi jumlah perjalanan bolak-balik permintaan ubin, bukan ukurannya. Target 3 detik pada 4G lambat tetap belum tercapai dan alasannya tidak berubah dari tahap 23.
+
+Verifikasi: uji peta, koreksi lapangan, dan alur juri membuktikan klik gang, klik bangunan, dan warna kelas gang tetap bekerja tanpa atribut yang dicabut. Seluruh suite end to end lolos, 124 uji.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

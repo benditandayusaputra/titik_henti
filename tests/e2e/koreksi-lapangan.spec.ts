@@ -212,11 +212,12 @@ test.describe('koreksi lapangan berbantuan AI', () => {
 		await expect(page.locator('article').filter({ hasText: 'Lebar usulan' })).toHaveCount(0);
 	});
 
-	test('kunci API tidak pernah sampai ke sisi klien', async ({ page }) => {
+	test('kunci API tidak pernah sampai ke sisi klien', async ({ page, baseURL }) => {
+		const asalSitus = new URL(baseURL ?? 'http://localhost').origin;
 		const permintaanKeluar: string[] = [];
 		page.on('request', (permintaan) => {
 			const url = permintaan.url();
-			if (!url.startsWith('http://localhost')) permintaanKeluar.push(url);
+			if (new URL(url).origin !== asalSitus) permintaanKeluar.push(url);
 			if (permintaan.headers().authorization) permintaanKeluar.push(`berotorisasi ${url}`);
 		});
 

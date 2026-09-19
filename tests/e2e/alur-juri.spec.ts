@@ -70,6 +70,19 @@ test.describe('alur utama dari sisi juri', () => {
 		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
 	});
 
+	test('pindah tab membuka panel dari atas, bukan dari posisi gulir tab sebelumnya', async ({
+		page
+	}) => {
+		await bukaLembarKerja(page);
+		await page.getByRole('button', { name: 'Daftar', exact: true }).click();
+		await page.getByRole('button', { name: /pilih bangunan ini/ }).first().click();
+		const isiPanel = page.getByRole('region', { name: 'Isi panel kerja' });
+		await isiPanel.evaluate((elemen) => (elemen.scrollTop = elemen.scrollHeight));
+		await page.getByRole('button', { name: 'Titik henti', exact: true }).click();
+
+		await expect(page.getByRole('heading', { name: 'Titik henti kendaraan' })).toBeInViewport();
+		expect(await isiPanel.evaluate((elemen) => elemen.scrollTop)).toBe(0);
+	});
 });
 
 test.describe('alur utama di layar ponsel', () => {

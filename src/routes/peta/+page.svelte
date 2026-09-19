@@ -64,6 +64,7 @@
 	let batchStatistics = $state.raw<FireBatchStatistics | null>(null);
 	let batchRunning = $state(false);
 	let mapArea: HTMLDivElement | undefined = $state();
+	let panelContent: HTMLDivElement | undefined = $state();
 	let lapisanPeta = $state.raw<typeof import('$lib/map/layers') | null>(null);
 	let animationHandle = 0;
 	let playbackHandle = 0;
@@ -179,6 +180,10 @@
 		}
 
 		return layers;
+	});
+
+	$effect(() => {
+		if (workspace.activeTab && panelContent) panelContent.scrollTop = 0;
 	});
 
 	$effect(() => {
@@ -567,6 +572,7 @@
 			class="min-h-0 flex-1 overflow-y-auto"
 			role="region"
 			aria-label="Isi panel kerja"
+			bind:this={panelContent}
 			{@attach keyboardScrollable}
 		>
 			{#if dataset.meta && dataset.buildings && workspace.network}

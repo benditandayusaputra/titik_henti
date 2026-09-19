@@ -95,7 +95,13 @@ def shapely_to_geojson(geometry: Polygon | MultiPolygon) -> str:
     return json.dumps(mapped, separators=(",", ":"))
 
 
-def run_tippecanoe(source: Path, destination: Path, layer_name: str, id_attribute: str) -> None:
+def run_tippecanoe(
+    source: Path,
+    destination: Path,
+    layer_name: str,
+    id_attribute: str,
+    kept_attributes: list[str],
+) -> None:
     executable = require_tippecanoe()
     destination.parent.mkdir(parents=True, exist_ok=True)
     command = [
@@ -115,8 +121,13 @@ def run_tippecanoe(source: Path, destination: Path, layer_name: str, id_attribut
         "--preserve-input-order",
         "--use-attribute-for-id",
         id_attribute,
-        str(source),
     ]
+    if kept_attributes:
+        for attribute in kept_attributes:
+            command.extend(["--include", attribute])
+    else:
+        command.append("--exclude-all")
+    command.append(str(source))
     subprocess.run(command, check=True, capture_output=True)
     announce("emit", f"{destination.name} {destination.stat().st_size // 1024} KB")
 
@@ -133,5 +144,7 @@ def emit_vector_tiles(
     write_geojson_sequence(alley_source, build_alley_features(segments, projection))
     write_geojson_sequence(building_source, build_building_features(records, projection))
 
-    run_tippecanoe(alley_source, OUTPUT_DIR / "gangs.pmtiles", "gangs", "segmentId")
-    run_tippecanoe(building_source, OUTPUT_DIR / "buildings.pmtiles", "buildings", "buildingIndex")
+    run_tippecanoe(alley_source, OUTPUT_DIR / "gangs.pmtiles", "gangs", "segmentId", ["accessClass"])
+    run_tippecanoe(
+        building_source, OUTPUT_DIR / "buildings.pmtiles", "buildings", "buildingIndex", []
+    )

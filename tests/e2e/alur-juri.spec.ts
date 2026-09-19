@@ -69,6 +69,7 @@ test.describe('alur utama dari sisi juri', () => {
 		await expect(tabAktif(page)).toHaveText('Air');
 		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
 	});
+
 });
 
 test.describe('alur utama di layar ponsel', () => {
@@ -89,6 +90,24 @@ test.describe('alur utama di layar ponsel', () => {
 		});
 		expect(posisi.atasPeta).toBeGreaterThanOrEqual(posisi.kepala - 1);
 		expect(posisi.bawahPeta).toBeLessThanOrEqual(devices['iPhone 13'].viewport.height + 1);
+	});
+
+	test('hasil titik henti tampil di layar pertama setelah bangunan dipilih', async ({ page }) => {
+		await bukaLembarKerja(page);
+		await page.getByRole('button', { name: 'Daftar', exact: true }).click();
+		await page.getByRole('button', { name: /pilih bangunan ini/ }).first().click();
+		await page.getByRole('button', { name: 'Titik henti', exact: true }).click();
+		await page.evaluate(() => window.scrollTo(0, 0));
+		await page.waitForTimeout(300);
+
+		const judulHasil = page.getByRole('heading', { name: 'Titik henti kendaraan' });
+		const judulBangunan = page.getByRole('heading', { name: 'Detail bangunan' });
+		await expect(judulBangunan).toBeAttached();
+		const [hasil, bangunan] = await Promise.all([judulHasil.boundingBox(), judulBangunan.boundingBox()]);
+		expect(hasil && bangunan && hasil.y < bangunan.y).toBe(true);
+		expect((hasil?.y ?? Infinity) + (hasil?.height ?? 0)).toBeLessThanOrEqual(
+			devices['iPhone 13'].viewport.height
+		);
 	});
 
 	test('baris tab daftar cukup besar untuk disentuh', async ({ page }) => {

@@ -611,6 +611,7 @@
 						onbuildingpick={handleBuildingPickFromTable}
 					/>
 				{:else if workspace.activeTab === 'titikHenti'}
+					<StopPointPanel solution={workspace.stopPointSolution} drawnMeters={hoseDrawnMeters} />
 					{#if workspace.selectedBuildingIndex !== null}
 						<BuildingPanel
 							buildings={dataset.buildings}
@@ -618,7 +619,6 @@
 							buildingIndex={workspace.selectedBuildingIndex}
 						/>
 					{/if}
-					<StopPointPanel solution={workspace.stopPointSolution} drawnMeters={hoseDrawnMeters} />
 					<ComparisonPanel oncompare={runComparison} running={comparisonRunning} />
 				{:else if workspace.activeTab === 'api'}
 					<FirePanel

@@ -3,6 +3,7 @@
 	import { DATA_URL } from '$lib/data/sources';
 	import { onMount } from 'svelte';
 	import {
+		APPLIANCE_STAND_SPACING_METERS,
 		ACCESS_CLASS_LABEL,
 		ACCESS_CLASS_WIDTH_NOTE,
 		DEFAULT_MAX_HOSE_LENGTH_METERS,
@@ -29,13 +30,14 @@
 	import type { AccessClass, LonLat } from '$lib/domain/types';
 	import { computeHoseReach } from '$lib/sim/hoseReach';
 	import {
+		collectApplianceStandNodes,
 		collectStopPointCandidates,
 		computeStopPointField,
 		countHoseRolls
 	} from '$lib/sim/stopPoint';
 
 	const PLAN_WIDTH = 760;
-	const PLAN_MAX_HEIGHT = 358;
+	const PLAN_MAX_HEIGHT = 296;
 	const STOP_POINT_ROW_LIMIT = 7;
 	const POCKET_ROW_LIMIT = 5;
 	const WATER_ROW_LIMIT = 5;
@@ -72,6 +74,25 @@
 		return Math.min(PLAN_MAX_HEIGHT, PLAN_WIDTH / aspect);
 	});
 	const viewport = $derived(plan ? buildPlanViewport(plan, PLAN_WIDTH, planHeight) : null);
+	const KOLOM_PETAK = 6;
+	const BARIS_PETAK = 4;
+	const HURUF_PETAK = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+	function petak(position: LonLat): string {
+		const rencana = plan;
+		const bidang = viewport;
+		if (!rencana || !bidang) return '—';
+		const [x, y] = projectPlanPoint(
+			rencana,
+			bidang,
+			(position.lon - rencana.originLon) / rencana.quantisationDegrees,
+			(position.lat - rencana.originLat) / rencana.quantisationDegrees
+		);
+		const kolom = Math.floor(((x - bidang.offsetX) / bidang.width) * KOLOM_PETAK);
+		const baris = Math.floor(((y - bidang.offsetY) / bidang.height) * BARIS_PETAK);
+		if (kolom < 0 || baris < 0 || kolom >= KOLOM_PETAK || baris >= BARIS_PETAK) return '—';
+		return `${HURUF_PETAK[kolom]}${baris + 1}`;
+	}
 	const buildingPath = $derived(plan && viewport ? mergeBuildingPaths(plan, viewport) : '');
 	const boundaryPath = $derived.by(() => {
 		const document = plan;
@@ -147,7 +168,12 @@
 			network,
 			buildings,
 			adjacency,
-			sourceNodeIds: dataset.waterSources.map((source) => source.nearestNodeId),
+			sourceNodeIds: [
+				...dataset.waterSources
+					.filter((source) => source.kind !== 'applianceStand')
+					.map((source) => source.nearestNodeId),
+				...collectApplianceStandNodes(network, APPLIANCE_STAND_SPACING_METERS)
+			],
 			maximumHoseLengthMeters: DEFAULT_MAX_HOSE_LENGTH_METERS
 		});
 	});
@@ -166,9 +192,9 @@
 		hoseOnly: '1.5 2.5'
 	};
 	const classWidth: Record<AccessClass, number> = {
-		largeUnit: 2.4,
-		smallUnit: 1.5,
-		hoseOnly: 1
+		largeUnit: 2.8,
+		smallUnit: 1.8,
+		hoseOnly: 1.2
 	};
 
 	function openPrintDialog(): void {
@@ -267,6 +293,28 @@
 						<rect width={PLAN_WIDTH} height={planHeight} fill="#ffffff" />
 						<path d={buildingPath} fill="#dcdcdc" stroke="#9a9a9a" stroke-width="0.3" />
 						<path d={boundaryPath} fill="none" stroke="#1a1a1c" stroke-width="1.4" />
+						{#each Array.from({ length: KOLOM_PETAK - 1 }, (_, index) => index + 1) as garis (garis)}
+							<line
+								x1={viewport.offsetX + (viewport.width / KOLOM_PETAK) * garis}
+								y1={viewport.offsetY}
+								x2={viewport.offsetX + (viewport.width / KOLOM_PETAK) * garis}
+								y2={viewport.offsetY + viewport.height}
+								stroke="#1a1a1c"
+								stroke-width="0.4"
+								stroke-dasharray="3 4"
+							/>
+						{/each}
+						{#each Array.from({ length: BARIS_PETAK - 1 }, (_, index) => index + 1) as garis (garis)}
+							<line
+								x1={viewport.offsetX}
+								y1={viewport.offsetY + (viewport.height / BARIS_PETAK) * garis}
+								x2={viewport.offsetX + viewport.width}
+								y2={viewport.offsetY + (viewport.height / BARIS_PETAK) * garis}
+								stroke="#1a1a1c"
+								stroke-width="0.4"
+								stroke-dasharray="3 4"
+							/>
+						{/each}
 						{#each classOrder as accessClass (accessClass)}
 							<path
 								d={alleyPaths[accessClass]}
@@ -277,6 +325,33 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 							/>
+						{/each}
+						{#each HURUF_PETAK.slice(0, KOLOM_PETAK) as huruf, kolom (huruf)}
+							<text
+								x={viewport.offsetX + (viewport.width / KOLOM_PETAK) * (kolom + 0.5)}
+								y={viewport.offsetY + 9}
+								text-anchor="middle"
+								font-size="8"
+								fill="#1a1a1c"
+								stroke="#ffffff"
+								stroke-width="2.5"
+								paint-order="stroke"
+							>
+								{huruf}
+							</text>
+						{/each}
+						{#each Array.from({ length: BARIS_PETAK }, (_, index) => index + 1) as nomor (nomor)}
+							<text
+								x={viewport.offsetX + 3}
+								y={viewport.offsetY + (viewport.height / BARIS_PETAK) * (nomor - 0.5)}
+								font-size="8"
+								fill="#1a1a1c"
+								stroke="#ffffff"
+								stroke-width="2.5"
+								paint-order="stroke"
+							>
+								{nomor}
+							</text>
 						{/each}
 					</svg>
 					<ul class="mt-1.5 flex flex-wrap gap-x-5 gap-y-1">
@@ -320,6 +395,7 @@
 					<table class="w-full">
 						<thead>
 							<tr class="border-ink/30 border-b">
+								<th class="field-label-sm text-graphite py-1 text-left">Petak</th>
 								<th class="field-label-sm text-graphite py-1 text-left">Koordinat</th>
 								<th class="field-label-sm text-graphite py-1 text-right">Selang</th>
 								<th class="field-label-sm text-graphite py-1 text-right">Gulung</th>
@@ -328,11 +404,15 @@
 						<tbody>
 							{#each stopPointRows as row (row.nodeId)}
 								<tr class="border-ink/15 border-b">
+									<td class="readout text-ink py-[3px] text-[10px]">{petak(row.position)}</td>
 									<td class="readout text-ink py-[3px] text-[9.5px]">
 										{row.position.lat.toFixed(5)}, {row.position.lon.toFixed(5)}
 									</td>
 									<td class="readout text-ink py-[3px] text-right text-[10px]">
-										{Math.round(row.farthestHoseMeters)} m
+										{Math.round(row.farthestHoseMeters)} m{row.farthestHoseMeters >
+										DEFAULT_MAX_HOSE_LENGTH_METERS
+											? '*'
+											: ''}
 									</td>
 									<td class="readout text-ink py-[3px] text-right text-[10px]">
 										{countHoseRolls(row.farthestHoseMeters)}
@@ -355,7 +435,9 @@
 							<thead>
 								<tr class="border-ink/30 border-b">
 									<th class="field-label-sm text-graphite py-1 text-left">Jenis</th>
+									<th class="field-label-sm text-graphite py-1 text-left">Petak</th>
 									<th class="field-label-sm text-graphite py-1 text-left">Koordinat</th>
+									<th class="field-label-sm text-graphite py-1 text-left">Status</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -364,9 +446,13 @@
 										<td class="text-ink py-[3px] text-[10px]">
 											{WATER_SOURCE_LABEL[source.kind]}
 										</td>
+										<td class="readout text-ink py-[3px] text-[10px]">
+											{petak({ lon: source.lon, lat: source.lat })}
+										</td>
 										<td class="readout text-ink py-[3px] text-[9.5px]">
 											{source.lat.toFixed(5)}, {source.lon.toFixed(5)}
 										</td>
+										<td class="text-graphite py-[3px] text-[9.5px]">Belum diperiksa</td>
 									</tr>
 								{/each}
 							</tbody>
@@ -379,6 +465,7 @@
 							<thead>
 								<tr class="border-ink/30 border-b">
 									<th class="field-label-sm text-graphite py-1 text-left">No</th>
+									<th class="field-label-sm text-graphite py-1 text-left">Petak</th>
 									<th class="field-label-sm text-graphite py-1 text-left">Titik tengah</th>
 									<th class="field-label-sm text-graphite py-1 text-right">Bangunan</th>
 								</tr>
@@ -389,6 +476,7 @@
 										<td class="readout text-ink py-[3px] text-[10px]">
 											{(pocket.id + 1).toString().padStart(2, '0')}
 										</td>
+										<td class="readout text-ink py-[3px] text-[10px]">{petak(pocket.centroid)}</td>
 										<td class="readout text-ink py-[3px] text-[9.5px]">
 											{pocket.centroid.lat.toFixed(5)}, {pocket.centroid.lon.toFixed(5)}
 										</td>
@@ -428,6 +516,9 @@
 
 			<footer class="pt-1.5">
 				<p class="text-graphite text-[8.5px] leading-[1.5]">
+					Petak peta memakai kolom A sampai F dan baris 1 sampai 4. Tanda bintang berarti jarak itu
+					melebihi batas selang {formatMeters(DEFAULT_MAX_HOSE_LENGTH_METERS)}, jadi bangunan terjauh
+					itu belum terjangkau. Status sumber air diisi setelah pengurus RT memeriksanya di lapangan.
 					Sumber data: tapak bangunan Google Open Buildings V3 (CC BY 4.0); jaringan jalan,
 					sumber air, dan batas kelurahan dari OpenStreetMap (ODbL 1.0). Lebar gang pada lembar ini
 					adalah estimasi citra satelit yang dihitung pada grid {formatDecimal(

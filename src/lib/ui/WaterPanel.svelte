@@ -28,6 +28,12 @@
 		return [...counts.entries()];
 	});
 	const largestPocket = $derived(reach?.pockets[0] ?? null);
+	const reachTanpaUjiCoba = $derived(workspace.hoseReachTanpaUjiCoba);
+	const tambahanTerjangkau = $derived(
+		reach && reachTanpaUjiCoba
+			? reach.reachedBuildingCount - reachTanpaUjiCoba.reachedBuildingCount
+			: null
+	);
 </script>
 
 <PanelSection
@@ -117,6 +123,14 @@
 			Hapus {workspace.hypotheticalSources.length} hidran uji coba
 		</button>
 	</div>
+
+	{#if tambahanTerjangkau !== null}
+		<p class="text-graphite mt-2.5 text-[11.5px] leading-[1.5]">
+			{tambahanTerjangkau > 0
+				? `Hidran uji coba menambah ${formatCount(tambahanTerjangkau)} bangunan yang terjangkau selang.`
+				: 'Hidran uji coba belum menambah bangunan yang terjangkau. Taruh di dalam kantong yang masih merah di peta.'}
+		</p>
+	{/if}
 </PanelSection>
 
 <PanelSection title="Kantong tak terjangkau">

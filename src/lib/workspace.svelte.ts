@@ -167,6 +167,21 @@ class Workspace {
 		return computeWaterArrival(network, buildings, this.extraWaterNodeIds);
 	});
 
+	hoseReachTanpaUjiCoba = $derived.by<HoseReachResult | null>(() => {
+		const network = this.network;
+		const buildings = dataset.buildings;
+		const adjacency = dataset.adjacency;
+		if (!network || !buildings || !adjacency) return null;
+		if (this.hypotheticalSources.length === 0) return null;
+		return computeHoseReach({
+			network,
+			buildings,
+			adjacency,
+			sourceNodeIds: this.realWaterSources.map((source) => source.nearestNodeId),
+			maximumHoseLengthMeters: this.maximumHoseLengthMeters
+		});
+	});
+
 	hoseReach = $derived.by<HoseReachResult | null>(() => {
 		const network = this.network;
 		const buildings = dataset.buildings;

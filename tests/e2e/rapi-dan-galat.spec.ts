@@ -149,3 +149,36 @@ test.describe('angka besar di kartu siaga', () => {
 		expect(angkaPolos).toEqual([]);
 	});
 });
+
+test.describe('umpan balik dan legenda peta', () => {
+	test.use({ viewport: { width: 1440, height: 900 } });
+
+	test('hidran uji coba yang tidak menambah jangkauan dikatakan apa adanya', async ({ page }) => {
+		await tungguSiap(page, '/peta/');
+		await page.getByRole('button', { name: 'Air', exact: true }).click();
+		await page.getByRole('button', { name: 'Taruh hidran uji coba' }).click();
+		await klikBangunan(page);
+		await expect(
+			page.getByText(/Hidran uji coba (menambah|belum menambah)/)
+		).toBeVisible({ timeout: 30000 });
+	});
+
+	test('legenda peta terbuka di layar lebar', async ({ page }) => {
+		await tungguSiap(page, '/peta/');
+		const legenda = page.locator('details').filter({ hasText: 'Kelas akses gang' });
+		await expect(legenda.getByText('Unit besar')).toBeVisible();
+	});
+});
+
+test.describe('legenda peta di layar ponsel', () => {
+	test.use({ viewport: { width: 380, height: 740 } });
+
+	test('legenda terlipat supaya peta tidak tertutup', async ({ page }) => {
+		await tungguSiap(page, '/peta/');
+		const legenda = page.locator('details').filter({ hasText: 'Kelas akses gang' });
+		await expect(legenda).toBeVisible();
+		await expect(legenda.getByText('Unit besar')).toBeHidden();
+		await legenda.getByText('Kelas akses gang').click();
+		await expect(legenda.getByText('Unit besar')).toBeVisible();
+	});
+});

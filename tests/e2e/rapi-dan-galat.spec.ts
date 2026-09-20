@@ -218,3 +218,33 @@ test.describe('penggaris selang di beranda', () => {
 		await page.emulateMedia({ reducedMotion: null });
 	});
 });
+
+test.describe('perbandingan pelebaran gang', () => {
+	test.use({ viewport: { width: 1440, height: 900 } });
+
+	test('jangkauan air ikut berubah saat semua gang naik satu kelas', async ({ page }) => {
+		test.setTimeout(180000);
+		await tungguSiap(page, '/peta/');
+		await page.getByRole('button', { name: 'Api', exact: true }).click();
+		await page.getByRole('button', { name: 'Tetapkan titik api' }).click();
+		await klikBangunan(page);
+		await page.getByRole('button', { name: 'Titik henti', exact: true }).click();
+		await page.getByRole('button', { name: 'Bandingkan sebelum dan sesudah' }).click();
+		await page.waitForFunction(
+			() => document.body.textContent?.includes('Semua gang naik satu kelas'),
+			undefined,
+			{ timeout: 150000 }
+		);
+
+		const angka = await page
+			.getByRole('region', { name: 'Isi panel kerja' })
+			.evaluate((panel) =>
+				[...panel.querySelectorAll('dl div')]
+					.filter((baris) => baris.textContent?.includes('Tak terjangkau'))
+					.map((baris) => baris.querySelector('dd')?.textContent?.trim() ?? '')
+			);
+
+		expect(angka.length).toBe(2);
+		expect(angka[0]).not.toBe(angka[1]);
+	});
+});

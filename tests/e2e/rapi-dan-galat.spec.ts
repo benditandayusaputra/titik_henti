@@ -12,8 +12,9 @@ async function tungguSiap(page: Page, jalur: string): Promise<void> {
 		);
 		await page.waitForTimeout(2000);
 	} else if (jalur === '/kartu/') {
+		await page.waitForSelector('svg[role="img"]', { timeout: 60000 });
 		await page.waitForFunction(
-			() => !document.body.textContent?.includes('Menyusun kartu siaga RT'),
+			() => !document.body.textContent?.includes('Menghitung titik henti'),
 			undefined,
 			{ timeout: 60000 }
 		);

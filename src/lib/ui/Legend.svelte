@@ -17,11 +17,21 @@
 	const palette = $derived(muted ? ACCESS_CLASS_MUTED_MAP_COLOR : ACCESS_CLASS_MAP_COLOR);
 
 	const rows: AccessClass[] = ['largeUnit', 'smallUnit', 'hoseOnly'];
+
+	let layarLebar = $state(true);
+
+	$effect(() => {
+		const kueri = window.matchMedia('(min-width: 1024px)');
+		const perbarui = () => (layarLebar = kueri.matches);
+		perbarui();
+		kueri.addEventListener('change', perbarui);
+		return () => kueri.removeEventListener('change', perbarui);
+	});
 </script>
 
-<div class="bg-concrete/95 hairline-box pointer-events-none w-[196px] px-3 py-2.5">
-	<p class="map-label text-graphite mb-2">Kelas akses gang</p>
-	<ul class="flex flex-col gap-[7px]">
+<details class="bg-concrete/95 hairline-box w-[196px] px-3 py-2.5" open={layarLebar}>
+	<summary class="map-label text-graphite cursor-pointer list-none">Kelas akses gang</summary>
+	<ul class="mt-2 flex flex-col gap-[7px]">
 		{#each rows as accessClass (accessClass)}
 			<li class="flex items-center gap-2">
 				<span
@@ -45,4 +55,4 @@
 			Warna kelas diredam supaya merah hanya menandai api
 		</p>
 	{/if}
-</div>
+</details>

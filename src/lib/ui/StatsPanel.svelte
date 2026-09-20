@@ -9,6 +9,7 @@
 	import type { AccessClass, PipelineMeta } from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
+	import { workspace } from '$lib/workspace.svelte';
 
 	interface Props {
 		meta: PipelineMeta;
@@ -22,10 +23,18 @@
 			meta.alleyLengthMetersByClass.smallUnit +
 			meta.alleyLengthMetersByClass.hoseOnly
 	);
+	const selectedBuildingIndex = $derived(workspace.selectedBuildingIndex);
+	const selectedSegmentId = $derived(workspace.selectedSegmentId);
 	const density = $derived(meta.buildingCount / Math.max(meta.areaSquareKilometres, 0.001));
 </script>
 
 <PanelSection title="Wilayah kerja">
+	{#if selectedBuildingIndex === null && selectedSegmentId === null}
+		<p class="text-graphite mb-3 text-[11.5px] leading-[1.55]">
+			Pilih satu bangunan di peta untuk melihat titik henti kendaraan dan panjang selang menuju
+			bangunan itu. Pilih garis gang untuk melihat lebarnya.
+		</p>
+	{/if}
 	<div class="mb-3">
 		<p class="font-display text-ink text-[27px] leading-[0.95] font-semibold">
 			{meta.villageName}

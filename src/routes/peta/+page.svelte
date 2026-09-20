@@ -538,7 +538,7 @@
 			<div
 				class="bg-ink text-concrete map-label absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
 			>
-				{workspace.settingIgnition ? 'Klik bangunan untuk titik api' : 'Klik peta untuk hidran'}
+				{workspace.settingIgnition ? 'Pilih bangunan untuk titik api' : 'Pilih titik di peta untuk hidran'}
 			</div>
 		{/if}
 		{#if dataset.status === 'error'}

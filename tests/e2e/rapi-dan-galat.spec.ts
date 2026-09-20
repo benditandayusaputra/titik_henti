@@ -182,3 +182,39 @@ test.describe('legenda peta di layar ponsel', () => {
 		await expect(legenda.getByText('Unit besar')).toBeVisible();
 	});
 });
+
+test.describe('penggaris selang di beranda', () => {
+	test('menggambar dirinya sekali saat halaman dimuat', async ({ page }) => {
+		await page.goto('/');
+		const nilai = await page.evaluate(async () => {
+			const terlihat: string[] = [];
+			const mulai = Date.now();
+			while (Date.now() - mulai < 2500) {
+				const teks = document.querySelector('[data-meter-selang]')?.textContent?.trim() ?? '';
+				if (teks && terlihat[terlihat.length - 1] !== teks) terlihat.push(teks);
+				await new Promise((selesai) => requestAnimationFrame(() => selesai(null)));
+			}
+			return terlihat;
+		});
+		expect(nilai.length).toBeGreaterThan(2);
+		expect(nilai[nilai.length - 1]).toContain('200');
+	});
+
+	test('reduced motion langsung menampilkan nilai akhir', async ({ page }) => {
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		await page.goto('/');
+		const nilai = await page.evaluate(async () => {
+			const terlihat: string[] = [];
+			const mulai = Date.now();
+			while (Date.now() - mulai < 800) {
+				const teks = document.querySelector('[data-meter-selang]')?.textContent?.trim() ?? '';
+				if (teks && terlihat[terlihat.length - 1] !== teks) terlihat.push(teks);
+				await new Promise((selesai) => requestAnimationFrame(() => selesai(null)));
+			}
+			return terlihat;
+		});
+		expect(nilai).toEqual([nilai[0]]);
+		expect(nilai[0]).toContain('200');
+		await page.emulateMedia({ reducedMotion: null });
+	});
+});

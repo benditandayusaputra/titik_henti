@@ -131,3 +131,58 @@ test.describe('alur utama di layar ponsel', () => {
 		expect(hasil.violations).toEqual([]);
 	});
 });
+
+test.describe('mode pilih lokasi dan kendali simulasi', () => {
+	test.use({ viewport: { width: 1440, height: 900 } });
+
+	test('mode taruh hidran mati saat pindah tab', async ({ page }) => {
+		await bukaLembarKerja(page);
+		await page.getByRole('button', { name: 'Air', exact: true }).click();
+		await page.getByRole('button', { name: 'Taruh hidran uji coba' }).click();
+		await klikGarisGangTerang(page);
+		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
+
+		await page.getByRole('button', { name: 'Akses', exact: true }).click();
+		await expect(page.getByText('Klik peta untuk hidran')).toBeHidden();
+		await klikGarisGangTerang(page);
+
+		await page.getByRole('button', { name: 'Air', exact: true }).click();
+		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
+	});
+
+	test('perbandingan menolak jalan tanpa titik api dan menyebut sebabnya', async ({ page }) => {
+		await bukaLembarKerja(page);
+		await page.getByRole('button', { name: 'Titik henti', exact: true }).click();
+		await expect(page.getByRole('button', { name: 'Bandingkan sebelum dan sesudah' })).toBeDisabled();
+		await expect(page.getByText('Tetapkan minimal satu titik api di tab Api lebih dulu')).toBeVisible();
+	});
+});
+
+test.describe('kendali simulasi di layar ponsel', () => {
+	test.use({ viewport: devices['iPhone 13'].viewport, hasTouch: true, isMobile: true });
+
+	test('menjalankan simulasi menggulir peta kembali ke layar', async ({ page }) => {
+		await bukaLembarKerja(page);
+		await page.getByRole('button', { name: 'Api', exact: true }).click();
+		const tetapkan = page.getByRole('button', { name: 'Tetapkan titik api' });
+		await tetapkan.scrollIntoViewIfNeeded();
+		await tetapkan.click();
+		const kanvas = await page.locator('.maplibregl-canvas').boundingBox();
+		if (!kanvas) throw new Error('kanvas peta tidak ditemukan');
+		await page.touchscreen.tap(kanvas.x + kanvas.width / 2, kanvas.y + kanvas.height / 2);
+		await page.waitForTimeout(600);
+
+		const jalankan = page.getByRole('button', { name: 'Jalankan', exact: true });
+		await jalankan.scrollIntoViewIfNeeded();
+		await jalankan.click();
+		await page.waitForTimeout(600);
+
+		const porsi = await page.evaluate(() => {
+			const peta = document.querySelector('.maplibregl-canvas')?.getBoundingClientRect();
+			const kepala = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0;
+			if (!peta) return 0;
+			return Math.max(0, Math.min(peta.bottom, window.innerHeight) - Math.max(peta.top, kepala)) / peta.height;
+		});
+		expect(porsi).toBeGreaterThan(0.5);
+	});
+});

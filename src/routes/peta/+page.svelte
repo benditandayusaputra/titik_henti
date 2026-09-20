@@ -182,8 +182,15 @@
 		return layers;
 	});
 
+	let tabSebelumnya = $state.raw<WorkspaceTab | null>(null);
+
 	$effect(() => {
-		if (workspace.activeTab && panelContent) panelContent.scrollTop = 0;
+		const tab = workspace.activeTab;
+		if (panelContent) panelContent.scrollTop = 0;
+		if (tab === tabSebelumnya) return;
+		tabSebelumnya = tab;
+		workspace.settingIgnition = false;
+		workspace.placingHydrant = false;
 	});
 
 	$effect(() => {
@@ -263,6 +270,7 @@
 	function runSimulation(): void {
 		const waterArrival = workspace.waterArrival;
 		if (!waterArrival) return;
+		bringMapIntoView();
 		workspace.simulationFailure = null;
 		workspace.playback = {
 			snapshots: [],

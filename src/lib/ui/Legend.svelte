@@ -30,7 +30,9 @@
 </script>
 
 <details class="bg-concrete/95 hairline-box w-[196px] px-3 py-2.5" open={layarLebar}>
-	<summary class="map-label text-graphite cursor-pointer list-none">Kelas akses gang</summary>
+	<summary
+		class="map-label text-graphite cursor-pointer list-none focus-visible:[outline-offset:-2px]"
+	>Kelas akses gang</summary>
 	<ul class="mt-2 flex flex-col gap-[7px]">
 		{#each rows as accessClass (accessClass)}
 			<li class="flex items-center gap-2">

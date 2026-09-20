@@ -17,6 +17,7 @@
 	const burntDelta = $derived(
 		baseline && widened ? baseline.burntCount - widened.burntCount : 0
 	);
+	const tanpaTitikApi = $derived(workspace.ignitionBuildingIndices.length === 0);
 	const arrivalDelta = $derived(
 		baseline && widened
 			? baseline.meanWaterArrivalSeconds - widened.meanWaterArrivalSeconds
@@ -29,7 +30,12 @@
 	note="Menaikkan kelas akses seluruh segmen satu tingkat, menghitung ulang titik henti, panjang selang, waktu air sampai, lalu menjalankan simulasi dengan benih acak yang sama persis."
 >
 	<div class="flex flex-wrap gap-2">
-		<button type="button" class="field-button-solid" disabled={running} onclick={oncompare}>
+		<button
+			type="button"
+			class="field-button-solid"
+			disabled={running || tanpaTitikApi}
+			onclick={oncompare}
+		>
 			{running ? 'Menghitung dua skenario…' : 'Bandingkan sebelum dan sesudah'}
 		</button>
 		<button
@@ -145,7 +151,19 @@
 				bangunan terbakar, dengan titik api, arah angin, dan benih acak yang sama persis. Air sampai
 				lebih cepat {formatSeconds(Math.abs(arrivalDelta))} rata-rata.
 			</p>
+			{#if burntDelta === 0}
+				<p class="text-graphite mt-2 text-[11px] leading-[1.5]">
+					Jumlahnya sama karena air tetap sampai pada waktu yang menentukan di sekitar titik api ini.
+					Pelebaran gang terasa bila titik apinya berada di kantong yang dikelilingi gang kelas selang
+					saja.
+				</p>
+			{/if}
 		</div>
+	{:else if tanpaTitikApi}
+		<p class="text-graphite mt-3 text-[11.5px] leading-[1.55]">
+			Tetapkan minimal satu titik api di tab Api lebih dulu. Perbandingan ini menjalankan dua
+			simulasi dengan titik api yang sama.
+		</p>
 	{:else}
 		<p class="text-graphite mt-3 text-[11.5px] leading-[1.55]">
 			Rantai sebab akibat yang diuji: lebar gang → kelas akses → posisi titik henti → panjang selang

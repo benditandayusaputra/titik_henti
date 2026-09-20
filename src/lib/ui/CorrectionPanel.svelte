@@ -72,6 +72,11 @@
 			</div>
 		</form>
 
+		<p class="text-graphite mt-2.5 text-[11.5px] leading-[1.5]">
+			Usulan dan persetujuan hanya bertahan selama halaman ini terbuka. Menutup atau memuat ulang
+			halaman mengembalikan lebar gang ke nilai dari pipeline.
+		</p>
+
 		{#if errorMessage}
 			<p class="text-alarm mt-2.5 text-[11.5px] leading-[1.5]" role="status">{errorMessage}</p>
 		{/if}

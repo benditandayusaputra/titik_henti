@@ -186,6 +186,9 @@ async function requestProposalText(
 		if (response.status === 429) {
 			return { ok: false, status: 429, message: 'Layanan sedang padat. Coba lagi beberapa saat lagi.' };
 		}
+		if (response.status >= 400 && response.status < 500) {
+			return { ok: false, status: 422, message: 'Kalimat ini tidak dapat diubah menjadi usulan koreksi. Sebutkan lebar gang dalam meter atau penghalang yang Anda lihat, lalu kirim ulang.' };
+		}
 		if (!response.ok) {
 			return { ok: false, status: 502, message: 'Layanan koreksi gagal merespons. Kalimat Anda tetap tersimpan, kirim ulang sebentar lagi.' };
 		}

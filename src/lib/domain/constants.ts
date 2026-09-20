@@ -268,12 +268,12 @@ export const CORRECTION_LOW_CONFIDENCE_THRESHOLD = 0.6;
 
 export const WIDTH_SOURCE_LABEL: Record<WidthSource, string> = {
 	satellite: 'Estimasi satelit',
-	field: 'Ukur lapangan'
+	field: 'Laporan lapangan'
 };
 
 export const WIDTH_SOURCE_NOTE: Record<WidthSource, string> = {
 	satellite: 'Nilai diturunkan dari citra satelit pada grid 0,5 meter.',
-	field: 'Nilai berasal dari koreksi lapangan yang sudah disetujui, bukan dari citra satelit.'
+	field: 'Nilai berasal dari laporan lapangan yang Anda setujui, bukan dari pengukuran meteran maupun citra satelit.'
 };
 
 export const CORRECTION_STATUS_LABEL: Record<CorrectionStatus, string> = {

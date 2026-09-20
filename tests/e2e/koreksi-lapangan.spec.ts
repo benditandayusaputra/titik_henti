@@ -143,7 +143,7 @@ test.describe('koreksi lapangan berbantuan AI', () => {
 		await page.getByRole('button', { name: 'Setujui' }).click();
 
 		const panel = page.locator('aside section').filter({ hasText: 'Segmen gang terpilih' });
-		await expect(panel).toContainText('Ukur lapangan');
+		await expect(panel).toContainText('Laporan lapangan');
 		await expect(panel).toContainText('Selang saja');
 		await expect(panel).toContainText('2,00 m');
 	});

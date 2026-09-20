@@ -5,6 +5,7 @@
 	import type { Map as MapLibreMap } from 'maplibre-gl';
 	import { onMount } from 'svelte';
 	import {
+		APPLIANCE_STAND_SPACING_METERS,
 		BATCH_PROBE_RUN_COUNT,
 		CATALOGUE_FLY_ZOOM,
 		FIRE_PLAYBACK_FRAME_MILLISECONDS,
@@ -26,7 +27,7 @@
 	import { fireClient } from '$lib/sim/fireClient.svelte';
 	import { rankSlowestBuildings } from '$lib/sim/network';
 	import { buildInterventionCandidates } from '$lib/sim/optimizer';
-	import { upgradeAccessClasses } from '$lib/sim/stopPoint';
+	import { collectApplianceStandNodes, upgradeAccessClasses } from '$lib/sim/stopPoint';
 	import { computeWaterArrival } from '$lib/sim/waterArrival';
 	import BuildingPanel from '$lib/ui/BuildingPanel.svelte';
 	import CalibrationPanel from '$lib/ui/CalibrationPanel.svelte';
@@ -362,7 +363,10 @@
 				buildings,
 				adjacency,
 				sourceNodeIds: [
-					...workspace.realWaterSources.map((source) => source.nearestNodeId),
+					...workspace.realWaterSources
+						.filter((source) => source.kind !== 'applianceStand')
+						.map((source) => source.nearestNodeId),
+					...collectApplianceStandNodes(entry.network, APPLIANCE_STAND_SPACING_METERS),
 					...workspace.hypotheticalSources.map((source) => source.nodeId)
 				],
 				maximumHoseLengthMeters: workspace.maximumHoseLengthMeters

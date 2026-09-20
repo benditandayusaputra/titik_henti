@@ -240,3 +240,41 @@ export function widenSegment(network: AlleyNetwork, segmentId: number): AlleyNet
 	}
 	return { ...network, edgeAccessClass: upgraded };
 }
+
+export function collectApplianceStandNodes(
+	network: AlleyNetwork,
+	spacingMeters: number
+): number[] {
+	const largeUnitCode = ACCESS_CLASS_CODE.largeUnit;
+	const kandidat: number[] = [];
+	const terlihat = new Set<number>();
+	for (let edge = 0; edge < network.edgeCount; edge += 1) {
+		if (network.edgeAccessClass[edge] !== largeUnitCode) continue;
+		for (const node of [network.edgeFrom[edge], network.edgeTo[edge]]) {
+			if (terlihat.has(node)) continue;
+			terlihat.add(node);
+			kandidat.push(node);
+		}
+	}
+	if (kandidat.length === 0) return [];
+
+	const terpilih: number[] = [];
+	const posisi: [number, number][] = [];
+	const meterPerDerajat = 111320;
+	for (const node of kandidat) {
+		const lat = network.nodeLat[node];
+		const x = network.nodeLon[node] * meterPerDerajat * Math.cos((lat * Math.PI) / 180);
+		const y = lat * meterPerDerajat;
+		let cukupJauh = true;
+		for (const [lainX, lainY] of posisi) {
+			if (Math.hypot(x - lainX, y - lainY) < spacingMeters) {
+				cukupJauh = false;
+				break;
+			}
+		}
+		if (!cukupJauh) continue;
+		terpilih.push(node);
+		posisi.push([x, y]);
+	}
+	return terpilih;
+}

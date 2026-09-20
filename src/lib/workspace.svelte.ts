@@ -1,4 +1,5 @@
 import {
+	APPLIANCE_STAND_SPACING_METERS,
 	ACCESS_CLASS_CODE,
 	CATALOGUE_ROW_LIMIT,
 	CORRECTION_ENDPOINT_PATH,
@@ -39,6 +40,7 @@ import { applyWidthCorrections, summariseSegment } from '$lib/sim/corrections';
 import { computeHoseReach } from '$lib/sim/hoseReach';
 import { findNearestNode } from '$lib/sim/network';
 import {
+	collectApplianceStandNodes,
 	collectStopPointCandidates,
 	computeStopPointField,
 	solveStopPoint,
@@ -167,6 +169,17 @@ class Workspace {
 		return computeWaterArrival(network, buildings, this.extraWaterNodeIds);
 	});
 
+	supplyNodeIds = $derived.by<number[]>(() => {
+		const network = this.network;
+		if (!network) return [];
+		return [
+			...this.realWaterSources
+				.filter((source) => source.kind !== 'applianceStand')
+				.map((source) => source.nearestNodeId),
+			...collectApplianceStandNodes(network, APPLIANCE_STAND_SPACING_METERS)
+		];
+	});
+
 	hoseReachTanpaUjiCoba = $derived.by<HoseReachResult | null>(() => {
 		const network = this.network;
 		const buildings = dataset.buildings;
@@ -177,7 +190,7 @@ class Workspace {
 			network,
 			buildings,
 			adjacency,
-			sourceNodeIds: this.realWaterSources.map((source) => source.nearestNodeId),
+			sourceNodeIds: this.supplyNodeIds,
 			maximumHoseLengthMeters: this.maximumHoseLengthMeters
 		});
 	});
@@ -187,15 +200,14 @@ class Workspace {
 		const buildings = dataset.buildings;
 		const adjacency = dataset.adjacency;
 		if (!network || !buildings || !adjacency) return null;
-		const supplyNodes = [
-			...this.realWaterSources.map((source) => source.nearestNodeId),
-			...this.hypotheticalSources.map((source) => source.nodeId)
-		];
 		return computeHoseReach({
 			network,
 			buildings,
 			adjacency,
-			sourceNodeIds: supplyNodes,
+			sourceNodeIds: [
+				...this.supplyNodeIds,
+				...this.hypotheticalSources.map((source) => source.nodeId)
+			],
 			maximumHoseLengthMeters: this.maximumHoseLengthMeters
 		});
 	});

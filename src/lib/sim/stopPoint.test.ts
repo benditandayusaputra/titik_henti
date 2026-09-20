@@ -7,6 +7,7 @@ import {
 	type BuildingSeed
 } from '$lib/sim/fixtures';
 import {
+	collectApplianceStandNodes,
 	collectStopPointCandidates,
 	computeStopPointField,
 	computeWaterArrivalField,
@@ -109,5 +110,32 @@ describe('stopPoint', () => {
 
 	it('menaikkan waktu penggelaran seiring panjang selang', () => {
 		expect(estimateHoseDeploySeconds(120)).toBeGreaterThan(estimateHoseDeploySeconds(40));
+	});
+});
+
+describe('posisi unit pemadam', () => {
+	it('hanya memilih simpul di gang kelas unit besar', () => {
+		const network = buildChainNetwork(['hoseOnly', 'largeUnit', 'hoseOnly'], 100);
+		const stands = collectApplianceStandNodes(network, 60);
+
+		expect(stands).toEqual([1, 2]);
+	});
+
+	it('menjaga jarak antarposisi sesuai spasi yang diminta', () => {
+		const network = buildChainNetwork(['largeUnit', 'largeUnit', 'largeUnit'], 20);
+		const rapat = collectApplianceStandNodes(network, 10);
+		const renggang = collectApplianceStandNodes(network, 50);
+
+		expect(rapat.length).toBe(4);
+		expect(renggang.length).toBe(2);
+	});
+
+	it('ikut bertambah saat seluruh gang dinaikkan satu kelas', () => {
+		const network = buildChainNetwork(['hoseOnly', 'smallUnit', 'hoseOnly'], 100);
+		const sebelum = collectApplianceStandNodes(network, 60);
+		const sesudah = collectApplianceStandNodes(upgradeAccessClasses(network), 60);
+
+		expect(sebelum).toEqual([]);
+		expect(sesudah.length).toBeGreaterThan(0);
 	});
 });

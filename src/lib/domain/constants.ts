@@ -94,9 +94,9 @@ export const BUILDING_STATE_SAVED = 4;
 
 export const BUILDING_STATE_LABEL: Record<number, string> = {
 	0: 'Utuh',
-	1: 'Menyala',
+	1: 'Sedang terbakar',
 	2: 'Terbakar penuh',
-	3: 'Habis',
+	3: 'Habis terbakar',
 	4: 'Terselamatkan'
 };
 

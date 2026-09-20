@@ -5,7 +5,7 @@
 		FIRE_MILESTONE_BUILDING_COUNT,
 		MAX_WIND_SPEED_METERS_PER_SECOND
 	} from '$lib/domain/constants';
-	import { formatCount, formatSeconds } from '$lib/format';
+	import { formatCount, formatDecimal, formatSeconds } from '$lib/format';
 	import type { FireStepSummary, WaterArrivalField } from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
@@ -28,7 +28,7 @@
 
 	const playback = $derived(workspace.playback);
 	const summary = $derived<FireStepSummary | null>(workspace.currentFireSummary);
-	const stateRows = [1, 2, 3, 4];
+	const stateRows = [1, 3, 4];
 
 	function rgbToCss(code: number): string {
 		const rgb = BUILDING_STATE_RGB[code];
@@ -51,7 +51,7 @@
 
 <PanelSection
 	title="Titik api awal"
-	note="Klik bangunan di peta saat mode titik api aktif untuk menyalakan atau membatalkan."
+	note="Pilih bangunan di peta saat mode titik api aktif untuk menyalakan atau membatalkan."
 >
 	<div class="flex flex-wrap gap-2">
 		<button
@@ -124,7 +124,7 @@
 		<ValueRow label="Arah" value={`${Math.round(workspace.wind.directionDegrees)}°`} />
 		<ValueRow measured
 			label="Kecepatan"
-			value={`${workspace.wind.speedMetersPerSecond.toFixed(1)} m/s`}
+			value={`${formatDecimal(workspace.wind.speedMetersPerSecond, 1)} m/s`}
 		/>
 	</div>
 </PanelSection>
@@ -189,6 +189,7 @@
 	<label class="mt-2 flex items-center gap-2">
 		<input
 			type="checkbox"
+			class="accent-ink h-4 w-4"
 			checked={workspace.suppressionEnabled}
 			onchange={(event) => (workspace.suppressionEnabled = event.currentTarget.checked)}
 		/>
@@ -204,7 +205,7 @@
 	{:else}
 		<div class="mb-3 grid grid-cols-3 gap-px">
 			<div class="hairline-box bg-paper px-2 py-2">
-				<p class="field-label-sm text-graphite">Terbakar</p>
+				<p class="field-label-sm text-graphite">Habis terbakar</p>
 				<p class="readout-lg text-alarm mt-1.5">{formatCount(summary.burntCount)}</p>
 			</div>
 			<div class="hairline-box bg-paper px-2 py-2">
@@ -212,7 +213,7 @@
 				<p class="readout-lg text-water mt-1.5">{formatCount(summary.savedCount)}</p>
 			</div>
 			<div class="hairline-box bg-paper px-2 py-2">
-				<p class="field-label-sm text-graphite">Menyala</p>
+				<p class="field-label-sm text-graphite">Sedang terbakar</p>
 				<p class="readout-lg text-ink mt-1.5">{formatCount(summary.burningCount)}</p>
 			</div>
 		</div>
@@ -230,9 +231,7 @@
 							? summary.burningCount
 							: code === 3
 								? summary.burntCount
-								: code === 4
-									? summary.savedCount
-									: 0
+								: summary.savedCount
 					)}
 				</span>
 			</div>

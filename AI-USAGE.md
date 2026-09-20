@@ -694,6 +694,26 @@ Pemeriksaannya: daftar permintaan yang ditandai uji berisi 50 alamat, semuanya d
 
 Uji kini membandingkan asal permintaan dengan asal situs yang sedang diuji, sehingga berlaku sama di mesin lokal, CI, dan produksi. Setelah perubahan, uji itu lolos di produksi dan di lokal.
 
+### Tahap 29, QA menyeluruh dan perbaikan 21 temuan
+
+Pengguna meminta pemeriksaan kualitas seluruh fitur di situs produksi, lalu meminta seluruh temuannya diperbaiki. Pengujian dijalankan dengan Chrome ber-GPU di laptop 1440 piksel dan iPhone 13, pada jaringan 4G biasa dan 4G lambat dengan CPU diperlambat empat kali.
+
+Tiga temuan berat:
+
+1. **Mode pilih lokasi bocor antartab.** Setelah menaruh hidran uji coba di tab Air lalu pindah ke tab Akses, klik pada bangunan justru menambah hidran kedua. Kedua mode kini mati setiap kali tab berganti.
+2. **Perbandingan pelebaran gang diam tanpa sebab.** Tombolnya tidak melakukan apa pun bila titik api belum ditetapkan, dan menampilkan selisih nol tanpa penjelasan. Tombol kini dinonaktifkan dengan alasan tertulis, dan hasil nol dijelaskan penyebabnya.
+3. **Simulasi api tidak terlihat di ponsel.** Saat tombol Jalankan ditekan, peta berada 0 persen di layar, sehingga penjalaran api tidak terlihat sama sekali. Peta kini digulirkan kembali ke layar saat simulasi dijalankan.
+
+Temuan sedang yang diperbaiki: halaman galat sendiri berbahasa Indonesia menggantikan 404 bawaan SvelteKit; istilah keadaan bangunan disatukan menjadi Sedang terbakar, Habis terbakar, dan Terselamatkan, sekaligus mencabut baris Terbakar penuh yang selalu menampilkan nol; posisi unit pemadam dihitung ulang saat kelas gang berubah sehingga jangkauan air ikut membaik pada skenario pelebaran; kartu siaga menandai jarak yang melebihi batas selang; kartu mendapat petak pencarian A sampai F dan 1 sampai 4 pada peta beserta kolom Petak di tiga tabelnya, kolom Status sumber air sesuai PRD F5, dan garis kelas gang yang lebih tebal untuk fotokopi; asal nilai hasil koreksi lapangan diganti dari Ukur lapangan menjadi Laporan lapangan; pesan galat koreksi membedakan kalimat yang tidak dapat diolah dari layanan yang gagal; panel koreksi menyebutkan bahwa usulan hanya bertahan selama halaman terbuka; hasil pencarian intervensi memakai koordinat dan barisnya dapat ditekan untuk membuka lokasinya di peta; kartu siaga tampil bertahap sehingga judul muncul pada detik ketiga dan peta pada detik ketujuh di 4G lambat, bukan layar kosong selama sepuluh detik; gambar open graph tidak lagi menempel ke kiri karena salah tanda pada offset pemusatan.
+
+Temuan ringan yang diperbaiki: seluruh angka memakai kaidah bahasa Indonesia, termasuk pangsa terjangkau, kecepatan angin, resolusi raster, parameter model, dan jumlah bangunan di kartu; penggaris selang muncul di beranda sesuai Bagian B5 dan berhenti pada batas 200 meter; kotak centang pemadaman memakai warna palet; legenda peta terlipat di layar sempit; kata Klik diganti Pilih; tab Akses memberi petunjuk awal; hidran uji coba menyebutkan berapa bangunan yang ditambahnya.
+
+Dua hal dalam laporan QA ternyata keliru dan dikoreksi: klik bangunan yang tampak gagal berasal dari koordinat skrip uji yang lupa memperhitungkan posisi kanvas, dan pencarian intervensi sebenarnya sudah punya bilah kemajuan.
+
+Dua regresi muncul dari perbaikan ini dan langsung ditutup: ringkasan legenda yang baru membuat garis fokus jatuh di atas peta gelap dengan kontras 1,2 banding 1, sehingga garisnya dipindah ke dalam kotak legenda; dan uji kartu siaga perlu menunggu petanya karena kartu kini tidak lagi menampilkan pesan tunggu.
+
+Setiap perbaikan disertai uji permanen yang dibuktikan gagal pada kode sebelum perbaikan. Seluruh suite end to end lolos, 147 uji, ditambah 84 uji unit.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

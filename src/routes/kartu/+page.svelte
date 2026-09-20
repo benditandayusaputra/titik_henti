@@ -10,6 +10,7 @@
 		WATER_SOURCE_LABEL
 	} from '$lib/domain/constants';
 	import { dataset } from '$lib/data/dataset.svelte';
+	import { pipelineMeta } from '$lib/data/sources';
 	import DataUnavailable from '$lib/ui/DataUnavailable.svelte';
 	import {
 		buildPlanViewport,
@@ -46,22 +47,24 @@
 	let plan = $state.raw<PrintPlanDocument | null>(null);
 	let planFailed = $state(false);
 
-	function loadPrintPlan(): void {
+	function loadPrintPlan(): Promise<void> {
 		planFailed = false;
-		void fetch(DATA_URL.printPlan)
+		return fetch(DATA_URL.printPlan)
 			.then((response) => (response.ok ? response.json() : Promise.reject(new Error('print.json'))))
-			.then((payload: PrintPlanDocument) => (plan = payload))
-			.catch(() => (planFailed = true));
+			.then((payload: PrintPlanDocument) => {
+				plan = payload;
+			})
+			.catch(() => {
+				planFailed = true;
+			});
 	}
 
 	function reloadCard(): void {
-		void dataset.load();
-		loadPrintPlan();
+		void loadPrintPlan().then(() => dataset.load());
 	}
 
 	onMount(() => {
-		void dataset.load();
-		loadPrintPlan();
+		void loadPrintPlan().then(() => dataset.load());
 	});
 
 	const planHeight = $derived.by(() => {
@@ -184,6 +187,8 @@
 			.slice(0, WATER_ROW_LIMIT)
 	);
 
+	const meta = $derived(dataset.meta ?? pipelineMeta);
+	const angkaLapanganSiap = $derived(dataset.network !== null && dataset.buildings !== null);
 	const writeLines = Array.from({ length: WRITE_LINE_COUNT }, (_, index) => index);
 	const classOrder: AccessClass[] = ['largeUnit', 'smallUnit', 'hoseOnly'];
 	const classStroke: Record<AccessClass, string> = {
@@ -213,7 +218,7 @@
 			Lembar ini dirancang untuk dicetak A4 potret hitam putih dan ditempel di pos RT. Kelas gang
 			dibedakan dengan pola garis, bukan warna, supaya tetap terbaca setelah difotokopi.
 		</p>
-		<button type="button" class="field-button-solid ml-auto shrink-0" disabled={!dataset.meta} onclick={openPrintDialog}>
+		<button type="button" class="field-button-solid ml-auto shrink-0" disabled={!angkaLapanganSiap} onclick={openPrintDialog}>
 			Cetak lembar
 		</button>
 	</div>
@@ -221,7 +226,7 @@
 	<article
 		class="bg-paper mx-auto w-full max-w-[210mm] px-[11mm] py-[9mm] print:max-w-none print:bg-white print:px-0 print:py-0"
 	>
-		{#if dataset.meta}
+		{#if dataset.status !== 'error'}
 			<header class="border-ink flex items-stretch gap-3 border-b-2 pb-2">
 				<div class="flex-1">
 					<p class="field-label-sm text-graphite">Pra-rencana kebakaran permukiman padat</p>
@@ -229,20 +234,19 @@
 						Kartu siaga RT
 					</h1>
 					<p class="font-display text-ink mt-1.5 text-[14px] leading-none font-semibold">
-						Kelurahan {dataset.meta.villageName}, Kecamatan {dataset.meta.districtName}, {dataset.meta
-							.cityName}
+						Kelurahan {meta.villageName}, Kecamatan {meta.districtName}, {meta.cityName}
 					</p>
 				</div>
 				<div class="border-ink/25 flex w-[38mm] flex-col justify-between border-l pl-3 text-right">
 					<div>
 						<p class="field-label-sm text-graphite">Tanggal olah</p>
 						<p class="field-label text-ink mt-1">
-							{formatDate(dataset.meta.processedAt)}
+							{formatDate(meta.processedAt)}
 						</p>
 					</div>
 					<div>
 						<p class="field-label-sm text-graphite">Versi pipeline</p>
-						<p class="field-label text-ink mt-1">v{dataset.meta.pipelineVersion}</p>
+						<p class="field-label text-ink mt-1">v{meta.pipelineVersion}</p>
 					</div>
 				</div>
 			</header>
@@ -250,22 +254,22 @@
 			<section class="border-ink/25 grid grid-cols-2 gap-x-3 gap-y-2 border-b py-2 sm:grid-cols-4 print:grid-cols-4">
 				<div>
 					<p class="field-label-sm text-graphite">Bangunan</p>
-					<p class="readout-lg text-ink mt-1">{formatCount(dataset.meta.buildingCount)}</p>
+					<p class="readout-lg text-ink mt-1">{formatCount(meta.buildingCount)}</p>
 				</div>
 				<div>
 					<p class="field-label-sm text-graphite">Panjang gang</p>
 					<p class="readout-lg text-ink mt-1">
 						{formatKilometers(
-							dataset.meta.alleyLengthMetersByClass.largeUnit +
-								dataset.meta.alleyLengthMetersByClass.smallUnit +
-								dataset.meta.alleyLengthMetersByClass.hoseOnly
+							meta.alleyLengthMetersByClass.largeUnit +
+								meta.alleyLengthMetersByClass.smallUnit +
+								meta.alleyLengthMetersByClass.hoseOnly
 						)}
 					</p>
 				</div>
 				<div>
 					<p class="field-label-sm text-graphite">Tak terlalui unit</p>
 					<p class="readout-lg text-ink mt-1">
-						{formatShare(dataset.meta.inaccessibleLengthShare)}
+						{formatShare(meta.inaccessibleLengthShare)}
 					</p>
 				</div>
 				<div>
@@ -392,6 +396,11 @@
 			<div class="border-ink/25 grid gap-x-6 gap-y-4 border-b py-2.5 sm:grid-cols-2 print:grid-cols-2">
 				<section>
 					<h2 class="field-label text-ink mb-1.5">02 Titik henti dan selang terjauh</h2>
+					{#if !angkaLapanganSiap}
+						<p class="text-graphite text-[10px] leading-[1.5]" role="status">
+							Menghitung titik henti, panjang selang, dan jangkauan air. Peta di atas sudah final.
+						</p>
+					{/if}
 					<table class="w-full">
 						<thead>
 							<tr class="border-ink/30 border-b">
@@ -522,7 +531,7 @@
 					Sumber data: tapak bangunan Google Open Buildings V3 (CC BY 4.0); jaringan jalan,
 					sumber air, dan batas kelurahan dari OpenStreetMap (ODbL 1.0). Lebar gang pada lembar ini
 					adalah estimasi citra satelit yang dihitung pada grid {formatDecimal(
-						dataset.meta.rasterResolutionMeters,
+						meta.rasterResolutionMeters,
 						1
 					)} meter per piksel, bukan hasil ukur lapangan, dan wajib
 					diverifikasi langsung sebelum dipakai sebagai dasar keputusan operasional. Tinggi dan
@@ -530,19 +539,10 @@
 					adalah simpul jaringan yang masih dapat dilalui unit besar, bukan pos parkir resmi.
 				</p>
 			</footer>
-		{:else if dataset.status === 'error'}
+		{:else}
 			<div class="py-10 print:hidden">
 				<h1 class="font-display text-ink mb-5 text-[29px] leading-none font-semibold">Kartu siaga RT</h1>
 				<DataUnavailable onretry={reloadCard} />
-			</div>
-		{:else}
-			<div class="py-10" aria-busy="true">
-				<h1 class="font-display text-ink mb-3 text-[29px] leading-none font-semibold">Kartu siaga RT</h1>
-				<p class="text-ink text-[13px] leading-[1.55]" role="status">Menyusun kartu siaga RT</p>
-				<p class="text-graphite prose-measure mt-1.5 text-[12px] leading-[1.55]">
-					Data titik henti, sumber air, dan kantong tak terjangkau sedang diambil. Tombol cetak aktif
-					setelah kartu selesai disusun.
-				</p>
 			</div>
 		{/if}
 	</article>

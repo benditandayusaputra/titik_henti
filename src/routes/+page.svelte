@@ -1,4 +1,5 @@
 <script lang="ts">
+	import HoseRulerIntro from '$lib/ui/HoseRulerIntro.svelte';
 	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import {
 		ACCESS_CLASS_COLOR,
@@ -96,6 +97,10 @@
 				</dd>
 			</div>
 		</dl>
+
+		<div class="mt-8">
+			<HoseRulerIntro />
+		</div>
 
 		<div class="mt-8 flex flex-wrap gap-2">
 			<a href="/peta/" class="field-button-solid">Buka lembar kerja</a>

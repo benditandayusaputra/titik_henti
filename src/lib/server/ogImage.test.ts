@@ -1,6 +1,12 @@
 import { crc32, inflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
-import { createCanvas, drawLine, encodePng, parseHexColor } from '$lib/server/ogImage';
+import {
+	createCanvas,
+	drawLine,
+	encodePng,
+	parseHexColor,
+	renderPlanImage
+} from '$lib/server/ogImage';
 
 function readChunks(png: Buffer): { type: string; data: Buffer; checksumValid: boolean }[] {
 	const chunks = [];
@@ -50,5 +56,44 @@ describe('gambar open graph', () => {
 		expect(scanlines.length).toBe((3 * 3 + 1) * 2);
 		expect([...scanlines.subarray(0, 4)]).toEqual([0, 1, 2, 3]);
 		expect([...scanlines.subarray(10 + 1 + 6, 10 + 1 + 9)]).toEqual([200, 100, 50]);
+	});
+});
+
+describe('gambar open graph', () => {
+	const rencana = {
+		originLon: 106.79,
+		originLat: -6.2,
+		buildings: [[0, 0, 100, 0, 100, 400, 0, 400, 0, 0]],
+		boundary: [[0, 0, 100, 0, 100, 400, 0, 400, 0, 0]],
+		alleys: [
+			{ accessClass: 'largeUnit' as const, points: [10, 10, 90, 10] },
+			{ accessClass: 'hoseOnly' as const, points: [10, 390, 90, 390] }
+		],
+		stopPoints: [],
+		waterSources: [],
+		pockets: []
+	};
+
+	it('menggambar peta di tengah bidang, bukan menempel ke satu sisi', () => {
+		const lebar = 1200;
+		const kanvas = renderPlanImage(rencana as never, lebar, 630);
+		const latar = parseHexColor('#E8E6E1');
+		let kiri = 0;
+		let kanan = 0;
+		for (let y = 0; y < kanvas.height; y += 1) {
+			for (let x = 0; x < lebar; x += 1) {
+				const i = (y * lebar + x) * 3;
+				const sama =
+					kanvas.pixels[i] === latar[0] &&
+					kanvas.pixels[i + 1] === latar[1] &&
+					kanvas.pixels[i + 2] === latar[2];
+				if (sama) continue;
+				if (x < lebar / 2) kiri += 1;
+				else kanan += 1;
+			}
+		}
+		expect(kiri).toBeGreaterThan(0);
+		expect(kanan).toBeGreaterThan(0);
+		expect(Math.min(kiri, kanan) / Math.max(kiri, kanan)).toBeGreaterThan(0.5);
 	});
 });

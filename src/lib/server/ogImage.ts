@@ -145,7 +145,7 @@ export function renderPlanImage(plan: PrintPlanDocument, width: number, height: 
 	);
 	const project = (x: number, y: number): [number, number] => {
 		const [planX, planY] = projectPlanPoint(plan, viewport, x, y);
-		return [planX - viewport.offsetX + PLAN_MARGIN_PIXELS, planY + PLAN_MARGIN_PIXELS];
+		return [planX + PLAN_MARGIN_PIXELS, planY + PLAN_MARGIN_PIXELS];
 	};
 
 	drawRuler(canvas, parseHexColor(INK_COLOR));

@@ -659,6 +659,12 @@
 						{batchStatistics}
 						{batchRunning}
 						onbudgetchange={(value) => (budgetRupiah = value)}
+						onfocus={(item) => {
+							focusMapOn(item.position);
+							if (item.kind === 'wideningSegment' && item.targetEdgeId !== null) {
+								workspace.selectSegment(item.targetEdgeId);
+							}
+						}}
 						onrun={runOptimizer}
 						onapply={applyOptimizerResult}
 						onprobe={runBatchProbe}

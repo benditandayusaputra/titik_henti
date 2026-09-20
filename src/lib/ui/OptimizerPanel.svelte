@@ -5,13 +5,18 @@
 		OPTIMIZER_MIN_BUDGET_RUPIAH
 	} from '$lib/domain/constants';
 	import { formatCount, formatDecimal, formatRupiah } from '$lib/format';
-	import type { FireBatchStatistics, InterventionKind } from '$lib/domain/types';
+	import type {
+		FireBatchStatistics,
+		InterventionKind,
+		SelectedIntervention
+	} from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
 	import ValueRow from '$lib/ui/ValueRow.svelte';
 	import { PESAN_GAGAL_SIMULASI } from '$lib/ui/istilah';
 	import { workspace } from '$lib/workspace.svelte';
 
 	interface Props {
+		onfocus: (item: SelectedIntervention) => void;
 		budgetRupiah: number;
 		batchStatistics: FireBatchStatistics | null;
 		batchRunning: boolean;
@@ -22,6 +27,7 @@
 	}
 
 	let {
+		onfocus,
 		budgetRupiah,
 		batchStatistics,
 		batchRunning,
@@ -143,20 +149,26 @@
 		{:else}
 			<ol class="flex flex-col">
 				{#each outcome.selected as item (item.id)}
-					<li class="hairline-b flex items-baseline gap-2 py-2 last:border-b-0">
-						<span class="readout text-graphite w-6 shrink-0 text-[11px]">
-							{item.rank.toString().padStart(2, '0')}
-						</span>
-						<span class="min-w-0 flex-1">
-							<span class="field-label-sm text-ink block">{kindLabel[item.kind]}</span>
-							<span class="text-graphite block text-[10.5px] leading-tight">{item.label}</span>
-						</span>
-						<span class="shrink-0 text-right">
-							<span class="readout text-ink block">{formatRupiah(item.costRupiah)}</span>
-							<span class="readout text-water block text-[10px]">
-								+{formatDecimal(item.expectedSavedGain, 1)}
+					<li class="hairline-b last:border-b-0">
+						<button
+							type="button"
+							class="flex w-full items-baseline gap-2 py-2 text-left hover:underline"
+							onclick={() => onfocus(item)}
+						>
+							<span class="readout text-graphite w-6 shrink-0 text-[11px]">
+								{item.rank.toString().padStart(2, '0')}
 							</span>
-						</span>
+							<span class="min-w-0 flex-1">
+								<span class="field-label-sm text-ink block">{kindLabel[item.kind]}</span>
+								<span class="text-graphite block text-[10.5px] leading-tight">{item.label}</span>
+							</span>
+							<span class="shrink-0 text-right">
+								<span class="readout text-ink block">{formatRupiah(item.costRupiah)}</span>
+								<span class="readout text-water block text-[10px]">
+									+{formatDecimal(item.expectedSavedGain, 1)}
+								</span>
+							</span>
+						</button>
 					</li>
 				{/each}
 			</ol>

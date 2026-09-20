@@ -1,3 +1,4 @@
+import { formatCoordinate } from '$lib/format';
 import {
 	ACCESS_CLASS_CODE,
 	MAX_WIND_SPEED_METERS_PER_SECOND,
@@ -135,7 +136,7 @@ export function buildInterventionCandidates(
 		candidates.push({
 			id: `water-${node}`,
 			kind: 'waterSource',
-			label: `Sumber air baru di simpul jaringan ${node}`,
+			label: `Sumber air baru di ${formatCoordinate(network.nodeLon[node], network.nodeLat[node])}`,
 			costRupiah: OPTIMIZER_WATER_SOURCE_COST_RUPIAH,
 			targetEdgeId: null,
 			targetNodeId: node,
@@ -152,7 +153,7 @@ export function buildInterventionCandidates(
 		candidates.push({
 			id: `apar-${node}`,
 			kind: 'extinguisher',
-			label: `Titik APAR di simpul jaringan ${node}`,
+			label: `Titik APAR di ${formatCoordinate(network.nodeLon[node], network.nodeLat[node])}`,
 			costRupiah: OPTIMIZER_EXTINGUISHER_COST_RUPIAH,
 			targetEdgeId: null,
 			targetNodeId: node,

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatDecimal } from '$lib/format';
 	import {
 		FIRE_COEFFICIENT_LABEL,
 		FIRE_COEFFICIENT_RANGE,
@@ -17,7 +18,8 @@
 		const value = workspace.coefficients[key];
 		const step = FIRE_COEFFICIENT_RANGE[key][2];
 		const decimals = step >= 1 ? 0 : step >= 0.01 ? 2 : 4;
-		return `${value.toFixed(decimals)}${FIRE_COEFFICIENT_UNIT[key]}`;
+		const satuan = FIRE_COEFFICIENT_UNIT[key];
+		return `${formatDecimal(value, decimals)}${satuan ? ` ${satuan}` : ''}`;
 	}
 </script>
 

@@ -36,6 +36,13 @@
 
 	const coefficientKeys = Object.keys(FIRE_COEFFICIENT_LABEL) as (keyof FireCoefficients)[];
 
+	function formatKoefisien(key: keyof FireCoefficients): string {
+		const nilai = DEFAULT_FIRE_COEFFICIENTS[key];
+		const satuan = FIRE_COEFFICIENT_UNIT[key];
+		const desimal = Number.isInteger(nilai) ? 0 : Math.min(4, (String(nilai).split('.')[1] ?? '').length);
+		return `${formatDecimal(nilai, desimal)}${satuan ? ` ${satuan}` : ''}`;
+	}
+
 	const pipelineStages = [
 		{
 			index: '01',
@@ -45,7 +52,7 @@
 		{
 			index: '02',
 			title: 'Rasterisasi dan rangka',
-			body: `Gabungan tapak bangunan dan badan air dirasterisasi pada grid ${0.5} meter per piksel. Ruang terbuka adalah komplemen raster penghalang di dalam batas area. Distance transform pada ruang terbuka memberi jarak ke penghalang terdekat, dan skeletonize memberi garis tengah. Lebar pada tiap piksel rangka adalah dua kali nilai distance transform.`
+			body: `Gabungan tapak bangunan dan badan air dirasterisasi pada grid ${formatDecimal(meta.rasterResolutionMeters, 1)} meter per piksel. Ruang terbuka adalah komplemen raster penghalang di dalam batas area. Distance transform pada ruang terbuka memberi jarak ke penghalang terdekat, dan skeletonize memberi garis tengah. Lebar pada tiap piksel rangka adalah dua kali nilai distance transform.`
 		},
 		{
 			index: '03',
@@ -366,7 +373,7 @@
 						<span class="text-graphite text-[11.5px]">{FIRE_COEFFICIENT_LABEL[key]}</span>
 						<span class="rule-dotted mb-[3px] min-w-3 flex-1"></span>
 						<span class="readout text-ink">
-							{DEFAULT_FIRE_COEFFICIENTS[key]}{FIRE_COEFFICIENT_UNIT[key]}
+							{formatKoefisien(key)}
 						</span>
 					</div>
 				{/each}

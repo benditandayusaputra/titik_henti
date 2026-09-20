@@ -18,7 +18,14 @@
 		projectPlanPoint,
 		type PrintPlanDocument
 	} from '$lib/data/printPlan';
-	import { formatCount, formatDate, formatKilometers, formatMeters, formatShare } from '$lib/format';
+	import {
+		formatCount,
+		formatDate,
+		formatDecimal,
+		formatKilometers,
+		formatMeters,
+		formatShare
+	} from '$lib/format';
 	import type { AccessClass, LonLat } from '$lib/domain/types';
 	import { computeHoseReach } from '$lib/sim/hoseReach';
 	import {
@@ -386,7 +393,7 @@
 											{pocket.centroid.lat.toFixed(5)}, {pocket.centroid.lon.toFixed(5)}
 										</td>
 										<td class="readout text-ink py-[3px] text-right text-[10px]">
-											{pocket.buildingCount}
+											{formatCount(pocket.buildingCount)}
 										</td>
 									</tr>
 								{/each}
@@ -423,8 +430,10 @@
 				<p class="text-graphite text-[8.5px] leading-[1.5]">
 					Sumber data: tapak bangunan Google Open Buildings V3 (CC BY 4.0); jaringan jalan,
 					sumber air, dan batas kelurahan dari OpenStreetMap (ODbL 1.0). Lebar gang pada lembar ini
-					adalah estimasi citra satelit yang dihitung pada grid {dataset.meta
-						.rasterResolutionMeters} meter per piksel, bukan hasil ukur lapangan, dan wajib
+					adalah estimasi citra satelit yang dihitung pada grid {formatDecimal(
+						dataset.meta.rasterResolutionMeters,
+						1
+					)} meter per piksel, bukan hasil ukur lapangan, dan wajib
 					diverifikasi langsung sebelum dipakai sebagai dasar keputusan operasional. Tinggi dan
 					kelas material bangunan sebagian diperkirakan dari luas tapak. Titik henti pada tabel 02
 					adalah simpul jaringan yang masih dapat dilalui unit besar, bukan pos parkir resmi.

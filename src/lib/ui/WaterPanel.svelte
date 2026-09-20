@@ -5,7 +5,7 @@
 		MIN_HOSE_LENGTH_METERS,
 		WATER_SOURCE_LABEL
 	} from '$lib/domain/constants';
-	import { formatCount, formatMeters } from '$lib/format';
+	import { formatCount, formatMeters, formatShare } from '$lib/format';
 	import type { HoseReachResult, WaterSource } from '$lib/domain/types';
 	import PanelSection from '$lib/ui/PanelSection.svelte';
 	import RelatedArticles from '$lib/ui/RelatedArticles.svelte';
@@ -71,7 +71,7 @@
 		<div class="mt-2">
 			<ValueRow
 				label="Pangsa terjangkau"
-				value={`${((reach.reachedBuildingCount / Math.max(buildingCount, 1)) * 100).toFixed(1)} %`}
+				value={formatShare(reach.reachedBuildingCount / Math.max(buildingCount, 1))}
 			/>
 			<ValueRow label="Jumlah kantong" value={formatCount(reach.pockets.length)} />
 			<ValueRow
@@ -106,7 +106,7 @@
 			class={workspace.placingHydrant ? 'field-button-solid' : 'field-button'}
 			onclick={() => (workspace.placingHydrant = !workspace.placingHydrant)}
 		>
-			{workspace.placingHydrant ? 'Klik peta untuk menaruh hidran uji coba' : 'Taruh hidran uji coba'}
+			{workspace.placingHydrant ? 'Pilih titik di peta untuk hidran uji coba' : 'Taruh hidran uji coba'}
 		</button>
 		<button
 			type="button"

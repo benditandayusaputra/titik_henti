@@ -143,7 +143,7 @@ test.describe('mode pilih lokasi dan kendali simulasi', () => {
 		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
 
 		await page.getByRole('button', { name: 'Akses', exact: true }).click();
-		await expect(page.getByText('Klik peta untuk hidran')).toBeHidden();
+		await expect(page.getByText('Pilih titik di peta untuk hidran')).toBeHidden();
 		await klikGarisGangTerang(page);
 
 		await page.getByRole('button', { name: 'Air', exact: true }).click();

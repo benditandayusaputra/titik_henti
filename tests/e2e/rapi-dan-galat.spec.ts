@@ -248,3 +248,44 @@ test.describe('perbandingan pelebaran gang', () => {
 		expect(angka[0]).not.toBe(angka[1]);
 	});
 });
+
+test.describe('kartu siaga RT bisa dipakai di lapangan', () => {
+	test('peta berpetak, tabel menyebut petak, status, dan batas selang', async ({ page }) => {
+		await tungguSiap(page, '/kartu/');
+
+		const label = await page
+			.locator('svg[role="img"] text')
+			.evaluateAll((simpul) => simpul.map((teks) => teks.textContent?.trim() ?? ''));
+		expect(label).toEqual(['A', 'B', 'C', 'D', 'E', 'F', '1', '2', '3', '4']);
+
+		const petak = await page
+			.locator('table')
+			.first()
+			.locator('tbody td:first-child')
+			.evaluateAll((sel) => sel.map((kolom) => kolom.textContent?.trim() ?? ''));
+		expect(petak.length).toBeGreaterThan(0);
+		for (const isi of petak) expect(isi).toMatch(/^[A-F][1-4]$/);
+
+		await expect(page.getByRole('columnheader', { name: 'Status' })).toBeVisible();
+		await expect(page.getByText('Belum diperiksa').first()).toBeVisible();
+
+		const selang = await page
+			.locator('table')
+			.first()
+			.locator('tbody tr')
+			.evaluateAll((baris) =>
+				baris.map((isi) => isi.querySelectorAll('td')[2]?.textContent?.trim() ?? '')
+			);
+		for (const nilai of selang) {
+			const meter = Number.parseInt(nilai, 10);
+			expect(nilai.includes('*')).toBe(meter > 200);
+		}
+	});
+
+	test('kartu tetap tercetak satu halaman A4', async ({ page }) => {
+		await tungguSiap(page, '/kartu/');
+		const pdf = await page.pdf({ preferCSSPageSize: true });
+		const halaman = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+		expect(halaman).toBe(1);
+	});
+});

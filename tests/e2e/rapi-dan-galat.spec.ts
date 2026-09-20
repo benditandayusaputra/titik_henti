@@ -289,3 +289,20 @@ test.describe('kartu siaga RT bisa dipakai di lapangan', () => {
 		expect(halaman).toBe(1);
 	});
 });
+
+test.describe('kartu siaga tampil bertahap', () => {
+	test('judul dan peta tampil sebelum angka lapangan selesai dihitung', async ({ page }) => {
+		await page.route('**/graph*.json', async (route) => {
+			await new Promise((selesai) => setTimeout(selesai, 8000));
+			await route.continue();
+		});
+		await page.goto('/kartu/');
+
+		await expect(page.getByRole('heading', { name: 'Kartu siaga RT' })).toBeVisible({
+			timeout: 15000
+		});
+		await expect(page.locator('svg[role="img"]')).toBeVisible({ timeout: 15000 });
+		await expect(page.getByText('Menghitung titik henti')).toBeVisible();
+		await expect(page.getByText('Menyusun kartu siaga RT')).toBeHidden();
+	});
+});

@@ -726,6 +726,28 @@ Dua hal ikut diperbaiki karena panduan ini: tombol Panduan di atas peta gelap me
 
 Verifikasi: tujuh uji baru, termasuk pemindaian aksesibilitas saat panduan terbuka dan pemeriksaan posisi sorotan terhadap elemen sasaran. Tangkapan layar 380, 768, dan 1440 di `bukti/panduan/`. Seluruh suite end to end lolos, 154 uji, ditambah 84 uji unit.
 
+### Tahap 31, rombak alur supaya tujuannya terbaca
+
+Pemilik mencoba situsnya sendiri dan menyimpulkan pengguna tidak akan paham ini untuk apa. Penyebabnya terbaca di kode: lembar kerja membuka enam tab sederajat, keadaan awalnya kosong di tab Akses, dan tidak ada satu kalimat pun yang menamai tindakan pertama. Alat ini sebenarnya menjawab satu pertanyaan, yaitu di mana mobil pemadam sebaiknya berhenti untuk rumah yang sedang terbakar, dan berapa koordinatnya supaya sopir bisa menavigasinya.
+
+Enam perubahan dikerjakan berurutan.
+
+**Nav dua langkah.** Baris utama kini hanya Langkah 1 Titik henti dan Langkah 2 Sebaran api. Empat tab lama turun ke baris kedua berlabel Telaah, lebih kecil dan lebih sunyi, tanpa satu fitur pun dihapus. Tipe `WorkspaceTab` sengaja tidak diubah karena pengelompokan ini murni urusan tampilan; mengubahnya berarti menulis ulang sebelas pembacaan `activeTab` dan menciptakan invarian baru tanpa imbalan. Panduan pemakaian dipangkas dari lima langkah jadi tiga karena dua langkah lamanya menjelaskan model yang sudah tidak berlaku.
+
+**Koordinat yang bisa dikirim.** Panel titik henti sudah lama menampilkan koordinat, tetapi tidak ada jalan keluarnya ke lapangan selain mencetak kartu. Sekarang ada tautan ke Google Maps URLs API dengan `dir_action=navigate` sehingga langsung membuka navigasi belokan-per-belokan, dan tombol salin koordinat. Angka yang dibaca, yang disalin, dan yang dinavigasi dijamin sama persis. Tombol salin punya jalur cadangan yang menyorot koordinat dan menyebut Ctrl+C, karena `navigator.clipboard` tidak ada saat pratinjau diakses dari ponsel lewat http di jaringan lokal.
+
+**Latar peta sungguhan.** Peta dulu hanya geometri sendiri melayang di atas hitam, tanpa satu nama jalan pun. Sekarang gaya Positron dari OpenFreeMap disuntikkan pada peristiwa `load`, bukan dipasang sebagai gaya akar. Alasannya kinerja dan ketahanan: kalau gaya akar berasal dari layanan luar, gambar pertama harus menunggu dua perjalanan jaringan ke origin asing, dan seluruh uji end to end jadi bergantung pada ketersediaan layanan itu. Dengan urutan ini, kegagalan layanan cukup ditangani dengan tidak melakukan apa-apa: gaya lokal sudah lengkap dan sudah tergambar, yang hilang hanya jalan dan namanya. Lapisan label dipasang di atas geometri sendiri, sisanya di bawah, sehingga nama jalan di dalam Palmerah tidak tertimbun. Tapak bangunan bawaan dibuang karena bentrok dengan tapak sendiri yang jadi sasaran klik, dan empat lapisan perisai jalan dibuang karena nama ikonnya dirakit lewat ekspresi dan bisa memicu galat konsol. Seluruh palet peta dibalik ke tema terang mengikuti latar baru.
+
+**Marker mobil pemadam.** Titik henti dulu digambar sebagai dua lingkaran deck.gl. Sekarang memakai ikon kendaraan dari himpunan Lucide, digambar sebagai SVG di DOM memakai ulang pola `HoseRulerOverlay` yang sudah ada. `IconLayer` ditolak karena menuntut atlas ikon dan mengubah SVG jadi bitmap, lebih banyak kode dan lebih buram, untuk satu penanda tunggal. Lapisan lingkaran lama dihapus, bukan disimpan berdampingan. Perubahan ini memunculkan cacat lama yang sebelumnya tidak kentara: hamparan di atas peta bisa keluar dari kotaknya dan menimpa panel angka, jadi kotak peta sekarang mengurung isinya.
+
+**Artikel dua kolom.** Badan artikel tetap dibatasi 72 karakter sesuai Bagian B3, tetapi halamannya kini memakai lebar layar dengan sidebar lengket berisi ilustrasi, ringkasan, dan sumber. Di bawah 1024 piksel kolomnya menumpuk. Delapan ilustrasi digambar sebagai SVG bergaya gambar teknik, bukan foto, supaya tidak ada risiko lisensi dan registernya tetap sama dengan sisa produk. Ilustrasi hanya ada di versi layar, jadi batas cetak satu halaman A4 tidak tersentuh. Berkasnya dipetakan ke artikel lewat kesamaan nama, bukan lewat bidang jalur di frontmatter, dan build gagal bila ada ilustrasi tanpa teks alternatif.
+
+**Beranda menyebut tujuannya.** Paragraf pembuka mempertahankan tiga kalimat sebab akibat yang sudah ada lalu menutupnya dengan kalimat yang menamai produknya, diikuti dua butir langkah dan satu baris yang menegaskan sebaran api adalah alat kedua yang terpisah. Tombol utama berubah dari Buka lembar kerja jadi Cari titik henti supaya nama tindakannya konsisten sampai ke hasilnya.
+
+Dua kekeliruan sendiri yang tercatat. Pertama, klik pada garis gang sempat dibuat tidak lagi memindahkan tab, dengan alasan tidak melempar pengguna keluar dari langkah yang sedang dibuka; uji koreksi lapangan menangkap bahwa akibatnya panel segmen jadi tidak terjangkau dari mana pun, jadi perilaku lama dikembalikan. Kedua, warna tapak bangunan di atas latar baru ditebak di kepala; setelah diukur dari tangkapan layar ternyata (201, 198, 189), bukan (201, 200, 193) seperti perkiraan, dan predikat piksel di uji memakai angka terukur itu.
+
+Verifikasi: 32 uji end to end baru di enam berkas, ditambah empat uji unit untuk pemisahan lapisan latar peta. Uji cadangan latar peta memblokir seluruh permintaan ke layanan luar lalu menuntut peta tetap tergambar dan konsol tetap sunyi, sehingga jaring pengamannya tidak bergantung pada jaringan. Tangkapan layar di `bukti/R1` sampai `bukti/R6`.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

@@ -7,6 +7,9 @@
 	import { Protocol } from 'pmtiles';
 	import { onMount } from 'svelte';
 	import {
+		BASEMAP_SOURCE_ID,
+		BASEMAP_STYLE_URL,
+		BASEMAP_UPSTREAM_SOURCE,
 		MAP_CANVAS_LABEL,
 		MAP_MAX_ZOOM,
 		MAP_MIN_ZOOM,
@@ -21,7 +24,8 @@
 		BUILDING_SOURCE_ID,
 		BUILDING_SOURCE_LAYER,
 		alleyColorExpression,
-		buildMapStyle
+		buildMapStyle,
+		splitBasemapLayers
 	} from '$lib/map/mapStyle';
 
 	interface Props {
@@ -144,6 +148,7 @@
 
 		created.on('load', () => {
 			void pasangLapisanDeck(created);
+			void pasangBasemap(created);
 			created.resize();
 			created.fitBounds(
 				[
@@ -210,6 +215,25 @@
 			maplibregl.removeProtocol('pmtiles');
 		};
 	});
+
+	async function pasangBasemap(created: maplibregl.Map): Promise<void> {
+		try {
+			const jawaban = await fetch(BASEMAP_STYLE_URL);
+			if (!jawaban.ok) return;
+			const gaya = (await jawaban.json()) as maplibregl.StyleSpecification;
+			if (map !== created && map !== null) return;
+			if (gaya.glyphs) created.setGlyphs(gaya.glyphs);
+			if (typeof gaya.sprite === 'string') created.setSprite(gaya.sprite);
+			const sumber = gaya.sources[BASEMAP_UPSTREAM_SOURCE];
+			if (!sumber) return;
+			created.addSource(BASEMAP_SOURCE_ID, sumber);
+			const { bawah, atas } = splitBasemapLayers(gaya.layers, BASEMAP_SOURCE_ID);
+			for (const lapisan of bawah) created.addLayer(lapisan, BUILDING_FILL_LAYER_ID);
+			for (const lapisan of atas) created.addLayer(lapisan);
+		} catch {
+			return;
+		}
+	}
 
 	async function pasangLapisanDeck(created: maplibregl.Map): Promise<void> {
 		const { MapboxOverlay } = await import('@deck.gl/mapbox');

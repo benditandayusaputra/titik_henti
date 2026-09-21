@@ -43,13 +43,13 @@ export const ACCESS_CLASS_SURFACE_COLOR: Record<AccessClass, string> = {
 };
 
 export const ACCESS_CLASS_MUTED_MAP_COLOR: Record<AccessClass, string> = {
-	largeUnit: 'rgba(226,223,216,0.86)',
+	largeUnit: '#4A4A4E',
 	smallUnit: '#8E8C87',
-	hoseOnly: '#5B5A58'
+	hoseOnly: '#B4B2AE'
 };
 
 export const ACCESS_CLASS_MAP_COLOR: Record<AccessClass, string> = {
-	largeUnit: 'rgba(226,223,216,0.86)',
+	largeUnit: '#1A1A1C',
 	smallUnit: '#C98A14',
 	hoseOnly: '#D6202A'
 };
@@ -247,6 +247,18 @@ export const STACKED_BAR_LABEL_MIN_SHARE = 0.14;
 export const HOSE_RULER_METERS_PER_SECOND = 62;
 export const HOSE_RULER_MIN_DURATION_MS = 420;
 export const HOSE_RULER_MAX_DURATION_MS = 2600;
+
+export const BASEMAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/positron';
+export const BASEMAP_SOURCE_ID = 'basemap';
+export const BASEMAP_UPSTREAM_SOURCE = 'openmaptiles';
+export const BASEMAP_SKIPPED_LAYER_IDS = new Set([
+	'background',
+	'building',
+	'highway-shield-non-us',
+	'highway-shield-us-interstate',
+	'road_shield_us',
+	'airport'
+]);
 
 export const GOOGLE_MAPS_DIRECTIONS_URL =
 	'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&destination=';

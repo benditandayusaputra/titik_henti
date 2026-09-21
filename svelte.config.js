@@ -15,9 +15,9 @@ const config = {
 				'script-src': ['self'],
 				'worker-src': ['self', 'blob:'],
 				'style-src': ['self', 'unsafe-inline'],
-				'img-src': ['self', 'data:', 'blob:'],
+				'img-src': ['self', 'data:', 'blob:', 'https://tiles.openfreemap.org'],
 				'font-src': ['self'],
-				'connect-src': ['self'],
+				'connect-src': ['self', 'https://tiles.openfreemap.org'],
 				'object-src': ['none'],
 				'base-uri': ['self'],
 				'form-action': ['self']

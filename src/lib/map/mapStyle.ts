@@ -1,7 +1,9 @@
-import type { StyleSpecification } from 'maplibre-gl';
+import type { LayerSpecification, StyleSpecification } from 'maplibre-gl';
 import {
 	ACCESS_CLASS_MAP_COLOR,
 	ACCESS_CLASS_MUTED_MAP_COLOR,
+	BASEMAP_SKIPPED_LAYER_IDS,
+	BASEMAP_UPSTREAM_SOURCE,
 	MAP_MAX_ZOOM,
 	MAP_MIN_ZOOM
 } from '$lib/domain/constants';
@@ -17,13 +19,13 @@ export const ALLEY_CASING_LAYER_ID = 'alley-casing';
 export const ALLEY_SELECTED_LAYER_ID = 'alley-selected';
 export const ALLEY_CORRECTED_LAYER_ID = 'alley-corrected';
 
-const BACKGROUND_COLOR = '#1a1a1c';
-const BUILDING_FILL_COLOR = '#2c2c34';
-const BUILDING_OUTLINE_COLOR = '#43434e';
-const BUILDING_SELECTED_COLOR = '#e8e6e1';
+const BACKGROUND_COLOR = 'rgb(242,243,240)';
+const BUILDING_FILL_COLOR = '#C2BEB4';
+const BUILDING_OUTLINE_COLOR = '#9B9BA1';
+const BUILDING_SELECTED_COLOR = '#1A1A1C';
 const BUILDING_IGNITION_COLOR = '#d6202a';
-const ALLEY_SELECTED_COLOR = '#f2f0ec';
-const ALLEY_CORRECTED_COLOR = '#e8e6e1';
+const ALLEY_SELECTED_COLOR = '#1A1A1C';
+const ALLEY_CORRECTED_COLOR = '#1A1A1C';
 
 const UPGRADED_CLASS: Record<AccessClass, AccessClass> = {
 	hoseOnly: 'smallUnit',
@@ -220,4 +222,26 @@ export function buildMapStyle(
 
 export function alleyColorExpression(upgraded: boolean, muted: boolean): unknown[] {
 	return buildClassColorExpression(upgraded, muted);
+}
+
+export interface BasemapLayerSplit {
+	bawah: LayerSpecification[];
+	atas: LayerSpecification[];
+}
+
+export function splitBasemapLayers(
+	layers: LayerSpecification[],
+	sourceId: string
+): BasemapLayerSplit {
+	const dipakai = layers.filter(
+		(lapisan) =>
+			!BASEMAP_SKIPPED_LAYER_IDS.has(lapisan.id) &&
+			'source' in lapisan &&
+			lapisan.source === BASEMAP_UPSTREAM_SOURCE
+	);
+	const disalin = dipakai.map((lapisan) => ({ ...lapisan, source: sourceId }) as LayerSpecification);
+	return {
+		bawah: disalin.filter((lapisan) => lapisan.type !== 'symbol'),
+		atas: disalin.filter((lapisan) => lapisan.type === 'symbol')
+	};
 }

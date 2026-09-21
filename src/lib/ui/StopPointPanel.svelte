@@ -29,6 +29,10 @@
 	let simpulKoordinat = $state<HTMLSpanElement | undefined>();
 	let pesanSalin = $state('');
 
+	$effect(() => {
+		if (teksKoordinat) pesanSalin = '';
+	});
+
 	async function salinKoordinat(): Promise<void> {
 		try {
 			await navigator.clipboard.writeText(teksKoordinat);

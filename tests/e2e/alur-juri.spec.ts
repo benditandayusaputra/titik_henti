@@ -35,11 +35,15 @@ async function klikGarisGangKelasKecil(page: Page): Promise<void> {
 		for (let y = 200; y < kanvasBantu.height; y += 3) {
 			for (let x = 200; x < kanvasBantu.width; x += 3) {
 				const indeks = (y * kanvasBantu.width + x) * 4;
-				const dekat =
-					Math.abs(piksel[indeks] - 0xc9) < 22 &&
-					Math.abs(piksel[indeks + 1] - 0x8a) < 22 &&
-					Math.abs(piksel[indeks + 2] - 0x14) < 22;
-				if (dekat) {
+				const jingga =
+					Math.abs(piksel[indeks] - 201) < 22 &&
+					Math.abs(piksel[indeks + 1] - 138) < 22 &&
+					Math.abs(piksel[indeks + 2] - 20) < 22;
+				const abuDiredam =
+					Math.abs(piksel[indeks] - 142) < 8 &&
+					Math.abs(piksel[indeks + 1] - 140) < 8 &&
+					Math.abs(piksel[indeks + 2] - 135) < 8;
+				if (jingga || abuDiredam) {
 					return [x, y];
 				}
 			}

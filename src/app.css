@@ -263,6 +263,6 @@
 }
 
 .maplibregl-canvas:focus-visible {
-	outline: 3px solid var(--color-concrete);
+	outline: 3px solid var(--color-ink);
 	outline-offset: -3px;
 }

@@ -20,7 +20,8 @@
       "tautan": "https://biroumum.jakarta.go.id/news_web/detailnews/pemprov-dki-imbau-warga-waspada-dan-antisipasi-kebakaran-rumah"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja"]
+  "berlakuUntuk": ["gang_selang_saja"],
+  "gambarAlt": "Gambar teknik tabung gas dengan regulator dan selang, gas bocor digambarkan keluar dari sambungan, serta saklar listrik yang tidak boleh disentuh."
 }
 ---
 

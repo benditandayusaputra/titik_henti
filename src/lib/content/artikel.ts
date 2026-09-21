@@ -27,7 +27,8 @@ const frontmatterSchema = z.object({
 	waktuBacaMenit: z.number().int().min(1).max(30),
 	diperbarui: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 	sumber: z.array(sourceSchema).min(1),
-	berlakuUntuk: z.array(z.enum(ARTICLE_MAP_CONDITIONS))
+	berlakuUntuk: z.array(z.enum(ARTICLE_MAP_CONDITIONS)),
+	gambarAlt: z.string().min(1).optional()
 });
 
 export type ArticleFrontmatter = z.infer<typeof frontmatterSchema>;
@@ -36,6 +37,7 @@ export interface Article extends ArticleFrontmatter {
 	slug: string;
 	html: string;
 	htmlCetak: string;
+	gambar?: string;
 }
 
 const CATEGORY_ORDER: Record<ArticleCategory, number> = {
@@ -78,6 +80,17 @@ function buildArticles(): Article[] {
 	const printBodyBySlug = new Map(
 		Object.entries(printFiles).map(([path, raw]) => [readSlug(path), raw])
 	);
+	const illustrationFiles = import.meta.glob('../ilustrasi/*.svg', {
+		query: '?url',
+		import: 'default',
+		eager: true
+	}) as Record<string, string>;
+	const illustrationBySlug = new Map(
+		Object.entries(illustrationFiles).map(([path, url]) => [
+			path.split('/').pop()?.replace(/\.svg$/, '') ?? path,
+			url
+		])
+	);
 
 	const articles: Article[] = [];
 	for (const [path, raw] of Object.entries(files)) {
@@ -96,11 +109,16 @@ function buildArticles(): Article[] {
 			throw new Error(`artikel ${slug} belum punya versi cetak di content/artikel/cetak`);
 		}
 		printBodyBySlug.delete(slug);
+		const gambar = illustrationBySlug.get(slug);
+		if (gambar !== undefined && parsed.data.gambarAlt === undefined) {
+			throw new Error(`ilustrasi artikel ${slug} belum punya gambarAlt di frontmatter`);
+		}
 		articles.push({
 			...parsed.data,
 			slug,
 			html: marked.parse(body, { async: false }),
-			htmlCetak: marked.parse(printBody, { async: false })
+			htmlCetak: marked.parse(printBody, { async: false }),
+			gambar
 		});
 	}
 	if (printBodyBySlug.size > 0) {

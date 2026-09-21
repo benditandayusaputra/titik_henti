@@ -16,7 +16,8 @@
       "tautan": "https://damkar.cirebonkota.go.id/artikel/9-langkah-penting-yang-perlu-dilakukan-ketika-terjadi-kebakaran"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau"]
+  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau"],
+  "gambarAlt": "Gambar teknik tabung APAR dengan pin pengaman, tuas, dan selang diarahkan ke pangkal api, disertai penanda tinggi pemasangan."
 }
 ---
 

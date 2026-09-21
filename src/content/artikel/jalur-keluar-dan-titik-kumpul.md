@@ -24,7 +24,8 @@
       "tautan": "https://damkar.bandaacehkota.go.id/2020/07/19/cara-sederhana-menanggulangi-kebakaran-di-rumah/"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja", "gang_unit_kecil", "kantong_tak_terjangkau"]
+  "berlakuUntuk": ["gang_selang_saja", "gang_unit_kecil", "kantong_tak_terjangkau"],
+  "gambarAlt": "Denah gang dengan dua deret rumah, panah merah menandai arah keluar yang tertutup dan panah biru menandai jalur keluar menuju titik kumpul."
 }
 ---
 

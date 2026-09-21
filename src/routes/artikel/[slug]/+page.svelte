@@ -22,7 +22,7 @@
 
 <div class="flex-1 px-5 py-12 sm:px-10 print:p-0">
 	<article
-		class="bg-paper hairline-box mx-auto w-full max-w-2xl px-5 py-8 sm:px-9 print:border-0 print:bg-white print:p-0"
+		class="bg-paper hairline-box mx-auto w-full max-w-6xl px-5 py-8 sm:px-9 print:border-0 print:bg-white print:p-0"
 	>
 		<p class="field-label-sm text-graphite print:hidden">
 			<a href="/artikel/" class="underline underline-offset-2">Kembali ke daftar artikel</a>
@@ -34,46 +34,62 @@
 			{artikel.judul}
 		</h1>
 
-		<p class="text-graphite prose-measure mt-3 text-[14px] leading-[1.6] print:hidden">
-			{artikel.ringkasan}
-		</p>
-
 		<p class="field-label-sm text-graphite mt-3 print:hidden">
 			{artikel.kategori}, {artikel.waktuBacaMenit} menit baca, untuk {formatList(artikel.untuk)}
 		</p>
 
 		<div class="bg-ink mt-5 mb-7 h-[2px] w-full print:mt-3 print:mb-3"></div>
 
-		<div class="artikel-isi prose-measure print:hidden">
-			{@html artikel.html}
-		</div>
+		<div class="kolom-artikel lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12">
+			<div class="min-w-0">
+				<div class="artikel-isi prose-measure print:hidden">
+					{@html artikel.html}
+				</div>
 
-		<div class="artikel-isi artikel-cetak hidden print:block">
-			{@html artikel.htmlCetak}
-			<p class="catatan-cetak">
-				Lembar ini hanya memuat langkah intinya. Penjelasan lengkap ada di
-				{SITE_URL}/artikel/{artikel.slug}/
-			</p>
-		</div>
+				<div class="artikel-isi artikel-cetak hidden print:block">
+					{@html artikel.htmlCetak}
+					<p class="catatan-cetak">
+						Lembar ini hanya memuat langkah intinya. Penjelasan lengkap ada di
+						{SITE_URL}/artikel/{artikel.slug}/
+					</p>
+				</div>
+			</div>
 
-		<section class="hairline-t mt-10 pt-5 print:mt-3 print:pt-2">
-			<h2 class="font-display text-ink text-[15px] leading-none font-semibold print:text-[10pt]">Sumber</h2>
-			<ul class="mt-3 flex flex-col gap-2 print:mt-1 print:gap-0.5">
-				{#each artikel.sumber as sumber (sumber.tautan)}
-					<li class="text-ink text-[12.5px] leading-[1.6] print:text-[8pt] print:leading-[1.3]">
-						{sumber.lembaga}
-						<span class="tautan-cetak text-graphite block break-all print:ml-1 print:inline">
-							<a href={sumber.tautan} class="underline underline-offset-2" rel="noreferrer">
-								{sumber.tautan}
-							</a>
-						</span>
-					</li>
-				{/each}
-			</ul>
-			<p class="field-label-sm text-graphite mt-4 print:mt-1">
-				Diperbarui {formatDate(artikel.diperbarui)}
-			</p>
-		</section>
+			<aside class="lembar-samping mt-10 self-start lg:sticky lg:top-[92px] lg:mt-0 print:mt-0">
+				{#if artikel.gambar}
+					<figure class="hairline-box bg-concrete-tint p-3 print:hidden">
+						<img src={artikel.gambar} alt={artikel.gambarAlt} class="w-full" />
+					</figure>
+				{/if}
+
+				<p class="text-graphite mt-4 text-[13px] leading-[1.6] first:mt-0 print:hidden">
+					{artikel.ringkasan}
+				</p>
+
+				<section class="hairline-t mt-5 pt-4 print:mt-3 print:pt-2">
+					<h2
+						class="font-display text-ink text-[15px] leading-none font-semibold print:text-[10pt]"
+					>
+						Sumber
+					</h2>
+					<ul class="mt-3 flex flex-col gap-2 print:mt-1 print:gap-0.5">
+						{#each artikel.sumber as sumber (sumber.tautan)}
+							<li class="text-ink text-[12.5px] leading-[1.6] print:text-[8pt] print:leading-[1.3]">
+								{sumber.lembaga}
+								<span class="tautan-cetak text-graphite block break-all print:ml-1 print:inline">
+									<a href={sumber.tautan} class="underline underline-offset-2" rel="noreferrer">
+										{sumber.tautan}
+									</a>
+								</span>
+							</li>
+						{/each}
+					</ul>
+					<p class="field-label-sm text-graphite mt-4 print:mt-1">
+						Diperbarui {formatDate(artikel.diperbarui)}
+					</p>
+				</section>
+			</aside>
+		</div>
 
 		<section class="ruang-tulis hairline-t mt-8 hidden pt-5 print:mt-3 print:pt-2">
 			<h2 class="font-display text-ink text-[13pt] leading-none font-semibold">
@@ -150,6 +166,14 @@
 		@page {
 			size: A4 portrait;
 			margin: 12mm;
+		}
+
+		.kolom-artikel {
+			display: block;
+		}
+
+		.lembar-samping {
+			margin-top: 0;
 		}
 
 		.artikel-isi :global(p),

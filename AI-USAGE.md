@@ -714,6 +714,18 @@ Dua regresi muncul dari perbaikan ini dan langsung ditutup: ringkasan legenda ya
 
 Setiap perbaikan disertai uji permanen yang dibuktikan gagal pada kode sebelum perbaikan. Seluruh suite end to end lolos, 147 uji, ditambah 84 uji unit.
 
+### Tahap 30, panduan pemakaian untuk pembuka pertama
+
+Lembar kerja punya enam tab dan peta yang bisa diklik, tetapi pembuka pertama tidak diberi tahu harus mulai dari mana. Panduan lima langkah kini terbuka sendiri saat lembar kerja dibuka pertama kali dalam satu tab, menyorot elemen yang sedang dijelaskan, dan bisa dibuka lagi lewat tombol Panduan di atas peta.
+
+Aturan repo melarang `localStorage` dan `sessionStorage`, jadi status sudah pernah melihat disimpan di memori halaman saja. Akibatnya panduan muncul lagi bila tab ditutup lalu situs dibuka ulang, dan tidak muncul saat berpindah halaman di dalam situs.
+
+Di ponsel, sasaran tiap langkah digulirkan ke tengah layar supaya tidak tertutup panel panduan. Panduan ditutup dengan tombol Lewati, tombol Escape, atau dengan menyelesaikan langkah terakhir.
+
+Dua hal ikut diperbaiki karena panduan ini: tombol Panduan di atas peta gelap memakai garis fokus di dalam tombol supaya kontrasnya cukup, dan seluruh uji lain kini menutup panduan lebih dulu seperti yang dilakukan pengguna sungguhan.
+
+Verifikasi: tujuh uji baru, termasuk pemindaian aksesibilitas saat panduan terbuka dan pemeriksaan posisi sorotan terhadap elemen sasaran. Tangkapan layar 380, 768, dan 1440 di `bukti/panduan/`. Seluruh suite end to end lolos, 154 uji, ditambah 84 uji unit.
+
 ## Yang tidak dikerjakan AI
 
 Penentuan masalah, pemilihan wilayah uji, penyusunan PRD, arah desain, pengukuran lapangan dengan meteran, dan keputusan lingkup fitur adalah pekerjaan manusia. AI tidak menentukan apa yang dibangun, hanya membantu membangunnya.

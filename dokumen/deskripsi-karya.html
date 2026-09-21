@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<title>Deskripsi karya Titik Henti</title>
+		<style>
+			@font-face {
+				font-family: 'Plex Sans';
+				src: url('../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+				font-weight: 400;
+			}
+			@font-face {
+				font-family: 'Plex Sans';
+				src: url('../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2') format('woff2');
+				font-weight: 500;
+			}
+			@font-face {
+				font-family: 'Plex Condensed';
+				src: url('../node_modules/@fontsource/ibm-plex-sans-condensed/files/ibm-plex-sans-condensed-latin-600-normal.woff2') format('woff2');
+				font-weight: 600;
+			}
+			@font-face {
+				font-family: 'Plex Mono';
+				src: url('../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+				font-weight: 500;
+			}
+			@page {
+				size: A4 portrait;
+				margin: 24mm 22mm;
+			}
+			body {
+				margin: 0;
+				color: #1a1a1c;
+				background: #ffffff;
+				font-family: 'Plex Sans', system-ui, sans-serif;
+				font-size: 11.5pt;
+				line-height: 1.62;
+			}
+			.label {
+				font-family: 'Plex Sans', system-ui, sans-serif;
+				font-size: 8.5pt;
+				font-weight: 500;
+				letter-spacing: 0.08em;
+				color: #6e6e73;
+			}
+			h1 {
+				font-family: 'Plex Condensed', system-ui, sans-serif;
+				font-weight: 600;
+				font-size: 25pt;
+				line-height: 1.05;
+				margin: 6pt 0 0;
+			}
+			.sub {
+				color: #6e6e73;
+				font-size: 10.5pt;
+				margin: 4pt 0 0;
+			}
+			.garis {
+				border: 0;
+				border-top: 2px solid #1a1a1c;
+				margin: 12pt 0 16pt;
+			}
+			p {
+				margin: 0 0 10pt;
+				max-width: 62em;
+			}
+			.angka {
+				font-family: 'Plex Mono', ui-monospace, monospace;
+				font-variant-numeric: tabular-nums;
+			}
+			footer {
+				margin-top: 18pt;
+				border-top: 1px solid rgba(26, 26, 28, 0.25);
+				padding-top: 8pt;
+				color: #6e6e73;
+				font-size: 9pt;
+				line-height: 1.5;
+			}
+			footer span.angka {
+				color: #1a1a1c;
+			}
+		</style>
+	</head>
+	<body>
+		<p class="label">Deskripsi karya</p>
+		<h1>Titik Henti</h1>
+		<p class="sub">Perencanaan siaga kebakaran berbasis lebar gang, Kelurahan Palmerah, Jakarta Barat</p>
+		<hr class="garis" />
+
+		<p>
+			Di permukiman padat, mobil pemadam sering berhenti jauh sebelum sampai ke titik api. Sisa
+			jaraknya ditempuh dengan menggelar selang, dan tiap meter selang menambah detik sebelum air
+			keluar.
+		</p>
+		<p>
+			Titik Henti mengukur jarak itu. Lebar tiap gang di Kelurahan Palmerah dihitung dari citra
+			bangunan, lalu dipakai untuk menentukan di mana kendaraan terpaksa berhenti, berapa meter
+			selang yang harus digelar, dan berapa lama air baru sampai. Dari
+			<span class="angka">136,18</span> km jaringan gang yang terpetakan,
+			<span class="angka">57,2</span> persen tidak dapat dilalui unit pemadam berukuran penuh.
+		</p>
+		<p>
+			Pengguna bisa menyalakan titik api dan melihat penjalarannya, menaruh hidran uji coba, atau
+			mencari intervensi termurah pada anggaran tertentu. Lembar kerja ini juga menghasilkan Kartu
+			Siaga RT satu halaman A4, hitam putih, untuk dicetak dan ditempel di pos RT.
+		</p>
+		<p>
+			Lebar gang di sini adalah estimasi citra satelit, bukan hasil ukur lapangan. Keterbatasan itu
+			ditulis di setiap layar dan di halaman metode.
+		</p>
+
+		<footer>
+			Situs: titikhenti.vercel.app. Data: Google Open Buildings V3 dan OpenStreetMap, diolah
+			<span class="angka">16 September 2026</span>. Jumlah kata deskripsi:
+			<span class="angka">141</span>.
+		</footer>
+	</body>
+</html>

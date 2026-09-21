@@ -37,6 +37,7 @@
 		selectedSegmentId?: number | null;
 		correctedSegmentIds?: Set<number>;
 		ignitionBuildingIndices?: number[];
+		dataSiap?: boolean;
 		onbuildingpick?: (buildingIndex: number, position: LonLat) => void;
 		onsegmentpick?: (segmentId: number, position: LonLat) => void;
 		onmappick?: (position: LonLat) => void;
@@ -52,6 +53,7 @@
 		selectedSegmentId = null,
 		correctedSegmentIds = new Set<number>(),
 		ignitionBuildingIndices = [],
+		dataSiap = false,
 		onbuildingpick,
 		onsegmentpick,
 		onmappick,
@@ -148,7 +150,6 @@
 
 		created.on('load', () => {
 			void pasangLapisanDeck(created);
-			void pasangBasemap(created);
 			created.resize();
 			created.fitBounds(
 				[
@@ -214,6 +215,15 @@
 			created.remove();
 			maplibregl.removeProtocol('pmtiles');
 		};
+	});
+
+	let basemapDiminta = false;
+
+	$effect(() => {
+		const aktif = map;
+		if (!aktif || !styleReady || !dataSiap || basemapDiminta) return;
+		basemapDiminta = true;
+		void pasangBasemap(aktif);
 	});
 
 	async function pasangBasemap(created: maplibregl.Map): Promise<void> {

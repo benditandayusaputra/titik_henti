@@ -536,6 +536,7 @@
 			selectedSegmentId={workspace.selectedSegmentId}
 			correctedSegmentIds={workspace.correctedSegmentIds}
 			ignitionBuildingIndices={workspace.ignitionBuildingIndices}
+			dataSiap={dataset.isReady}
 			onbuildingpick={handleBuildingPick}
 			onsegmentpick={handleSegmentPick}
 			onmappick={handleMapPick}

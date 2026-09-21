@@ -248,6 +248,9 @@ export const HOSE_RULER_METERS_PER_SECOND = 62;
 export const HOSE_RULER_MIN_DURATION_MS = 420;
 export const HOSE_RULER_MAX_DURATION_MS = 2600;
 
+export const GOOGLE_MAPS_DIRECTIONS_URL =
+	'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&destination=';
+
 export const SITE_URL = 'https://titikhenti.vercel.app';
 export const SITE_NAME = 'Titik Henti';
 export const OG_IMAGE_PATH = '/og.png';

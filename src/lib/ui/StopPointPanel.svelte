@@ -2,6 +2,7 @@
 	import {
 		ACCESS_CLASS_LABEL,
 		APPLIANCE_TURNOUT_SECONDS,
+		GOOGLE_MAPS_DIRECTIONS_URL,
 		HOSE_ROLL_LENGTH_METERS
 	} from '$lib/domain/constants';
 	import { formatCoordinate, formatMeters, formatSeconds } from '$lib/format';
@@ -19,6 +20,24 @@
 	const drawnRolls = $derived(
 		solution ? Math.min(solution.hoseRollCount, Math.ceil(drawnMeters / HOSE_ROLL_LENGTH_METERS)) : 0
 	);
+
+	const teksKoordinat = $derived(
+		solution ? formatCoordinate(solution.stopPoint.lon, solution.stopPoint.lat) : ''
+	);
+	const tautanNavigasi = $derived(GOOGLE_MAPS_DIRECTIONS_URL + teksKoordinat.replace(' ', ''));
+
+	let simpulKoordinat = $state<HTMLSpanElement | undefined>();
+	let pesanSalin = $state('');
+
+	async function salinKoordinat(): Promise<void> {
+		try {
+			await navigator.clipboard.writeText(teksKoordinat);
+			pesanSalin = 'Koordinat disalin.';
+		} catch {
+			if (simpulKoordinat) getSelection()?.selectAllChildren(simpulKoordinat);
+			pesanSalin = 'Papan klip tidak tersedia. Koordinat sudah disorot, tekan Ctrl+C.';
+		}
+	}
 </script>
 
 <PanelSection
@@ -27,8 +46,9 @@
 >
 	{#if !solution}
 		<p class="text-graphite text-[11.5px] leading-[1.55]">
-			Pilih satu bangunan di peta. Sistem akan menarik jalur selang dari titik henti kendaraan
-			terdekat ke bangunan itu dan mengukurnya.
+			Ketuk rumah yang terbakar di peta. Lembar ini mencari titik berhenti mobil pemadam terdekat
+			yang masih bisa dicapai kendaraan, mengukur panjang selang dari sana, dan memberi koordinat
+			yang bisa dikirim ke sopir lewat Google Maps.
 		</p>
 	{:else if !solution.reachable}
 		<p class="text-alarm text-[12px] leading-[1.55]">
@@ -59,6 +79,26 @@
 			</div>
 		</div>
 
+		<div class="ledger-row">
+			<span class="text-graphite shrink-0 text-[11.5px] leading-tight">Koordinat titik henti</span>
+			<span class="rule-dotted mb-[3px] min-w-3 flex-1"></span>
+			<span class="readout text-ink shrink-0" bind:this={simpulKoordinat}>{teksKoordinat}</span>
+		</div>
+		<div class="mt-2 flex flex-wrap gap-2">
+			<a
+				class="field-button-solid"
+				href={tautanNavigasi}
+				target="_blank"
+				rel="noreferrer"
+			>
+				Buka di Google Maps
+			</a>
+			<button type="button" class="field-button" onclick={salinKoordinat}>Salin koordinat</button>
+		</div>
+		{#if pesanSalin}
+			<p class="field-label-sm text-graphite mt-2" role="status" aria-live="polite">{pesanSalin}</p>
+		{/if}
+
 		<ValueRow measured
 			label="Tambahan waktu sebelum air sampai"
 			value={formatSeconds(solution.extraDelaySeconds)}
@@ -69,10 +109,6 @@
 			label="Termasuk penyiapan unit"
 			value={formatSeconds(APPLIANCE_TURNOUT_SECONDS)}
 			tone="graphite"
-		/>
-		<ValueRow measured
-			label="Koordinat titik henti"
-			value={formatCoordinate(solution.stopPoint.lon, solution.stopPoint.lat)}
 		/>
 		<ValueRow
 			label="Kelas penghambat"

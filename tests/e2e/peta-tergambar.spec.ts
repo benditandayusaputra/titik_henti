@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const WARNA_AIR = { merah: 15, hijau: 124, biru: 138 };
 const TOLERANSI_WARNA = 22;
@@ -15,6 +16,7 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 		{ timeout: 60000 }
 	);
 	await page.waitForTimeout(4000);
+	await tutupPanduan(page);
 }
 
 async function hitungPikselWarnaAir(page: Page): Promise<number> {

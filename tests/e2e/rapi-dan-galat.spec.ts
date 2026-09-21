@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const HALAMAN_ANGKA = ['/', '/peta/', '/kartu/', '/metode/'];
 
@@ -11,6 +12,7 @@ async function tungguSiap(page: Page, jalur: string): Promise<void> {
 			{ timeout: 60000 }
 		);
 		await page.waitForTimeout(2000);
+		await tutupPanduan(page);
 	} else if (jalur === '/kartu/') {
 		await page.waitForSelector('svg[role="img"]', { timeout: 60000 });
 		await page.waitForFunction(

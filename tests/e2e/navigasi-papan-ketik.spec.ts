@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 async function bukaLembarKerja(page: Page): Promise<void> {
 	await page.goto('/peta/');
@@ -8,6 +9,7 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 		{ timeout: 60000 }
 	);
 	await page.waitForTimeout(1500);
+	await tutupPanduan(page);
 }
 
 async function tekanTabSampai(

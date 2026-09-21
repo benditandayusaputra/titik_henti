@@ -1,5 +1,6 @@
 import { gzipSync } from 'node:zlib';
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const ANGGARAN_JAVASCRIPT_BERANDA_KB = 180;
 const ALAMAT_SITUS = 'https://titikhenti.vercel.app';
@@ -13,6 +14,7 @@ async function tungguPetaSiap(page: Page): Promise<void> {
 		{ timeout: 60000 }
 	);
 	await page.waitForTimeout(3000);
+	await tutupPanduan(page);
 }
 
 test.describe('kinerja dan pengerasan produksi', () => {

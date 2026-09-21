@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const USULAN_TERSTRUKTUR = {
 	ok: true,
@@ -18,6 +19,7 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 		{ timeout: 60000 }
 	);
 	await page.waitForTimeout(1200);
+	await tutupPanduan(page);
 }
 
 const AREA_PETA = { x: 0, y: 60, width: 840, height: 640 };

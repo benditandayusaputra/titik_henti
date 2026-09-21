@@ -1,5 +1,6 @@
 import { readdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const SLUG_CONTOH = 'cara-memakai-apar';
 const JUMLAH_ARTIKEL = readdirSync('src/content/artikel').filter((nama) => nama.endsWith('.md')).length;
@@ -136,6 +137,7 @@ test.describe('artikel', () => {
 			{ timeout: 60000 }
 		);
 		await page.waitForTimeout(1500);
+		await tutupPanduan(page);
 
 		await page.getByRole('button', { name: 'Daftar', exact: true }).click();
 		await page.waitForTimeout(600);

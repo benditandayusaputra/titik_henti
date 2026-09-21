@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { devices, expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const LEBAR_AREA_CARI_GARIS = 900;
 
@@ -11,6 +12,7 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 		{ timeout: 60000 }
 	);
 	await page.waitForTimeout(3000);
+	await tutupPanduan(page);
 }
 
 async function klikGarisGangTerang(page: Page): Promise<void> {

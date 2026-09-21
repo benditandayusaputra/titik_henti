@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const HALAMAN = [
 	'/',
@@ -23,6 +24,7 @@ async function bukaHalaman(page: Page, jalur: string): Promise<void> {
 			{ timeout: 60000 }
 		);
 		await page.waitForTimeout(2500);
+		await tutupPanduan(page);
 	} else {
 		await page.waitForLoadState('networkidle');
 	}

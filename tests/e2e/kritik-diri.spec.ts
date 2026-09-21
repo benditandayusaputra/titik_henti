@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { tutupPanduan } from './bantu';
 
 const HALAMAN = ['/', '/kartu/', '/artikel/', '/artikel/tabung-gas-bocor/', '/metode/', '/peta/'];
 const UKURAN_LAYAR = [
@@ -20,6 +21,7 @@ async function tungguHalamanSiap(page: Page, jalur: string): Promise<void> {
 			{ timeout: 60000 }
 		);
 		await page.waitForTimeout(3000);
+		await tutupPanduan(page);
 	} else {
 		await page.waitForLoadState('networkidle');
 	}

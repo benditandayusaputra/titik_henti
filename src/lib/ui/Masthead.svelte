@@ -47,6 +47,7 @@
 					class="hairline-r flex items-center px-3 py-2 last:border-r-0 sm:px-4"
 					class:bg-ink={active}
 					aria-current={active ? 'page' : undefined}
+					data-panduan={sheet.href === '/kartu/' ? 'kartu' : undefined}
 				>
 					<span
 						class="font-display text-[13px] leading-none font-semibold"

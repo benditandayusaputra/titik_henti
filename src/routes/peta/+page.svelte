@@ -1,6 +1,8 @@
 <script lang="ts">
 	import PageMeta from '$lib/ui/PageMeta.svelte';
 	import { keyboardScrollable } from '$lib/ui/keyboardScrollable';
+	import PanduanPemakaian from '$lib/ui/PanduanPemakaian.svelte';
+	import { panduan } from '$lib/ui/panduan.svelte';
 	import type { Layer } from '@deck.gl/core';
 	import type { Map as MapLibreMap } from 'maplibre-gl';
 	import { onMount } from 'svelte';
@@ -74,6 +76,7 @@
 		prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		void import('$lib/map/layers').then((modul) => (lapisanPeta = modul));
 		void dataset.load();
+		panduan.tawarkanSekali();
 		return () => {
 			cancelAnimationFrame(animationHandle);
 			cancelAnimationFrame(playbackHandle);
@@ -513,8 +516,14 @@
 
 <p class="sr-only" role="status" aria-live="polite">{selectionAnnouncement}</p>
 
+<PanduanPemakaian />
+
 <div class="flex min-h-0 flex-1 flex-col lg:flex-row" data-lembar-kerja>
-	<div class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0" bind:this={mapArea}>
+	<div
+		class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0"
+		bind:this={mapArea}
+		data-panduan="peta"
+	>
 		<MapCanvas
 			bounds={pipelineMeta.boundingBox}
 			layers={deckLayers}
@@ -538,6 +547,13 @@
 		<div class="absolute bottom-4 left-4 z-10">
 			<Legend upgraded={workspace.wideningScenarioActive} muted={workspace.activeTab === 'api'} />
 		</div>
+		<button
+			type="button"
+			class="field-button bg-concrete absolute top-3 right-3 z-10 focus-visible:[outline-offset:-2px]"
+			onclick={() => panduan.buka()}
+		>
+			Panduan
+		</button>
 		{#if workspace.settingIgnition || workspace.placingHydrant}
 			<div
 				class="bg-ink text-concrete map-label absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
@@ -565,7 +581,11 @@
 	</div>
 
 	<aside class="hairline-l bg-paper flex w-full shrink-0 flex-col lg:w-[382px]">
-		<nav class="hairline-b bg-paper flex overflow-x-auto" aria-label="Panel kerja">
+		<nav
+			class="hairline-b bg-paper flex overflow-x-auto"
+			aria-label="Panel kerja"
+			data-panduan="tab"
+		>
 			{#each tabs as tab (tab.id)}
 				<button
 					type="button"

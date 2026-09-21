@@ -115,7 +115,7 @@ test.describe('istilah hasil simulasi api', () => {
 
 	test('keadaan bangunan memakai satu nama dan tanpa baris yang selalu nol', async ({ page }) => {
 		await tungguSiap(page, '/peta/');
-		await page.getByRole('button', { name: 'Api', exact: true }).click();
+		await page.getByRole('button', { name: '2 Sebaran api', exact: true }).click();
 		await page.getByRole('button', { name: 'Tetapkan titik api' }).click();
 		await klikBangunan(page);
 		await page.getByRole('button', { name: 'Jalankan', exact: true }).click();
@@ -228,10 +228,10 @@ test.describe('perbandingan pelebaran gang', () => {
 	test('jangkauan air ikut berubah saat semua gang naik satu kelas', async ({ page }) => {
 		test.setTimeout(180000);
 		await tungguSiap(page, '/peta/');
-		await page.getByRole('button', { name: 'Api', exact: true }).click();
+		await page.getByRole('button', { name: '2 Sebaran api', exact: true }).click();
 		await page.getByRole('button', { name: 'Tetapkan titik api' }).click();
 		await klikBangunan(page);
-		await page.getByRole('button', { name: 'Titik henti', exact: true }).click();
+		await page.getByRole('button', { name: '1 Titik henti', exact: true }).click();
 		await page.getByRole('button', { name: 'Bandingkan sebelum dan sesudah' }).click();
 		await page.waitForFunction(
 			() => document.body.textContent?.includes('Semua gang naik satu kelas'),

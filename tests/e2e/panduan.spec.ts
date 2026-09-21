@@ -11,7 +11,7 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 	await page.waitForTimeout(1200);
 }
 
-const panduan = (page: Page) => page.getByRole('dialog', { name: /Lembar ini menjawab|Mulai dengan|Angkanya dibaca|Uji akibatnya|Bawa hasilnya/ });
+const panduan = (page: Page) => page.getByRole('dialog', { name: /Ketuk rumah|Koordinat dan angkanya|Bawa hasilnya/ });
 
 test.describe('panduan pemakaian', () => {
 	test.use({ viewport: { width: 1440, height: 900 } });
@@ -19,16 +19,16 @@ test.describe('panduan pemakaian', () => {
 	test('muncul sendiri saat lembar kerja pertama dibuka', async ({ page }) => {
 		await bukaLembarKerja(page);
 		await expect(panduan(page)).toBeVisible();
-		await expect(page.getByText('Panduan pemakaian, langkah')).toContainText('1/5');
+		await expect(page.getByText('Panduan pemakaian, langkah')).toContainText('1/3');
 	});
 
-	test('lima langkah berurutan lalu menutup sendiri di langkah terakhir', async ({ page }) => {
+	test('tiga langkah berurutan lalu menutup sendiri di langkah terakhir', async ({ page }) => {
 		await bukaLembarKerja(page);
-		for (const nomor of [1, 2, 3, 4]) {
-			await expect(page.getByText('Panduan pemakaian, langkah')).toContainText(`${nomor}/5`);
+		for (const nomor of [1, 2]) {
+			await expect(page.getByText('Panduan pemakaian, langkah')).toContainText(`${nomor}/3`);
 			await page.getByRole('button', { name: 'Lanjut' }).click();
 		}
-		await expect(page.getByText('Panduan pemakaian, langkah')).toContainText('5/5');
+		await expect(page.getByText('Panduan pemakaian, langkah')).toContainText('3/3');
 		await page.getByRole('button', { name: 'Mulai pakai' }).click();
 		await expect(panduan(page)).toBeHidden();
 	});
@@ -40,7 +40,6 @@ test.describe('panduan pemakaian', () => {
 		const kotakPeta = await sorotan.boundingBox();
 		expect(Math.abs((kotakPeta?.y ?? 0) - (peta?.y ?? 0))).toBeLessThan(8);
 
-		await page.getByRole('button', { name: 'Lanjut' }).click();
 		await page.getByRole('button', { name: 'Lanjut' }).click();
 		const tab = await page.locator('[data-panduan="tab"]').boundingBox();
 		const kotakTab = await page.locator('.border-ink.border-2').first().boundingBox();
@@ -82,7 +81,6 @@ test.describe('panduan pemakaian di layar ponsel', () => {
 
 	test('sasaran langkah digulirkan ke layar, tidak tertutup panel', async ({ page }) => {
 		await bukaLembarKerja(page);
-		await page.getByRole('button', { name: 'Lanjut' }).click();
 		await page.getByRole('button', { name: 'Lanjut' }).click();
 		await page.waitForTimeout(500);
 

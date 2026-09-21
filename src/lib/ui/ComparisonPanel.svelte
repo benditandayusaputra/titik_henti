@@ -161,7 +161,7 @@
 		</div>
 	{:else if tanpaTitikApi}
 		<p class="text-graphite mt-3 text-[11.5px] leading-[1.55]">
-			Tetapkan minimal satu titik api di tab Api lebih dulu. Perbandingan ini menjalankan dua
+			Tetapkan minimal satu titik api di langkah 2 Sebaran api lebih dulu. Perbandingan ini menjalankan dua
 			simulasi dengan titik api yang sama.
 		</p>
 	{:else}

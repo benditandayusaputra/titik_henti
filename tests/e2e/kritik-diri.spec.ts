@@ -73,7 +73,7 @@ test.describe('kritik diri dan pencabutan', () => {
 		await tungguHalamanSiap(page, '/peta/');
 		expect(await hitungPangsaMerah(page)).toBeGreaterThan(BATAS_MERAH_TAB_API_TANPA_API);
 
-		await page.getByRole('button', { name: 'Api', exact: true }).click();
+		await page.getByRole('button', { name: '2 Sebaran api', exact: true }).click();
 		await page.waitForTimeout(1500);
 		expect(await hitungPangsaMerah(page)).toBeLessThan(BATAS_MERAH_TAB_API_TANPA_API);
 		await expect(page.getByText('Warna kelas diredam supaya merah hanya menandai api')).toBeVisible();

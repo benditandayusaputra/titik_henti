@@ -57,4 +57,4 @@ Di gang buntu hanya ada satu arah keluar. Arah yang sama dipakai warga untuk kel
 
 ## Hubungannya dengan peta
 
-Lembar kerja mewarnai tiap segmen gang menurut kelas aksesnya, dan tab Air menandai kantong bangunan yang tidak terjangkau selang dari sumber air mana pun. Pengurus RT bisa memakai keduanya untuk melihat gang mana yang jalur keluarnya paling perlu dijaga tetap kosong.
+Lembar kerja mewarnai tiap segmen gang menurut kelas aksesnya, dan telaah Air menandai kantong bangunan yang tidak terjangkau selang dari sumber air mana pun. Pengurus RT bisa memakai keduanya untuk melihat gang mana yang jalur keluarnya paling perlu dijaga tetap kosong.

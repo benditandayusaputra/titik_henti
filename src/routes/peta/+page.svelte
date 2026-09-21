@@ -49,11 +49,14 @@
 	import WaterPanel from '$lib/ui/WaterPanel.svelte';
 	import { workspace, type WorkspaceTab } from '$lib/workspace.svelte';
 
-	const tabs: { id: WorkspaceTab; label: string }[] = [
+	const langkahTabs: { id: WorkspaceTab; label: string }[] = [
+		{ id: 'titikHenti', label: '1 Titik henti' },
+		{ id: 'api', label: '2 Sebaran api' }
+	];
+
+	const telaahTabs: { id: WorkspaceTab; label: string }[] = [
 		{ id: 'akses', label: 'Akses' },
 		{ id: 'daftar', label: 'Daftar' },
-		{ id: 'titikHenti', label: 'Titik henti' },
-		{ id: 'api', label: 'Api' },
 		{ id: 'air', label: 'Air' },
 		{ id: 'intervensi', label: 'Intervensi' }
 	];
@@ -560,6 +563,12 @@
 			>
 				{workspace.settingIgnition ? 'Pilih bangunan untuk titik api' : 'Pilih titik di peta untuk hidran'}
 			</div>
+		{:else if workspace.selectedBuildingIndex === null && dataset.isReady}
+			<div
+				class="bg-ink text-concrete map-label absolute top-3 left-1/2 z-10 -translate-x-1/2 px-3 py-2"
+			>
+				Ketuk rumah yang terbakar
+			</div>
 		{/if}
 		{#if dataset.status === 'error'}
 			<div class="bg-ink/95 absolute inset-0 z-20 flex items-center px-6 py-10">
@@ -581,23 +590,41 @@
 	</div>
 
 	<aside class="hairline-l bg-paper flex w-full shrink-0 flex-col lg:w-[382px]">
-		<nav
-			class="hairline-b bg-paper flex overflow-x-auto"
-			aria-label="Panel kerja"
-			data-panduan="tab"
-		>
-			{#each tabs as tab (tab.id)}
-				<button
-					type="button"
-					class="field-tab hairline-r shrink-0"
-					class:bg-paper={workspace.activeTab === tab.id}
-					class:text-ink={workspace.activeTab === tab.id}
-					aria-pressed={workspace.activeTab === tab.id}
-					onclick={() => (workspace.activeTab = tab.id)}
-				>
-					{tab.label}
-				</button>
-			{/each}
+		<nav class="hairline-b bg-paper" aria-label="Panel kerja" data-panduan="tab">
+			<div class="flex">
+				{#each langkahTabs as tab (tab.id)}
+					{@const aktif = workspace.activeTab === tab.id}
+					<button
+						type="button"
+						class="hairline-r flex-1 cursor-pointer px-3 py-3 transition-colors duration-100"
+						class:bg-ink={aktif}
+						aria-pressed={aktif}
+						onclick={() => (workspace.activeTab = tab.id)}
+					>
+						<span
+							class="font-display text-[13.5px] leading-none font-semibold"
+							class:text-concrete={aktif}
+							class:text-graphite={!aktif}
+						>
+							{tab.label}
+						</span>
+					</button>
+				{/each}
+			</div>
+			<div class="hairline-t flex items-center overflow-x-auto">
+				<span class="field-label-sm text-graphite hairline-r shrink-0 px-3 py-2">Telaah</span>
+				{#each telaahTabs as tab (tab.id)}
+					<button
+						type="button"
+						class="field-tab hairline-r shrink-0"
+						class:text-ink={workspace.activeTab === tab.id}
+						aria-pressed={workspace.activeTab === tab.id}
+						onclick={() => (workspace.activeTab = tab.id)}
+					>
+						{tab.label}
+					</button>
+				{/each}
+			</div>
 		</nav>
 
 		<div

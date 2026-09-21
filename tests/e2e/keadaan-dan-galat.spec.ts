@@ -21,7 +21,7 @@ async function tungguPetaSiap(page: Page): Promise<void> {
 }
 
 async function tetapkanSatuTitikApi(page: Page): Promise<void> {
-	await page.getByRole('button', { name: 'Api', exact: true }).click();
+	await page.getByRole('button', { name: '2 Sebaran api', exact: true }).click();
 	await page.getByRole('button', { name: 'Tetapkan titik api' }).click();
 	for (let y = 220; y <= 760; y += 30) {
 		for (let x = 160; x <= 900; x += 30) {
@@ -106,7 +106,7 @@ test.describe('keadaan memuat, kosong, dan gagal', () => {
 		await page.route('**/adjacency*.bin', () => undefined);
 		await page.goto('/peta/');
 		await tungguPetaSiap(page);
-		await page.getByRole('button', { name: 'Api', exact: true }).click();
+		await page.getByRole('button', { name: '2 Sebaran api', exact: true }).click();
 
 		await expect(page.getByRole('button', { name: 'Jalankan', exact: true })).toBeDisabled();
 		await expect(page.getByText('Menyiapkan mesin simulasi dan data jarak antarbangunan')).toBeVisible();

@@ -68,7 +68,7 @@ test.describe('lapisan deck.gl benar-benar tergambar di peta', () => {
 		});
 
 		await bukaLembarKerja(page);
-		for (const tab of ['Air', 'Akses', 'Air', 'Titik henti', 'Akses']) {
+		for (const tab of ['Air', 'Akses', 'Air', '1 Titik henti', 'Akses']) {
 			await page.getByRole('button', { name: tab, exact: true }).click();
 			await page.waitForTimeout(1500);
 		}

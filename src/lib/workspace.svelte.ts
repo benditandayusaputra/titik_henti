@@ -84,7 +84,7 @@ function createEmptyPlayback(): FirePlayback {
 }
 
 class Workspace {
-	activeTab = $state<WorkspaceTab>('akses');
+	activeTab = $state<WorkspaceTab>('titikHenti');
 	selectedBuildingIndex = $state<number | null>(null);
 	selectedSegmentId = $state<number | null>(null);
 	corrections = $state.raw<CorrectionRecord[]>([]);

@@ -10,23 +10,13 @@
 	const LANGKAH: Langkah[] = [
 		{
 			sasaran: '[data-panduan="peta"]',
-			judul: 'Lembar ini menjawab berapa meter',
-			isi: 'Peta menunjukkan lebar tiap gang di Kelurahan Palmerah. Warna garis menandai sampai mana kendaraan pemadam bisa masuk, dan sisanya harus ditempuh dengan menggelar selang.'
-		},
-		{
-			sasaran: '[data-panduan="peta"]',
-			judul: 'Mulai dengan memilih satu bangunan',
-			isi: 'Pilih satu bangunan di peta. Sistem menarik jalur selang dari titik henti kendaraan terdekat ke bangunan itu, lalu mengukurnya dalam meter dan gulung selang.'
+			judul: 'Ketuk rumah yang terbakar',
+			isi: 'Peta ini Kelurahan Palmerah. Ketuk satu bangunan, lalu lembar ini mencari titik berhenti mobil pemadam terdekat yang masih bisa dicapai kendaraan dan menarik jalur selang dari sana.'
 		},
 		{
 			sasaran: '[data-panduan="tab"]',
-			judul: 'Angkanya dibaca di sini',
-			isi: 'Tab Titik henti menampilkan panjang selang, jumlah gulung, dan tambahan waktu sebelum air sampai. Tab Akses berisi angka wilayah, tab Daftar berisi padanan tabel dari peta.'
-		},
-		{
-			sasaran: '[data-panduan="tab"]',
-			judul: 'Uji akibatnya',
-			isi: 'Tab Api menjalankan penjalaran api dari titik yang Anda tetapkan. Tab Air menunjukkan bangunan yang tidak terjangkau selang. Tab Intervensi mencari perbaikan termurah pada anggaran yang Anda tentukan.'
+			judul: 'Koordinat dan angkanya dibaca di sini',
+			isi: 'Langkah 1 menampilkan panjang selang, jumlah gulung, tambahan waktu sebelum air sampai, dan koordinat titik henti yang bisa dikirim ke sopir lewat Google Maps. Langkah 2 menjalankan sebaran api, dan itu alat terpisah.'
 		},
 		{
 			sasaran: '[data-panduan="kartu"]',

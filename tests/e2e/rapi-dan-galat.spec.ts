@@ -87,13 +87,15 @@ async function klikBangunan(page: Page): Promise<void> {
 		if (!konteks) return null;
 		konteks.drawImage(citra, 0, 0);
 		const piksel = konteks.getImageData(0, 0, bantu.width, bantu.height).data;
+		const TAPAK_POLOS = [201, 198, 189];
+		const TAPAK_DI_KANTONG = [203, 181, 174];
 		const tapak = (x: number, y: number) => {
 			const i = (y * bantu.width + x) * 4;
-			return (
-				Math.abs(piksel[i] - 201) < 10 &&
-				Math.abs(piksel[i + 1] - 198) < 10 &&
-				Math.abs(piksel[i + 2] - 189) < 10
-			);
+			const cocok = (warna: number[]) =>
+				Math.abs(piksel[i] - warna[0]) < 8 &&
+				Math.abs(piksel[i + 1] - warna[1]) < 8 &&
+				Math.abs(piksel[i + 2] - warna[2]) < 8;
+			return cocok(TAPAK_POLOS) || cocok(TAPAK_DI_KANTONG);
 		};
 		for (let jari = 0; jari < 400; jari += 3) {
 			for (let sudut = 0; sudut < 360; sudut += 10) {

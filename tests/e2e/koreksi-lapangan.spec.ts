@@ -216,10 +216,12 @@ test.describe('koreksi lapangan berbantuan AI', () => {
 
 	test('kunci API tidak pernah sampai ke sisi klien', async ({ page, baseURL }) => {
 		const asalSitus = new URL(baseURL ?? 'http://localhost').origin;
+		const asalLatarPeta = 'https://tiles.openfreemap.org';
 		const permintaanKeluar: string[] = [];
 		page.on('request', (permintaan) => {
 			const url = permintaan.url();
-			if (new URL(url).origin !== asalSitus) permintaanKeluar.push(url);
+			const asal = new URL(url).origin;
+			if (asal !== asalSitus && asal !== asalLatarPeta) permintaanKeluar.push(url);
 			if (permintaan.headers().authorization) permintaanKeluar.push(`berotorisasi ${url}`);
 		});
 

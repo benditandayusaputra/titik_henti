@@ -42,8 +42,8 @@
 </script>
 
 <PageMeta
-	title="Titik Henti — perencanaan siaga kebakaran gang"
-	description="Titik Henti memetakan lebar gang permukiman padat dan menghitung akibatnya terhadap waktu air sampai serta luas kebakaran."
+	title="Titik Henti — cari titik berhenti mobil pemadam terdekat"
+	description="Tandai rumah yang terbakar di peta Kelurahan Palmerah, lalu Titik Henti mencari titik berhenti mobil pemadam terdekat dan memberi koordinatnya untuk dikirim ke sopir lewat Google Maps."
 />
 
 <section class="sheet-grid hairline-b px-5 pt-14 pb-16 sm:px-10">
@@ -57,9 +57,29 @@
 			<p class="text-ink prose-measure max-w-md pb-2 text-[15.5px] leading-[1.62]">
 				Di permukiman padat, mobil pemadam berhenti jauh sebelum sampai ke titik api. Dari situ
 				selang digelar dengan tangan. Setiap meter selang adalah tambahan detik sebelum air
-				sampai, dan setiap detik itu adalah rumah berikutnya yang ikut terbakar.
+				sampai, dan setiap detik itu adalah rumah berikutnya yang ikut terbakar. Lembar ini
+				mencari titik berhenti terdekat dari rumah yang terbakar, lalu memberi koordinatnya
+				untuk dikirim ke sopir lewat Google Maps.
 			</p>
 		</div>
+
+		<ol class="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-8">
+			<li class="flex items-baseline gap-2.5">
+				<span class="font-display text-graphite text-[13px] leading-none font-semibold">1</span>
+				<span class="text-ink text-[14px] leading-[1.5]">Tandai rumah yang terbakar di peta.</span>
+			</li>
+			<li class="flex items-baseline gap-2.5">
+				<span class="font-display text-graphite text-[13px] leading-none font-semibold">2</span>
+				<span class="text-ink text-[14px] leading-[1.5]">
+					Kirim koordinat titik hentinya ke sopir lewat Google Maps.
+				</span>
+			</li>
+		</ol>
+
+		<p class="text-graphite mt-3 text-[12.5px] leading-[1.55]">
+			Simulasi penyebaran api adalah alat kedua yang terpisah, dipakai untuk menguji akibat, bukan
+			untuk memanggil unit.
+		</p>
 
 		<div class="bg-ink mt-10 h-[2px] w-full"></div>
 
@@ -103,7 +123,7 @@
 		</div>
 
 		<div class="mt-8 flex flex-wrap gap-2">
-			<a href="/peta/" class="field-button-solid">Buka lembar kerja</a>
+			<a href="/peta/" class="field-button-solid">Cari titik henti</a>
 			<a href="/kartu/" class="field-button">Kartu siaga RT</a>
 			<a href="/metode/" class="field-button">Metode dan sumber data</a>
 		</div>

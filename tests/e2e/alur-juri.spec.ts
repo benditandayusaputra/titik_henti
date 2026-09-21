@@ -15,7 +15,7 @@ async function bukaLembarKerja(page: Page): Promise<void> {
 	await tutupPanduan(page);
 }
 
-async function klikGarisGangTerang(page: Page): Promise<void> {
+async function klikGarisGangKelasKecil(page: Page): Promise<void> {
 	const kanvas = await page.locator('.maplibregl-canvas').boundingBox();
 	if (!kanvas) throw new Error('kanvas peta tidak ditemukan');
 	const gambar = await page.screenshot({
@@ -35,7 +35,11 @@ async function klikGarisGangTerang(page: Page): Promise<void> {
 		for (let y = 200; y < kanvasBantu.height; y += 3) {
 			for (let x = 200; x < kanvasBantu.width; x += 3) {
 				const indeks = (y * kanvasBantu.width + x) * 4;
-				if (piksel[indeks] > 200 && piksel[indeks + 1] > 195 && piksel[indeks + 2] > 185) {
+				const dekat =
+					Math.abs(piksel[indeks] - 0xc9) < 22 &&
+					Math.abs(piksel[indeks + 1] - 0x8a) < 22 &&
+					Math.abs(piksel[indeks + 2] - 0x14) < 22;
+				if (dekat) {
 					return [x, y];
 				}
 			}
@@ -56,7 +60,7 @@ test.describe('alur utama dari sisi juri', () => {
 		await bukaLembarKerja(page);
 		await page.getByRole('button', { name: '2 Sebaran api', exact: true }).click();
 		await page.getByRole('button', { name: 'Tetapkan titik api' }).click();
-		await klikGarisGangTerang(page);
+		await klikGarisGangKelasKecil(page);
 
 		await expect(tabAktif(page)).toHaveText('2 Sebaran api');
 		await expect(page.getByRole('button', { name: 'Mode titik api aktif' })).toBeVisible();
@@ -66,7 +70,7 @@ test.describe('alur utama dari sisi juri', () => {
 		await bukaLembarKerja(page);
 		await page.getByRole('button', { name: 'Air', exact: true }).click();
 		await page.getByRole('button', { name: 'Taruh hidran uji coba' }).click();
-		await klikGarisGangTerang(page);
+		await klikGarisGangKelasKecil(page);
 
 		await expect(tabAktif(page)).toHaveText('Air');
 		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
@@ -141,12 +145,12 @@ test.describe('mode pilih lokasi dan kendali simulasi', () => {
 		await bukaLembarKerja(page);
 		await page.getByRole('button', { name: 'Air', exact: true }).click();
 		await page.getByRole('button', { name: 'Taruh hidran uji coba' }).click();
-		await klikGarisGangTerang(page);
+		await klikGarisGangKelasKecil(page);
 		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();
 
 		await page.getByRole('button', { name: 'Akses', exact: true }).click();
 		await expect(page.getByText('Pilih titik di peta untuk hidran')).toBeHidden();
-		await klikGarisGangTerang(page);
+		await klikGarisGangKelasKecil(page);
 
 		await page.getByRole('button', { name: 'Air', exact: true }).click();
 		await expect(page.getByRole('button', { name: 'Hapus 1 hidran uji coba' })).toBeEnabled();

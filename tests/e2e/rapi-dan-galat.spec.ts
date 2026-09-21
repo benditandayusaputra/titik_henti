@@ -90,7 +90,9 @@ async function klikBangunan(page: Page): Promise<void> {
 		const tapak = (x: number, y: number) => {
 			const i = (y * bantu.width + x) * 4;
 			return (
-				Math.abs(piksel[i] - 44) < 5 && Math.abs(piksel[i + 1] - 44) < 5 && Math.abs(piksel[i + 2] - 52) < 5
+				Math.abs(piksel[i] - 201) < 10 &&
+				Math.abs(piksel[i + 1] - 198) < 10 &&
+				Math.abs(piksel[i + 2] - 189) < 10
 			);
 		};
 		for (let jari = 0; jari < 400; jari += 3) {

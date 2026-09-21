@@ -108,7 +108,7 @@ export function buildHoseTickLayer(
 			id: 'hose-ticks',
 			data: ticks,
 			getPath: (datum) => datum.path,
-			getColor: [...CONCRETE_RGB, 235],
+			getColor: [...INK_RGB, 235],
 			getWidth: 2,
 			widthUnits: 'pixels',
 			widthMinPixels: 2
@@ -118,31 +118,6 @@ export function buildHoseTickLayer(
 
 interface PointDatum {
 	position: [number, number];
-}
-
-export function buildStopPointLayer(solution: StopPointSolution): Layer[] {
-	if (!solution.reachable) return [];
-	const data: PointDatum[] = [{ position: [solution.stopPoint.lon, solution.stopPoint.lat] }];
-	return [
-		new ScatterplotLayer<PointDatum>({
-			id: 'stop-point-halo',
-			data,
-			getPosition: (datum) => datum.position,
-			getRadius: 11,
-			radiusUnits: 'pixels',
-			getFillColor: [...CONCRETE_RGB, 235],
-			stroked: false
-		}),
-		new ScatterplotLayer<PointDatum>({
-			id: 'stop-point-core',
-			data,
-			getPosition: (datum) => datum.position,
-			getRadius: 5,
-			radiusUnits: 'pixels',
-			getFillColor: [...INK_RGB, 255],
-			stroked: false
-		})
-	];
 }
 
 interface FireDatum {
@@ -322,7 +297,7 @@ export function buildInterventionLayer(positions: LonLat[]): Layer[] {
 			radiusUnits: 'pixels',
 			getFillColor: [...CONCRETE_RGB, 0],
 			stroked: true,
-			getLineColor: [...CONCRETE_RGB, 255],
+			getLineColor: [...INK_RGB, 255],
 			getLineWidth: 2,
 			lineWidthUnits: 'pixels'
 		})

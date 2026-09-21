@@ -23,6 +23,12 @@
 			</div>
 		{/each}
 		<div class="flex items-baseline gap-1.5">
+			<dt class="field-label-sm text-graphite">Latar peta</dt>
+			<dd class="text-graphite text-[10px] leading-none">
+				OpenFreeMap, OpenMapTiles, OpenStreetMap ODbL
+			</dd>
+		</div>
+		<div class="flex items-baseline gap-1.5">
 			<dt class="field-label-sm text-graphite">Olah</dt>
 			<dd class="text-graphite text-[10px] leading-none">
 				Diolah {formatDate(meta.processedAt)}, pipeline versi {meta.pipelineVersion}

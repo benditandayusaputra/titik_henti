@@ -40,6 +40,7 @@
 	import DataUnavailable from '$lib/ui/DataUnavailable.svelte';
 	import FirePanel from '$lib/ui/FirePanel.svelte';
 	import HoseRulerOverlay from '$lib/ui/HoseRulerOverlay.svelte';
+	import TitikHentiMarker from '$lib/ui/TitikHentiMarker.svelte';
 	import Legend from '$lib/ui/Legend.svelte';
 	import OptimizerPanel from '$lib/ui/OptimizerPanel.svelte';
 	import PanelSkeleton from '$lib/ui/PanelSkeleton.svelte';
@@ -183,7 +184,6 @@
 		if (solution) {
 			layers.push(...pembangun.buildHosePathLayer(solution, hoseDrawnMeters));
 			layers.push(...pembangun.buildHoseTickLayer(solution, hoseDrawnMeters));
-			layers.push(...pembangun.buildStopPointLayer(solution));
 		}
 
 		return layers;
@@ -523,7 +523,7 @@
 
 <div class="flex min-h-0 flex-1 flex-col lg:flex-row" data-lembar-kerja>
 	<div
-		class="bg-ink relative min-h-[58vh] flex-1 lg:min-h-0"
+		class="bg-concrete relative min-h-[58vh] flex-1 overflow-hidden lg:min-h-0"
 		bind:this={mapArea}
 		data-panduan="peta"
 	>
@@ -540,6 +540,12 @@
 			onsegmentpick={handleSegmentPick}
 			onmappick={handleMapPick}
 			onready={(map) => (mapInstance = map)}
+		/>
+		<TitikHentiMarker
+			map={mapInstance}
+			stopPoint={workspace.stopPointSolution?.reachable
+				? workspace.stopPointSolution.stopPoint
+				: null}
 		/>
 		<HoseRulerOverlay
 			map={mapInstance}
@@ -571,18 +577,18 @@
 			</div>
 		{/if}
 		{#if dataset.status === 'error'}
-			<div class="bg-ink/95 absolute inset-0 z-20 flex items-center px-6 py-10">
-				<DataUnavailable tone="gelap" onretry={reloadDataset} />
+			<div class="bg-concrete/95 absolute inset-0 z-20 flex items-center px-6 py-10">
+				<DataUnavailable tone="terang" onretry={reloadDataset} />
 			</div>
 		{:else if !dataset.isReady}
 			<div
-				class="bg-ink/90 border-concrete/25 absolute top-3 left-3 z-20 max-w-[280px] border px-3 py-2"
+				class="bg-paper/95 border-ink/25 absolute top-3 left-3 z-20 max-w-[280px] border px-3 py-2"
 				aria-busy="true"
 			>
-				<p class="font-display text-concrete text-[13px] leading-tight font-semibold" role="status">
+				<p class="font-display text-ink text-[13px] leading-tight font-semibold" role="status">
 					Memuat peta wilayah
 				</p>
-				<p class="text-graphite-pale mt-1 text-[11.5px] leading-[1.45]">
+				<p class="text-graphite mt-1 text-[11.5px] leading-[1.45]">
 					Jaringan gang dan tabel bangunan sedang diambil. Peta sudah bisa digeser sambil menunggu.
 				</p>
 			</div>

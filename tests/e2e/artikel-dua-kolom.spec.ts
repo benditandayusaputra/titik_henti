@@ -1,7 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const BERGAMBAR = '/artikel/cara-memakai-apar/';
-const TANPA_GAMBAR = '/artikel/korsleting-listrik/';
 
 const badan = (page: Page) => page.locator('.kolom-artikel > div').first();
 const samping = (page: Page) => page.locator('.lembar-samping');
@@ -57,11 +56,23 @@ test.describe('artikel dua kolom', () => {
 		await expect(page.getByRole('heading', { name: 'Sumber' })).toBeVisible();
 	});
 
-	test('artikel tanpa ilustrasi tidak merender bingkai gambar', async ({ page }) => {
+	test('setiap artikel punya ilustrasi beserta teks alternatifnya', async ({ page }) => {
 		await page.setViewportSize({ width: 1440, height: 900 });
-		await page.goto(TANPA_GAMBAR);
+		await page.goto('/artikel/');
+		const alamat = await page
+			.locator('a[href^="/artikel/"]')
+			.evaluateAll((tautan) =>
+				[...new Set(tautan.map((simpul) => simpul.getAttribute('href') ?? ''))].filter(
+					(href) => href !== '/artikel/'
+				)
+			);
+		expect(alamat.length).toBe(8);
 
-		await expect(page.locator('.lembar-samping figure')).toHaveCount(0);
-		await expect(samping(page)).toBeVisible();
+		for (const href of alamat) {
+			await page.goto(href);
+			const gambar = page.locator('.lembar-samping figure img');
+			await expect(gambar).toBeVisible();
+			expect(((await gambar.getAttribute('alt')) ?? '').length).toBeGreaterThan(20);
+		}
 	});
 });

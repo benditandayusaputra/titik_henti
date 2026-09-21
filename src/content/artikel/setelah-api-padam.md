@@ -20,7 +20,8 @@
       "tautan": "https://m.beritajakarta.id/read/154724/Personel%20Gulkarmat%20Jaktim%20Padamkan%20Kebakaran%20di%20Dua%20Lokasi"
     }
   ],
-  "berlakuUntuk": ["kantong_tak_terjangkau"]
+  "berlakuUntuk": ["kantong_tak_terjangkau"],
+  "gambarAlt": "Gambar teknik rumah pasca kebakaran dengan asap sisa dari atap dan tanda peringatan bahaya di bagian dalam."
 }
 ---
 

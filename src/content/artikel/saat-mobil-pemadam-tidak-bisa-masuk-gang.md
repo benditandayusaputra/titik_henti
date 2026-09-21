@@ -16,7 +16,8 @@
       "tautan": "https://barat.jakarta.go.id/berita/cegah-kebakaran-kecamatan-palmerah-uji-jalur-evakuasi-di-permukiman-padat"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau", "sumber_air_jauh"]
+  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau", "sumber_air_jauh"],
+  "gambarAlt": "Denah gang yang menyempit sehingga mobil pemadam berhenti di mulut gang, dan selang digelar menyusuri gang sampai ke rumah."
 }
 ---
 

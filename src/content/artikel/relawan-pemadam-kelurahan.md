@@ -12,7 +12,8 @@
       "tautan": "https://barat.jakarta.go.id/berita/dulu-balakar-kini-repkar-relawan-pemadam-kebakaran"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau", "sumber_air_jauh"]
+  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau", "sumber_air_jauh"],
+  "gambarAlt": "Tiga sosok relawan berhelm terhubung satu garis koordinasi, dengan hidran mandiri kelurahan di bawahnya."
 }
 ---
 

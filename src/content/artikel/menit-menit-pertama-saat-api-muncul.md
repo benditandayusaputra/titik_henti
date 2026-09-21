@@ -24,7 +24,8 @@
       "tautan": "https://biroumum.jakarta.go.id/news_web/detailnews/pemprov-dki-imbau-warga-waspada-dan-antisipasi-kebakaran-rumah"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau"]
+  "berlakuUntuk": ["gang_selang_saja", "kantong_tak_terjangkau"],
+  "gambarAlt": "Garis waktu tegak berisi empat langkah menit pertama: membunyikan peringatan, memutuskan arus listrik, memadamkan dengan alat, lalu memanggil bantuan."
 }
 ---
 

@@ -12,7 +12,8 @@
       "tautan": "https://www.beritajakarta.id/read/133524/cegah-korsleting-listrik-ini-imbauan-dinas-gulkarmat"
     }
   ],
-  "berlakuUntuk": ["gang_selang_saja", "gang_unit_kecil"]
+  "berlakuUntuk": ["gang_selang_saja", "gang_unit_kecil"],
+  "gambarAlt": "Gambar teknik stopkontak bertumpuk beban dengan percikan korsleting pada kabel, dan kotak pemutus arus di sebelahnya."
 }
 ---
 
